@@ -428,7 +428,7 @@ const App = () => {
 
       // Line 2
       cursorX = textX;
-      const l2_p1 = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International ";
+      const l2_p1 = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International  ";
       const l2_link = "deed.";
 
       pdf.text(l2_p1, cursorX, line2Y);
