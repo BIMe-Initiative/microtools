@@ -537,7 +537,7 @@ const App = () => {
                 {/* --- CONTROLS --- */}
                 <div className="bg-white p-4 border border-slate-200 mb-4 space-y-3">
                   <div className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
-                    <User size={14} /> Report Settings
+                    <User size={14} /> Download PDF Report
                   </div>
                   <input 
                     type="text" 
