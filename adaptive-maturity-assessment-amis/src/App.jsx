@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
-import { ChevronRight, RotateCcw, HelpCircle, Download, User, ExternalLink } from 'lucide-react';
+import { ChevronRight, RotateCcw, HelpCircle, Download, User, X, AlertCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import ReCAPTCHA from "react-google-recaptcha";
@@ -151,6 +151,33 @@ const CustomMarker = (props) => {
   );
 };
 
+// --- CUSTOM MODAL (Replaces Alert) ---
+const Modal = ({ isOpen, onClose, title, message }) => {
+  if (!isOpen) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in">
+      <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-in zoom-in-95 duration-200">
+        <div className="flex justify-between items-start mb-4">
+          <div className="flex items-center gap-2 text-[#f37f73]">
+            <AlertCircle size={24} />
+            <h3 className="text-lg font-bold text-slate-800">{title}</h3>
+          </div>
+          <button onClick={onClose} className="text-slate-400 hover:text-slate-600 transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+        <p className="text-slate-600 mb-6">{message}</p>
+        <button 
+          onClick={onClose}
+          className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded transition-colors"
+        >
+          OK
+        </button>
+      </div>
+    </div>
+  );
+};
+
 // --- COMPONENT ---
 const App = () => {
   const [scores, setScores] = useState(INDICATORS.reduce((acc, ind) => ({ ...acc, [ind.id]: 3 }), {}));
@@ -158,6 +185,10 @@ const App = () => {
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
   const [captchaToken, setCaptchaToken] = useState(null);
   
+  // Modal State
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', message: '' });
+
   const chartRef = useRef(null);
 
   // Load Google Fonts (Raleway)
@@ -174,6 +205,11 @@ const App = () => {
 
   const onCaptchaChange = (token) => {
     setCaptchaToken(token);
+  };
+
+  const showModal = (title, message) => {
+    setModalContent({ title, message });
+    setModalOpen(true);
   };
 
   const results = useMemo(() => {
@@ -205,11 +241,11 @@ const App = () => {
   // --- PDF GENERATOR ---
   const handleDownloadPDF = async () => {
     if (!userName.trim()) {
-      alert("Please enter your name before downloading.");
+      showModal("Missing Name", "Please enter your name before downloading the report.");
       return;
     }
     if (!captchaToken) {
-        alert("Please complete the reCAPTCHA challenge.");
+        showModal("Verification Required", "Please complete the reCAPTCHA challenge.");
         return;
     }
     
@@ -353,16 +389,14 @@ const App = () => {
         if (isLeftCol) yLeft += 7; else yRight += 7;
       });
 
-      // --- CREATIVE COMMONS FOOTER (ADJUSTED HEIGHT) ---
-      // Increased footerHeight to 18mm to fit 3 lines comfortably
+      // --- CREATIVE COMMONS FOOTER (STRICT ALIGNMENT) ---
       const footerHeight = 18; 
-      const footerY = pageHeight - 28; // Moved up slightly
+      const footerY = pageHeight - 28;
       
       pdf.setFillColor(248, 250, 252); 
       pdf.roundedRect(margin, footerY, pageWidth - (margin * 2), footerHeight, 2, 2, 'F');
       
       if (ccLogoPng) {
-        // Logo vertical center in box
         pdf.addImage(ccLogoPng, 'PNG', margin + 3, footerY + 5, 25, 6);
         pdf.link(margin + 3, footerY + 5, 25, 6, { url: "https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" });
       }
@@ -394,7 +428,7 @@ const App = () => {
 
       // Line 2
       cursorX = textX;
-      const l2_p1 = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International  ";
+      const l2_p1 = "Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International ";
       const l2_link = "deed.";
 
       pdf.text(l2_p1, cursorX, line2Y);
@@ -588,6 +622,14 @@ const App = () => {
 
         </div>
       </div>
+      
+      {/* ERROR MODAL */}
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        title={modalContent.title} 
+        message={modalContent.message} 
+      />
     </div>
   );
 };
