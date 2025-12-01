@@ -241,7 +241,7 @@ const App = () => {
   // --- PDF GENERATOR ---
   const handleDownloadPDF = async () => {
     if (!userName.trim()) {
-      showModal("Missing Name", "Please enter your name before downloading the report.");
+      showModal("Missing Name", "Please enter a name before downloading the report. This will not be saved or reused by BIMei.");
       return;
     }
     if (!captchaToken) {
