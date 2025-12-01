@@ -537,11 +537,11 @@ const App = () => {
                 {/* --- CONTROLS --- */}
                 <div className="bg-white p-4 border border-slate-200 mb-4 space-y-3">
                   <div className="text-xs font-bold text-slate-700 uppercase tracking-wide flex items-center gap-2">
-                    <User size={14} /> Download PDF Report
+                    <User size={14} /> Generate Summary Report
                   </div>
                   <input 
                     type="text" 
-                    placeholder="Enter Name (Required for PDF)..." 
+                    placeholder="Enter Name (required for report)..." 
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
                     className="w-full border border-slate-300 p-2 text-sm focus:outline-none focus:border-[#f37f73] font-sans"
