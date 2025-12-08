@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Minus } from 'lucide-react';
 import { clsx } from 'clsx';
@@ -42,48 +42,48 @@ const MINDMAP_DATA = [
         children: [
           {
             id: 'phase-disrupt',
-            title: 'Phase A1: Introduce Disruptions (Stagnant → Chaotic)',
+            title: 'Phase: Introduce Disruptions (Stagnant → Chaotic)',
             state: 'Chaotic', 
             children: [
               {
                 id: 'empower',
-                title: '1. Empower Champions',
+                title: 'Empowering Champions',
                 children: [
                   { 
                     id: 'agents', 
-                    title: '1.1. Identify Potential Change Agents',
+                    title: 'Identify Potential Change Agents',
                     children: [
-                      { id: 'survey', title: '1.1.a. Survey staff for hidden skills (coding, data, etc.)' },
-                      { id: 'locate', title: '1.1.b. Locate frustrated high-performers' }
+                      { id: 'survey', title: 'Survey staff for hidden skills (coding, data, etc.)' },
+                      { id: 'locate', title: 'Locate frustrated high-performers' }
                     ]
                   },
                   {
                     id: 'autonomy',
-                    title: '1.2. Allocate Autonomy & Resources',
+                    title: 'Allocate Autonomy & Resources',
                     children: [
-                      { id: 'exempt', title: '1.2.a. Exempt champions from standard approval chains' },
-                      { id: 'budget', title: '1.2.b. Allocate a "Curiosity Budget" for non-project work' }
+                      { id: 'exempt', title: 'Exempt champions from standard approval chains' },
+                      { id: 'budget', title: 'Allocate a "Curiosity Budget" for non-project work' }
                     ]
                   }
                 ]
               },
               {
                 id: 'experiments',
-                title: '2. Legitimise Experimentation',
+                title: 'Legitimising Experimentation',
                 children: [
-                  { id: 'sandbox', title: "2.1. Create 'Innovation Sandboxes' (Safe-to-fail zones)" },
-                  { id: 'failure', title: "2.2. Normalise Failure (Celebrate lessons learned)" }
+                  { id: 'sandbox', title: "Create 'Innovation Sandboxes' (Safe-to-fail zones)" },
+                  { id: 'failure', title: "Normalise Failure (Celebrate lessons learned)" }
                 ]
               }
             ]
           },
           {
             id: 'phase-systems',
-            title: 'Phase A2: Set Up Systems (Chaotic → Dynamic)',
+            title: 'Phase: Set Up Systems (Chaotic → Dynamic)',
             state: 'Dynamic',
             children: [
-              { id: 'harvest', title: '1. Harvest Lessons-learned from pilots' },
-              { id: 'scale', title: '2. Scale Success (Diffuse tools across org)' }
+              { id: 'harvest', title: 'Harvest Lessons-learned from pilots' },
+              { id: 'scale', title: 'Scale Success (Diffuse tools across org)' }
             ]
           }
         ]
@@ -95,11 +95,11 @@ const MINDMAP_DATA = [
         children: [
           {
             id: 'phase-structure',
-            title: 'Generate Structures (Stagnant → Rigid)',
+            title: 'Phase: Generate Structures (Stagnant → Rigid)',
             state: 'Rigid',
             children: [
-              { id: 'codify', title: '1. Codify Core Processes' },
-              { id: 'gov', title: '2. Centralise Governance' }
+              { id: 'codify', title: 'Codify Core Processes' },
+              { id: 'gov', title: 'Centralise Governance' }
             ]
           }
         ]
@@ -114,19 +114,19 @@ const MINDMAP_DATA = [
     children: [
       {
         id: 'action-rules',
-        title: 'Decrease Rules & Increase Flexibility',
+        title: 'Action: Decrease Rules & Increase Flexibility',
         children: [
           {
             id: 'decentralise',
-            title: '1. Decentralise Decision-Making',
+            title: 'Decentralising Decision-Making',
             children: [
-              { id: 'matrices', title: '1.1. Review Authority Matrices (Remove bottlenecks)' },
-              { id: 'controls', title: '1.2. Remove Non-Value-Add Controls' }
+              { id: 'matrices', title: 'Review Authority Matrices (Remove bottlenecks)' },
+              { id: 'controls', title: 'Remove Non-Value-Add Controls' }
             ]
           },
           {
             id: 'empower-teams',
-            title: '2. Empower Teams',
+            title: 'Empowering Teams',
             children: [
               { id: 'boundaries', title: 'Replace prescriptive rules with guiding principles' }
             ]
@@ -143,11 +143,11 @@ const MINDMAP_DATA = [
     children: [
       {
         id: 'action-systems',
-        title: 'Set Up Systems',
+        title: 'Action: Setting Up Systems',
         children: [
-          { id: 'prioritise', title: '1. Prioritise Initiatives (Strategic Roadmap)' },
-          { id: 'light-gov', title: '2. Establish Light Governance (Stage-gates)' },
-          { id: 'knowledge', title: '3. Build a Knowledge Hub' }
+          { id: 'prioritise', title: 'Prioritise Initiatives (Strategic Roadmap)' },
+          { id: 'light-gov', title: 'Establish Light Governance (Stage-gates)' },
+          { id: 'knowledge', title: 'Build a Knowledge Hub' }
         ]
       }
     ]
@@ -164,21 +164,16 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
     if (hasChildren) setIsOpen(!isOpen);
   };
 
-  // Color Logic
   const themeColor = node.state ? STATE_THEMES[node.state] : (inheritedTheme || STATE_THEMES.default);
-
-  // Styles
   const cardBg = level === 0 ? themeColor : '#ffffff';
-  const cardText = level === 0 ? '#ffffff' : '#334155'; // Slate-700
+  const cardText = level === 0 ? '#ffffff' : '#334155'; 
   const borderStyle = level === 0 ? {} : { borderLeft: `4px solid ${themeColor}` };
 
   return (
     <div className="relative pl-8">
-      
-      {/* --- CONNECTORS --- */}
+      {/* CONNECTORS */}
       {level > 0 && (
         <>
-          {/* 1. Vertical Rail */}
           <div 
             className="absolute left-0 w-[2px] bg-slate-300"
             style={{ 
@@ -186,16 +181,12 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
               height: isLast ? '50px' : 'calc(100% + 24px)'
             }}
           />
-          {/* 2. Horizontal Rung */}
-          <div 
-            className="absolute left-0 top-[26px] w-8 h-[2px] bg-slate-300"
-          />
+          <div className="absolute left-0 top-[26px] w-8 h-[2px] bg-slate-300" />
         </>
       )}
 
-      {/* --- THE CARD --- */}
+      {/* CARD */}
       <div className="mb-6 relative z-10 group">
-        
         <div 
           onClick={toggleOpen}
           className={clsx(
@@ -209,7 +200,6 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
             boxShadow: level > 0 ? '0 1px 3px rgba(0,0,0,0.1)' : '0 4px 6px rgba(0,0,0,0.1)'
           }}
         >
-          {/* Expand/Collapse Button with Rotation Animation */}
           {hasChildren && (
             <div
               className="mr-4 p-1 rounded-full flex-shrink-0 transition-transform duration-300"
@@ -223,7 +213,6 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
             </div>
           )}
 
-          {/* Content */}
           <div className="flex-1">
             <h3 className={clsx("leading-tight", level === 0 ? "font-bold text-lg" : "font-semibold text-sm")}>
               {node.title}
@@ -239,7 +228,7 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
           </div>
         </div>
 
-        {/* --- RECURSIVE CHILDREN --- */}
+        {/* CHILDREN */}
         <AnimatePresence>
           {isOpen && hasChildren && (
             <motion.div
@@ -269,7 +258,6 @@ const MindMapNode = ({ node, isLast, level = 0, inheritedTheme }) => {
 
 // --- MAIN APP COMPONENT ---
 const App = () => {
-  // Inject Raleway Font
   useEffect(() => {
     const link = document.createElement('link');
     link.href = 'https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap';
@@ -277,20 +265,39 @@ const App = () => {
     document.head.appendChild(link);
   }, []);
 
+  // --- AUTO RESIZE LOGIC (PostMessage) ---
+  // This sends the height to the parent iframe
+  useEffect(() => {
+    const sendHeight = () => {
+      // Small buffer (+20) prevents scrollbars
+      const height = document.documentElement.scrollHeight + 20;
+      window.parent.postMessage({ type: 'resize-iframe-map', height: height }, '*');
+    };
+
+    const observer = new ResizeObserver(sendHeight);
+    observer.observe(document.body);
+    
+    // Also trigger on load
+    sendHeight();
+
+    return () => observer.disconnect();
+  }, []);
+
   return (
+    // Changed min-h-screen to h-fit to allow shrinking
     <div 
-      className="min-h-screen p-4 md:p-8 font-sans"
+      className="w-full h-fit p-4 md:p-8 font-sans"
       style={{ 
         fontFamily: "'Raleway', sans-serif",
         backgroundColor: '#fafafa'
       }}
     >
       <div 
-        className="max-w-5xl mx-auto bg-white min-h-[800px] shadow-sm relative flex flex-col"
+        className="max-w-5xl mx-auto bg-white shadow-sm relative flex flex-col h-fit"
         style={{ border: '1px solid #d3d3d3' }}
       >
         
-        {/* HEADER */}
+   {/* HEADER */}
         <div className="p-6 border-b border-gray-200 bg-white sticky top-0 z-50 flex flex-row justify-between items-start gap-4">
           <h1 className="text-xl md:text-2xl font-bold text-slate-800 tracking-tight leading-tight">
             Adaptive Maturity States
