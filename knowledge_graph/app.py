@@ -5,143 +5,172 @@ import json
 from pypdf import PdfReader
 
 # Page Config
-st.set_page_config(layout="wide", page_title="BIMe Graph")
-st.title("🔗 BIMe Interactive Knowledge Graph")
+st.set_page_config(layout="wide", page_title="BIMe Smart Graph")
+st.title("🧠 BIMe Interactive Knowledge Base")
 
 # --- 1. SETUP & MEMORY ---
-# We use Session State to keep the graph on screen after you click things
 if 'graph_data' not in st.session_state:
     st.session_state['graph_data'] = None
+if 'lookup_map' not in st.session_state:
+    st.session_state['lookup_map'] = {} # Stores descriptions for quick access
 
 try:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 except:
     st.error("API Key missing. Check Streamlit Secrets.")
 
-# --- 2. SIDEBAR (CONTROLS) ---
+# --- 2. SIDEBAR (CONTROLS & DETAILS) ---
 with st.sidebar:
-    st.header("🗂️ Data Sources")
+    # A. The Detail View (Shows UP TOP when you click a node)
+    st.header("🔍 Node Details")
     
-    # Allow Multiple Files
+    # We use a placeholder so we can update this area dynamically
+    details_placeholder = st.empty()
+    
+    st.write("---")
+    st.header("🗂️ Data Input")
+    
     uploaded_files = st.file_uploader(
         "Upload PDF documents:", 
         type=["pdf"], 
         accept_multiple_files=True
     )
     
-    st.write("---")
-    # Let user control complexity
-    node_limit = st.slider("Max Complexity (Nodes)", min_value=10, max_value=60, value=30)
+    node_limit = st.slider("Complexity", 10, 50, 25)
     
-    generate_btn = st.button("Generate / Update Graph", type="primary")
-    
-    if st.button("Clear Graph"):
+    if st.button("Generate Smart Graph", type="primary"):
+        # Trigger the generation logic below
+        st.session_state['trigger_gen'] = True
+    else:
+        st.session_state['trigger_gen'] = False
+
+    if st.button("Clear Data"):
         st.session_state['graph_data'] = None
+        st.session_state['lookup_map'] = {}
         st.rerun()
 
 # --- 3. PROCESSING ENGINE ---
-if generate_btn:
+if st.session_state.get('trigger_gen') and uploaded_files:
     full_text = ""
-    
-    # A. Process PDFs
-    if uploaded_files:
-        with st.spinner(f"Reading {len(uploaded_files)} files..."):
-            for pdf_file in uploaded_files:
-                try:
-                    reader = PdfReader(pdf_file)
-                    for page in reader.pages:
-                        full_text += page.extract_text() + "\n"
-                except Exception as e:
-                    st.error(f"Error reading {pdf_file.name}: {e}")
-    
-    # B. Send to Gemini
-    if full_text:
-        with st.spinner("Gemini is mapping the connections..."):
+    with st.spinner(f"Reading {len(uploaded_files)} files..."):
+        for pdf_file in uploaded_files:
             try:
-                # Use the powerful 2.0 Flash model
+                reader = PdfReader(pdf_file)
+                for page in reader.pages:
+                    full_text += page.extract_text() + "\n"
+            except:
+                pass
+
+    if full_text:
+        with st.spinner("Gemini is extracting definitions and structure..."):
+            try:
                 model = genai.GenerativeModel('gemini-2.0-flash')
                 
+                # UPDATED PROMPT: Asking for 'type' and 'description'
                 prompt = f"""
-                You are a Knowledge Graph Architect. Analyze the provided text and extract a structured graph.
-                
-                GOAL: Create a hierarchical view of the concepts.
+                Analyze the text and extract a Knowledge Graph.
                 
                 Rules:
-                1. Identify up to {node_limit} key concepts (Nodes).
-                2. Identify relationships (Edges) with clear verbs (e.g., "contains", "requires", "defines").
-                3. STRICTLY output valid JSON.
-                4. Format:
+                1. Identify top {node_limit} concepts.
+                2. For each node, determine its TYPE (Concept, Organization, Standard, Person, or Tool).
+                3. For each node, write a 1-sentence DEFINITION based on the text.
+                4. Output STRICT JSON format.
+                
+                Format:
                 {{
-                  "nodes": [ {{"id": "Concept Name", "label": "Concept Name", "group": "CategoryName"}} ],
-                  "edges": [ {{"source": "Concept Name", "target": "Concept Name", "label": "relationship"}} ]
+                  "nodes": [ 
+                    {{
+                        "id": "Name", 
+                        "label": "Name", 
+                        "type": "Concept", 
+                        "description": "Definition goes here..."
+                    }} 
+                  ],
+                  "edges": [ {{"source": "Name", "target": "Name", "label": "verb"}} ]
                 }}
                 
-                Text to analyze:
-                {full_text[:80000]}
+                Text: {full_text[:80000]}
                 """
                 
                 response = model.generate_content(prompt)
-                
-                # Clean JSON
                 clean_json = response.text.replace('```json', '').replace('```', '').strip()
                 data = json.loads(clean_json)
                 
-                # --- C. BUILD GRAPH STRUCTURE ---
                 nodes = []
                 edges = []
-                existing_ids = set()
+                lookup = {} # Fast dictionary to find descriptions
+                existing = set()
                 
-                # Colors for different types of nodes (Visual Depth)
-                colors = ["#FF6F61", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1"]
-                
-                for i, n in enumerate(data.get('nodes', [])):
-                    if n['id'] not in existing_ids:
-                        # Assign color based on group if available, or random
+                # Color Palette for Types
+                type_colors = {
+                    "Concept": "#FF6F61",      # Coral Red
+                    "Organization": "#6B5B95", # Purple
+                    "Standard": "#88B04B",     # Green
+                    "Person": "#F7CAC9",       # Pink
+                    "Tool": "#92A8D1",         # Blue
+                    "Other": "#955251"
+                }
+
+                for n in data.get('nodes', []):
+                    if n['id'] not in existing:
+                        # Pick color based on type
+                        node_color = type_colors.get(n.get('type', 'Other'), "#955251")
+                        
                         nodes.append(Node(
                             id=n['id'], 
                             label=n['label'], 
                             size=25, 
-                            color="#FF6F61" # You can make this dynamic later
+                            color=node_color,
+                            # We store the description in the 'title' field which shows on hover
+                            title=n.get('description', '') 
                         ))
-                        existing_ids.add(n['id'])
+                        
+                        # Store details in our lookup map
+                        lookup[n['id']] = {
+                            "desc": n.get('description', 'No definition found.'),
+                            "type": n.get('type', 'General')
+                        }
+                        
+                        existing.add(n['id'])
                 
                 for e in data.get('edges', []):
-                    if e['source'] in existing_ids and e['target'] in existing_ids:
-                        edges.append(Edge(
-                            source=e['source'], 
-                            target=e['target'], 
-                            label=e['label']
-                        ))
+                    if e['source'] in existing and e['target'] in existing:
+                        edges.append(Edge(source=e['source'], target=e['target'], label=e['label']))
                 
-                # Save to Memory (Session State)
                 st.session_state['graph_data'] = {'nodes': nodes, 'edges': edges}
+                st.session_state['lookup_map'] = lookup
                 
             except Exception as e:
-                st.error(f"Analysis Failed: {e}")
-                
-    else:
-        st.warning("Please upload at least one PDF.")
+                st.error(f"Error: {e}")
 
-# --- 4. VISUALIZATION (READS FROM MEMORY) ---
+# --- 4. VISUALIZATION & INTERACTION ---
 if st.session_state['graph_data']:
-    data = st.session_state['graph_data']
     
-    st.success(f"Visualizing {len(data['nodes'])} nodes from your documents.")
-    
-    # Physics Config - "hierarchical: True" helps show depth if the data supports it
-    config = Config(
-        width=1000, 
-        height=800, 
-        directed=True, 
-        physics=True, 
-        hierarchical=False, # Set to True if you want a strict Tree view
-        nodeHighlightBehavior=True, 
-        highlightColor="#F7A7A6"
+    # Draw the graph and CAPTURE the clicked node ID
+    # agraph returns the 'id' of the node you click
+    clicked_node_id = agraph(
+        nodes=st.session_state['graph_data']['nodes'], 
+        edges=st.session_state['graph_data']['edges'], 
+        config=Config(
+            width=1000, 
+            height=700, 
+            directed=True, 
+            physics=True, 
+            nodeHighlightBehavior=True, 
+            highlightColor="#F7A7A6"
+        )
     )
     
-    # Render the graph
-    # We ignore the return value to prevent re-running loops
-    agraph(nodes=data['nodes'], edges=data['edges'], config=config)
-    
-else:
-    st.info("Upload files and click Generate to see the network.")
+    # --- 5. HANDLE THE CLICK ---
+    # If the user clicked something, look it up in our map
+    if clicked_node_id and clicked_node_id in st.session_state['lookup_map']:
+        info = st.session_state['lookup_map'][clicked_node_id]
+        
+        # Display nicely in the sidebar
+        with details_placeholder.container():
+            st.info(f"**Selected:** {clicked_node_id}")
+            st.write(f"**Type:** {info['type']}")
+            st.write(f"**Definition:** {info['desc']}")
+            
+    elif not clicked_node_id:
+        details_placeholder.info("👈 Click a node to see its definition.")
