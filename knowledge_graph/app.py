@@ -59,4 +59,34 @@ if generate_btn and text_input:
 
             for n in data.get('nodes', []):
                 if n['id'] not in existing_nodes:
-                    nodes.append(Node(id=n['id'], label=n['label'], size=20, color=n.get
+                    nodes.append(Node(id=n['id'], label=n['label'], size=20, color=n.get('color', '#FF6F61')))
+                    existing_nodes.add(n['id'])
+            
+            for e in data.get('edges', []):
+                # Only add edges if both source and target exist in our nodes
+                if e['source'] in existing_nodes and e['target'] in existing_nodes:
+                    edges.append(Edge(source=e['source'], target=e['target'], label=e['label']))
+            
+            # Configure the Physics of the Graph
+            config = Config(width=900, 
+                            height=700, 
+                            directed=True, 
+                            physics=True, 
+                            hierarchical=False,
+                            nodeHighlightBehavior=True, 
+                            highlightColor="#F7A7A6")
+            
+            # Render
+            st.success(f"Generated {len(nodes)} nodes and {len(edges)} connections.")
+            return_value = agraph(nodes=nodes, edges=edges, config=config)
+            
+        except Exception as e:
+            st.error(f"An error occurred: {e}")
+            with st.expander("See technical details"):
+                st.write(e)
+                if 'response' in locals():
+                    st.write("Raw output from Gemini:")
+                    st.write(response.text)
+
+elif generate_btn and not text_input:
+    st.warning("Please paste some text first!")
