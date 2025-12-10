@@ -25,7 +25,7 @@ if generate_btn and text_input:
     with st.spinner("Analyzing text and mapping connections..."):
         try:
             # Connect to Gemini
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-pro')
             
             # The Prompt for Gemini
             prompt = f"""
