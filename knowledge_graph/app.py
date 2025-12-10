@@ -7,13 +7,23 @@ from pypdf import PdfReader
 # --- PAGE CONFIG ---
 st.set_page_config(layout="wide", page_title="BIMe Knowledge Base")
 
-# Custom CSS to make the "Bubble" look elegant
+# --- CUSTOM CSS (Pastel & Clean) ---
 st.markdown("""
 <style>
-    /* Make the top header cleaner */
+    /* Clean up the top bar */
     .stAppHeader {display:none;}
-    /* Custom styling for the details dialog */
-    div[data-testid="stMarkdownContainer"] p {font-size: 1.1rem;}
+    
+    /* Elegant Dialog Text */
+    div[data-testid="stMarkdownContainer"] p {
+        font-family: 'Helvetica Neue', sans-serif;
+        color: #333;
+        line-height: 1.6;
+    }
+    
+    /* Remove standard button borders for a cleaner look */
+    button {
+        border-radius: 8px !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -25,61 +35,82 @@ if 'graph_data' not in st.session_state:
 if 'lookup_map' not in st.session_state:
     st.session_state['lookup_map'] = {}
 if 'focus_node' not in st.session_state:
-    st.session_state['focus_node'] = None  # For isolation mode
+    st.session_state['focus_node'] = None 
 
+# Secure API Key Access
 try:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 except:
-    st.error("API Key missing. Check Streamlit Secrets.")
+    st.error("API Key missing. Please check Streamlit Secrets.")
 
 # --- 2. SIDEBAR CONTROLS ---
 with st.sidebar:
-    st.header("🎛️ Graph Controls")
+    st.header("🎛️ Viewer Settings")
     
+    # Input Section
     uploaded_files = st.file_uploader("Upload Sources (PDF):", type=["pdf"], accept_multiple_files=True)
-    
-    # Physics Controls
-    st.subheader("Physics Settings")
-    grav = st.slider("Gravity", -1000, -5000, -2500)
     
     st.divider()
     
-    if st.button("Generate New Graph", type="primary"):
-        st.session_state['trigger_gen'] = True
-        st.session_state['focus_node'] = None # Reset isolation
+    # "Human Readable" Physics Controls
+    st.subheader("Layout")
+    # We map "Spacing" to the physics 'springLength'
+    spacing = st.slider("Node Spacing", min_value=100, max_value=500, value=250)
     
-    if st.button("Reset View (Show All)"):
-        st.session_state['focus_node'] = None
-        st.rerun()
+    st.divider()
+    
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("Generate", type="primary"):
+            st.session_state['trigger_gen'] = True
+            st.session_state['focus_node'] = None
+    with col2:
+        if st.button("Clear"):
+            st.session_state['graph_data'] = None
+            st.session_state['lookup_map'] = {}
+            st.rerun()
+            
+    if st.session_state['focus_node']:
+        if st.button("🔙 Exit Focus Mode"):
+            st.session_state['focus_node'] = None
+            st.rerun()
 
-# --- 3. DIALOG FUNCTION (The "Elegant Bubble") ---
-@st.dialog("Details & Actions")
+# --- 3. ELEGANT POP-UP (DIALOG) ---
+@st.dialog("Concept Details")
 def show_node_details(node_id):
     info = st.session_state['lookup_map'].get(node_id, {})
     
-    # Header with Icon
-    col1, col2 = st.columns([1, 4])
-    with col1:
-        # Display a large emoji/icon based on type
-        icon_map = {"Concept": "💡", "Standard": "📜", "Role": "👤", "Process": "🔄", "Tool": "💻", "Organization": "🏢"}
-        st.markdown(f"# {icon_map.get(info.get('type'), '📄')}")
-    with col2:
+    # 1. Header with Type Icon
+    icon_map = {
+        "Concept": "💡", "Standard": "📜", "Role": "👤", 
+        "Process": "🔄", "Tool": "💻", "Organization": "🏢"
+    }
+    type_icon = icon_map.get(info.get('type'), '📄')
+    
+    # Layout: Icon Left, Title Right
+    c1, c2 = st.columns([1, 5])
+    with c1:
+        st.markdown(f"<h1 style='text-align: center;'>{type_icon}</h1>", unsafe_allow_html=True)
+    with c2:
         st.subheader(info.get('label', node_id))
-        st.caption(f"Type: {info.get('type', 'General')} | Importance: {info.get('importance', 5)}/10")
+        st.caption(f"Category: {info.get('type', 'General')} | Relevance: {info.get('importance', 5)}/10")
 
     st.markdown("---")
-    st.markdown(f"### {info.get('desc', 'No definition available.')}")
+    
+    # 2. Definition Content
+    st.info(info.get('desc', 'No definition available.'))
+    
     st.markdown("---")
     
-    # The "Isolation" Feature
-    if st.button(f"🔭 Isolate '{info.get('label')}' & Connections"):
+    # 3. Action Buttons
+    if st.button(f"🔭 Isolate '{info.get('label')}' Connections", use_container_width=True):
         st.session_state['focus_node'] = node_id
         st.rerun()
 
-# --- 4. DATA PROCESSING ---
+# --- 4. PROCESSING ENGINE ---
 if st.session_state.get('trigger_gen') and uploaded_files:
     full_text = ""
-    with st.spinner("Processing Documents..."):
+    with st.spinner("Reading documents..."):
         for pdf in uploaded_files:
             try:
                 reader = PdfReader(pdf)
@@ -88,29 +119,30 @@ if st.session_state.get('trigger_gen') and uploaded_files:
             except: pass
 
     if full_text:
-        with st.spinner("AI Architect is structuring the ontology..."):
+        with st.spinner("Structuring Knowledge Ontology..."):
             try:
                 model = genai.GenerativeModel('gemini-2.0-flash')
                 
+                # Prompt optimized for correct Ontology & Metrics
                 prompt = f"""
-                Act as a Senior BIM Ontologist. Extract a Knowledge Graph from the text.
+                You are a Senior Data Architect. Create a Knowledge Graph from the text.
                 
-                1. ONTOLOGY (Classify nodes strictly):
-                   - "Concept" (Theoretical ideas, terms)
-                   - "Standard" (ISO, PAS, Guidelines)
-                   - "Role" (Job titles, Stakeholders)
-                   - "Process" (Workflows, Actions)
-                   - "Tool" (Software, Hardware)
-                   - "Organization" (Companies, Institutes)
+                1. ONTOLOGY (Classify every node):
+                   - "Concept" (Abstract ideas)
+                   - "Standard" (ISO, protocols)
+                   - "Role" (People, titles)
+                   - "Process" (Actions, workflows)
+                   - "Tool" (Software, hardware)
+                   - "Organization" (Companies, bodies)
 
                 2. METRICS:
-                   - Node "importance": 1 to 30 (Frequency/Relevance)
-                   - Edge "strength": 1 to 5 (Connection strength)
+                   - "importance": 1 (Low) to 10 (High)
+                   - "strength": 1 (Weak) to 5 (Strong)
 
                 3. OUTPUT: JSON ONLY.
                 {{
-                  "nodes": [ {{"id": "UniqueName", "label": "Short Label", "type": "Concept", "importance": 10, "desc": "Definition"}} ],
-                  "edges": [ {{"source": "ID", "target": "ID", "label": "verb", "strength": 3}} ]
+                  "nodes": [ {{"id": "Name", "label": "Short Name", "type": "Concept", "importance": 8, "desc": "One sentence definition."}} ],
+                  "edges": [ {{"source": "Name", "target": "Name", "label": "verb", "strength": 3}} ]
                 }}
                 
                 Text: {full_text[:90000]}
@@ -125,23 +157,24 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                 lookup = {}
                 existing = set()
                 
-                # --- SHAPE & COLOR MAPPING ---
-                # Squares, Triangles, Diamonds, Hexagons (Octagon proxy), Dots
+                # --- PASTEL PALETTE (70% Opacity) ---
+                # Format: rgba(r, g, b, 0.7)
                 ontology_style = {
-                    "Concept":      {"shape": "dot",      "color": "#FF6F61"}, # Circle (Coral)
-                    "Standard":     {"shape": "square",   "color": "#88B04B"}, # Square (Green)
-                    "Role":         {"shape": "triangle", "color": "#EFC050"}, # Triangle (Yellow)
-                    "Process":      {"shape": "diamond",  "color": "#6B5B95"}, # Diamond (Purple)
-                    "Tool":         {"shape": "hexagon",  "color": "#92A8D1"}, # Hexagon (Blue)
-                    "Organization": {"shape": "star",     "color": "#D65076"}  # Star (Pink)
+                    "Concept":      {"shape": "dot",      "color": "rgba(255, 111, 97, 0.7)"},   # Coral
+                    "Standard":     {"shape": "square",   "color": "rgba(136, 176, 75, 0.7)"},   # Green
+                    "Role":         {"shape": "triangle", "color": "rgba(239, 192, 80, 0.7)"},   # Yellow
+                    "Process":      {"shape": "diamond",  "color": "rgba(107, 91, 149, 0.7)"},   # Purple
+                    "Tool":         {"shape": "hexagon",  "color": "rgba(146, 168, 209, 0.7)"},  # Blue
+                    "Organization": {"shape": "star",     "color": "rgba(214, 80, 118, 0.7)"}    # Pink
                 }
 
                 for n in data.get('nodes', []):
                     if n['id'] not in existing:
-                        style = ontology_style.get(n.get('type'), {"shape": "dot", "color": "#999"})
+                        style = ontology_style.get(n.get('type'), {"shape": "dot", "color": "rgba(200,200,200,0.7)"})
                         
-                        # Scale size (Base 15 + Importance)
-                        size = 15 + (n.get('importance', 5) * 1.5)
+                        # Size calculation (Base 20 + Importance)
+                        # We limit the max size to prevent "giant distracting bubbles"
+                        size = 20 + (n.get('importance', 5) * 2)
                         
                         nodes.append(Node(
                             id=n['id'], 
@@ -149,7 +182,9 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                             size=size,
                             shape=style["shape"],
                             color=style["color"],
-                            title="Click for details" # Hover text
+                            borderWidth=0,        # <--- NO BORDER
+                            borderWidthSelected=2,# Slight border only when selected
+                            title=n.get('desc')   # Tooltip
                         ))
                         
                         lookup[n['id']] = n
@@ -157,14 +192,12 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                 
                 for e in data.get('edges', []):
                     if e['source'] in existing and e['target'] in existing:
-                        # Width based on strength
-                        width = e.get('strength', 1) * 1.5
                         edges.append(Edge(
                             source=e['source'], 
                             target=e['target'], 
                             label=e['label'],
-                            width=width,
-                            color="#d3d3d3" # Light grey organic lines
+                            width=e.get('strength', 1), # Width based on strength
+                            color="rgba(180,180,180,0.5)" # Organic light grey lines
                         ))
                 
                 st.session_state['graph_data'] = {'nodes': nodes, 'edges': edges}
@@ -173,59 +206,67 @@ if st.session_state.get('trigger_gen') and uploaded_files:
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# --- 5. VISUALIZATION LOGIC (WITH ISOLATION) ---
+# --- 5. VISUALIZATION LOGIC ---
 if st.session_state['graph_data']:
     
-    # A. Determine which nodes to show (All vs Isolated)
-    display_nodes = []
-    display_edges = []
-    
+    # Filter for Focus Mode
     if st.session_state['focus_node']:
-        # Isolation Mode: Find neighbors
         target = st.session_state['focus_node']
-        neighbor_ids = set()
-        neighbor_ids.add(target)
+        subset_nodes = []
+        subset_edges = []
+        allowed_ids = {target}
         
-        # 1. Find Edges connected to target
+        # 1. Find neighbors
         for e in st.session_state['graph_data']['edges']:
-            if e.source == target or e.target == target:
-                display_edges.append(e)
-                neighbor_ids.add(e.source)
-                neighbor_ids.add(e.target)
+            if e.source == target:
+                allowed_ids.add(e.target)
+                subset_edges.append(e)
+            elif e.target == target:
+                allowed_ids.add(e.source)
+                subset_edges.append(e)
         
-        # 2. Filter Nodes
+        # 2. Add nodes
         for n in st.session_state['graph_data']['nodes']:
-            if n.id in neighbor_ids:
-                display_nodes.append(n)
-                
-        st.info(f"🔭 Focused on: {target} (Double-click disabled in focus mode)")
+            if n.id in allowed_ids:
+                subset_nodes.append(n)
         
+        current_nodes = subset_nodes
+        current_edges = subset_edges
+        st.info(f"🔭 Focused on: {target}")
     else:
-        # Show All
-        display_nodes = st.session_state['graph_data']['nodes']
-        display_edges = st.session_state['graph_data']['edges']
+        current_nodes = st.session_state['graph_data']['nodes']
+        current_edges = st.session_state['graph_data']['edges']
 
-    # B. Configuration
+    # --- CONFIGURATION (The "Organic" Physics) ---
     config = Config(
         width=1200, 
-        height=700, 
+        height=750, 
         directed=True, 
         physics=True, 
         hierarchy=False,
-        # Interaction settings
         nodeHighlightBehavior=True, 
         highlightColor="#F7A7A6",
         collapsible=False,
-        # Physics settings for "Organic" feel
-        graphviz_layout=False,
-        solver='forceAtlas2Based', # Good for organic clustering
-        gravity=grav,
-        smooth={'enabled': True, 'type': 'continuous', 'roundness': 0.5} # Curved lines
+        
+        # ORGANIC PHYSICS SETTINGS
+        # We use 'forceAtlas2Based' which creates that nice organic web look
+        solver='forceAtlas2Based',
+        forceAtlas2Based={
+            "gravitationalConstant": -100, # Repulsion
+            "centralGravity": 0.005,
+            "springLength": spacing,       # <--- CONNECTED TO SLIDER
+            "springConstant": 0.05,
+            "damping": 0.4
+        },
+        # Smooth Curved Lines
+        edges={
+            "smooth": {"type": "continuous", "roundness": 0.5} 
+        }
     )
 
-    # C. Render
-    clicked_id = agraph(nodes=display_nodes, edges=display_edges, config=config)
+    # Render
+    clicked_id = agraph(nodes=current_nodes, edges=current_edges, config=config)
     
-    # D. Handle Click -> Open Dialog
+    # Handle Click -> Trigger Elegant Dialog
     if clicked_id:
         show_node_details(clicked_id)
