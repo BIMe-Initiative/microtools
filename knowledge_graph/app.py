@@ -1,29 +1,46 @@
 import streamlit as st
 import google.generativeai as genai
+import sys
 
-st.title("🛠️ Connection Diagnostics")
+st.title("🕵️ Model Finder")
 
-# 1. Check if Key exists
+# 1. Check Library Version
+st.write(f"**Python Version:** {sys.version.split()[0]}")
+try:
+    st.write(f"**Google Library Version:** {genai.__version__}")
+except:
+    st.write("**Google Library Version:** Unknown (Old)")
+
+# 2. Check Key
 try:
     key = st.secrets["GOOGLE_API_KEY"]
-    st.write(f"✅ Key found (Starts with: {key[:5]}...)")
-except:
-    st.error("❌ Key NOT found in secrets.")
+    genai.configure(api_key=key)
+    st.success("✅ Key Configured")
+except Exception as e:
+    st.error(f"❌ Key Error: {e}")
     st.stop()
 
-# 2. Test the Connection
-if st.button("Test Connection Now"):
+# 3. List Available Models
+if st.button("List Available Models"):
     try:
-        genai.configure(api_key=key)
-        # We use 'gemini-1.5-flash' because it is the standard now.
-        model = genai.GenerativeModel('gemini-1.5-flash')
+        st.info("Asking Google what models are available...")
         
-        st.info("Attempting to contact Google...")
-        response = model.generate_content("Reply with the word 'Success'")
+        # Get list of models
+        models_iter = genai.list_models()
         
-        st.success(f"🎉 IT WORKED! Google said: {response.text}")
+        found_any = False
+        st.write("---")
+        st.subheader("Available Models:")
         
+        for m in models_iter:
+            # We only care about models that can generate text
+            if 'generateContent' in m.supported_generation_methods:
+                st.code(m.name) # This prints the exact ID we need
+                found_any = True
+                
+        if not found_any:
+            st.warning("No text-generation models found. Check API Key permissions.")
+            
     except Exception as e:
-        st.error("❌ CONNECTION FAILED")
-        st.write("Here is the exact error:")
-        st.code(e) # This will print the full error message clearly
+        st.error("❌ Listing Failed")
+        st.code(e)
