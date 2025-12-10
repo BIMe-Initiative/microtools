@@ -1,46 +1,62 @@
 import streamlit as st
+from streamlit_agraph import agraph, Node, Edge, Config
 import google.generativeai as genai
-import sys
+import json
 
-st.title("🕵️ Model Finder")
+# Page Config
+st.set_page_config(layout="wide")
+st.title("🔗 BIMe Knowledge Graph Generator")
 
-# 1. Check Library Version
-st.write(f"**Python Version:** {sys.version.split()[0]}")
+# 1. Setup API Key
 try:
-    st.write(f"**Google Library Version:** {genai.__version__}")
+    genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 except:
-    st.write("**Google Library Version:** Unknown (Old)")
+    st.error("API Key not found. Please set GOOGLE_API_KEY in Streamlit Secrets.")
 
-# 2. Check Key
-try:
-    key = st.secrets["GOOGLE_API_KEY"]
-    genai.configure(api_key=key)
-    st.success("✅ Key Configured")
-except Exception as e:
-    st.error(f"❌ Key Error: {e}")
-    st.stop()
+# 2. Sidebar Input
+with st.sidebar:
+    st.header("Input Data")
+    text_input = st.text_area("Paste text from a PDF, Post, or Page:", height=300)
+    generate_btn = st.button("Generate Graph", type="primary")
 
-# 3. List Available Models
-if st.button("List Available Models"):
-    try:
-        st.info("Asking Google what models are available...")
-        
-        # Get list of models
-        models_iter = genai.list_models()
-        
-        found_any = False
-        st.write("---")
-        st.subheader("Available Models:")
-        
-        for m in models_iter:
-            # We only care about models that can generate text
-            if 'generateContent' in m.supported_generation_methods:
-                st.code(m.name) # This prints the exact ID we need
-                found_any = True
-                
-        if not found_any:
-            st.warning("No text-generation models found. Check API Key permissions.")
+# 3. Main Logic
+if generate_btn and text_input:
+    with st.spinner("Analyzing text and mapping connections..."):
+        try:
+            # Connect to Gemini (Using the model confirmed in your list)
+            model = genai.GenerativeModel('gemini-2.0-flash')
             
-    except Exception as e:
-        st.error("❌ Listing Failed")
-        st.code(e)
+            # The Prompt for Gemini
+            prompt = f"""
+            You are an expert Data Architect. Analyze the text below.
+            Identify key concepts (Nodes) and how they relate (Edges).
+            
+            Rules:
+            1. Limit to the top 15 most important nodes.
+            2. Output STRICTLY valid JSON.
+            3. Use this format:
+            {{
+              "nodes": [ {{"id": "Exact Name", "label": "Exact Name", "color": "#FF6F61"}} ],
+              "edges": [ {{"source": "Exact Name", "target": "Exact Name", "label": "relationship_type"}} ]
+            }}
+            
+            Text to analyze:
+            {text_input}
+            """
+            
+            response = model.generate_content(prompt)
+            
+            # Clean the response (remove Markdown formatting if Gemini adds it)
+            clean_json = response.text.replace('```json', '').replace('```', '').strip()
+            data = json.loads(clean_json)
+            
+            # Prepare Graph Data
+            nodes = []
+            edges = []
+            
+            # Helper set to ensure we don't add duplicate nodes
+            existing_nodes = set()
+
+            for n in data.get('nodes', []):
+                if n['id'] not in existing_nodes:
+                    nodes.append(Node(id=n['id'], label=n['label'], size=20, color=n.get
