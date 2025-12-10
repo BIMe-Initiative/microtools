@@ -5,70 +5,80 @@ import json
 from pypdf import PdfReader
 
 # Page Config
-st.set_page_config(layout="wide")
-st.title("🔗 BIMe Knowledge Graph Generator")
+st.set_page_config(layout="wide", page_title="BIMe Graph")
+st.title("🔗 BIMe Interactive Knowledge Graph")
 
-# 1. Setup API Key
+# --- 1. SETUP & MEMORY ---
+# We use Session State to keep the graph on screen after you click things
+if 'graph_data' not in st.session_state:
+    st.session_state['graph_data'] = None
+
 try:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 except:
-    st.error("API Key not found. Please set GOOGLE_API_KEY in Streamlit Secrets.")
+    st.error("API Key missing. Check Streamlit Secrets.")
 
-# 2. Sidebar Input
+# --- 2. SIDEBAR (CONTROLS) ---
 with st.sidebar:
-    st.header("Input Data")
+    st.header("🗂️ Data Sources")
     
-    # Option A: Paste Text
-    text_input = st.text_area("Option 1: Paste Text", height=150)
+    # Allow Multiple Files
+    uploaded_files = st.file_uploader(
+        "Upload PDF documents:", 
+        type=["pdf"], 
+        accept_multiple_files=True
+    )
     
-    st.write("--- OR ---")
+    st.write("---")
+    # Let user control complexity
+    node_limit = st.slider("Max Complexity (Nodes)", min_value=10, max_value=60, value=30)
     
-    # Option B: Upload PDF
-    uploaded_file = st.file_uploader("Option 2: Upload a PDF", type=["pdf"])
+    generate_btn = st.button("Generate / Update Graph", type="primary")
     
-    generate_btn = st.button("Generate Graph", type="primary")
+    if st.button("Clear Graph"):
+        st.session_state['graph_data'] = None
+        st.rerun()
 
-# 3. Main Logic
+# --- 3. PROCESSING ENGINE ---
 if generate_btn:
-    # Determine source of text
-    final_text = ""
+    full_text = ""
     
-    if uploaded_file is not None:
-        with st.spinner("Reading PDF..."):
-            try:
-                reader = PdfReader(uploaded_file)
-                for page in reader.pages:
-                    final_text += page.extract_text() + "\n"
-            except Exception as e:
-                st.error(f"Error reading PDF: {e}")
-    elif text_input:
-        final_text = text_input
+    # A. Process PDFs
+    if uploaded_files:
+        with st.spinner(f"Reading {len(uploaded_files)} files..."):
+            for pdf_file in uploaded_files:
+                try:
+                    reader = PdfReader(pdf_file)
+                    for page in reader.pages:
+                        full_text += page.extract_text() + "\n"
+                except Exception as e:
+                    st.error(f"Error reading {pdf_file.name}: {e}")
     
-    # If we have text, send to Gemini
-    if final_text:
-        with st.spinner("Analyzing text and mapping connections..."):
+    # B. Send to Gemini
+    if full_text:
+        with st.spinner("Gemini is mapping the connections..."):
             try:
-                # Connect to Gemini 2.0 Flash
+                # Use the powerful 2.0 Flash model
                 model = genai.GenerativeModel('gemini-2.0-flash')
                 
-                # The Prompt
                 prompt = f"""
-                You are an expert Data Architect. Analyze the text below.
-                Identify key concepts (Nodes) and how they relate (Edges).
+                You are a Knowledge Graph Architect. Analyze the provided text and extract a structured graph.
+                
+                GOAL: Create a hierarchical view of the concepts.
                 
                 Rules:
-                1. Limit to the top 20 most important nodes.
-                2. Output STRICTLY valid JSON.
-                3. Use this format:
+                1. Identify up to {node_limit} key concepts (Nodes).
+                2. Identify relationships (Edges) with clear verbs (e.g., "contains", "requires", "defines").
+                3. STRICTLY output valid JSON.
+                4. Format:
                 {{
-                  "nodes": [ {{"id": "Exact Name", "label": "Exact Name", "color": "#FF6F61"}} ],
-                  "edges": [ {{"source": "Exact Name", "target": "Exact Name", "label": "relationship_type"}} ]
+                  "nodes": [ {{"id": "Concept Name", "label": "Concept Name", "group": "CategoryName"}} ],
+                  "edges": [ {{"source": "Concept Name", "target": "Concept Name", "label": "relationship"}} ]
                 }}
                 
                 Text to analyze:
-                {final_text[:50000]} 
+                {full_text[:80000]}
                 """
-                # Note: We limit text to 50k chars to keep it fast, though Flash can handle more.
                 
                 response = model.generate_content(prompt)
                 
@@ -76,29 +86,62 @@ if generate_btn:
                 clean_json = response.text.replace('```json', '').replace('```', '').strip()
                 data = json.loads(clean_json)
                 
-                # Build Graph
+                # --- C. BUILD GRAPH STRUCTURE ---
                 nodes = []
                 edges = []
-                existing_nodes = set()
-
-                for n in data.get('nodes', []):
-                    if n['id'] not in existing_nodes:
-                        nodes.append(Node(id=n['id'], label=n['label'], size=20, color=n.get('color', '#FF6F61')))
-                        existing_nodes.add(n['id'])
+                existing_ids = set()
+                
+                # Colors for different types of nodes (Visual Depth)
+                colors = ["#FF6F61", "#6B5B95", "#88B04B", "#F7CAC9", "#92A8D1"]
+                
+                for i, n in enumerate(data.get('nodes', [])):
+                    if n['id'] not in existing_ids:
+                        # Assign color based on group if available, or random
+                        nodes.append(Node(
+                            id=n['id'], 
+                            label=n['label'], 
+                            size=25, 
+                            color="#FF6F61" # You can make this dynamic later
+                        ))
+                        existing_ids.add(n['id'])
                 
                 for e in data.get('edges', []):
-                    if e['source'] in existing_nodes and e['target'] in existing_nodes:
-                        edges.append(Edge(source=e['source'], target=e['target'], label=e['label']))
+                    if e['source'] in existing_ids and e['target'] in existing_ids:
+                        edges.append(Edge(
+                            source=e['source'], 
+                            target=e['target'], 
+                            label=e['label']
+                        ))
                 
-                # Config
-                config = Config(width=900, height=700, directed=True, physics=True, hierarchical=False, nodeHighlightBehavior=True, highlightColor="#F7A7A6")
-                
-                # Render
-                st.success(f"Generated {len(nodes)} nodes and {len(edges)} connections from your content.")
-                return_value = agraph(nodes=nodes, edges=edges, config=config)
+                # Save to Memory (Session State)
+                st.session_state['graph_data'] = {'nodes': nodes, 'edges': edges}
                 
             except Exception as e:
-                st.error(f"An error occurred: {e}")
+                st.error(f"Analysis Failed: {e}")
                 
     else:
-        st.warning("Please paste text or upload a PDF first!")
+        st.warning("Please upload at least one PDF.")
+
+# --- 4. VISUALIZATION (READS FROM MEMORY) ---
+if st.session_state['graph_data']:
+    data = st.session_state['graph_data']
+    
+    st.success(f"Visualizing {len(data['nodes'])} nodes from your documents.")
+    
+    # Physics Config - "hierarchical: True" helps show depth if the data supports it
+    config = Config(
+        width=1000, 
+        height=800, 
+        directed=True, 
+        physics=True, 
+        hierarchical=False, # Set to True if you want a strict Tree view
+        nodeHighlightBehavior=True, 
+        highlightColor="#F7A7A6"
+    )
+    
+    # Render the graph
+    # We ignore the return value to prevent re-running loops
+    agraph(nodes=data['nodes'], edges=data['edges'], config=config)
+    
+else:
+    st.info("Upload files and click Generate to see the network.")
