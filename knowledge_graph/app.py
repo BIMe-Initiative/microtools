@@ -4,92 +4,116 @@ import google.generativeai as genai
 import json
 from pypdf import PdfReader
 
-# Page Config
-st.set_page_config(layout="wide", page_title="BIMe Smart Graph")
-st.title("🧠 BIMe Interactive Knowledge Base")
+# --- PAGE CONFIG ---
+st.set_page_config(layout="wide", page_title="BIMe Knowledge Base")
 
-# --- 1. SETUP & MEMORY ---
+# Custom CSS to make the "Bubble" look elegant
+st.markdown("""
+<style>
+    /* Make the top header cleaner */
+    .stAppHeader {display:none;}
+    /* Custom styling for the details dialog */
+    div[data-testid="stMarkdownContainer"] p {font-size: 1.1rem;}
+</style>
+""", unsafe_allow_html=True)
+
+st.title("💠 BIMe Interactive Knowledge Graph")
+
+# --- 1. SETUP & STATE ---
 if 'graph_data' not in st.session_state:
     st.session_state['graph_data'] = None
 if 'lookup_map' not in st.session_state:
-    st.session_state['lookup_map'] = {} # Stores descriptions for quick access
+    st.session_state['lookup_map'] = {}
+if 'focus_node' not in st.session_state:
+    st.session_state['focus_node'] = None  # For isolation mode
 
 try:
     genai.configure(api_key=st.secrets["GOOGLE_API_KEY"])
 except:
     st.error("API Key missing. Check Streamlit Secrets.")
 
-# --- 2. SIDEBAR (CONTROLS & DETAILS) ---
+# --- 2. SIDEBAR CONTROLS ---
 with st.sidebar:
-    # A. The Detail View (Shows UP TOP when you click a node)
-    st.header("🔍 Node Details")
+    st.header("🎛️ Graph Controls")
     
-    # We use a placeholder so we can update this area dynamically
-    details_placeholder = st.empty()
+    uploaded_files = st.file_uploader("Upload Sources (PDF):", type=["pdf"], accept_multiple_files=True)
     
-    st.write("---")
-    st.header("🗂️ Data Input")
+    # Physics Controls
+    st.subheader("Physics Settings")
+    grav = st.slider("Gravity", -1000, -5000, -2500)
     
-    uploaded_files = st.file_uploader(
-        "Upload PDF documents:", 
-        type=["pdf"], 
-        accept_multiple_files=True
-    )
+    st.divider()
     
-    node_limit = st.slider("Complexity", 10, 50, 25)
-    
-    if st.button("Generate Smart Graph", type="primary"):
-        # Trigger the generation logic below
+    if st.button("Generate New Graph", type="primary"):
         st.session_state['trigger_gen'] = True
-    else:
-        st.session_state['trigger_gen'] = False
-
-    if st.button("Clear Data"):
-        st.session_state['graph_data'] = None
-        st.session_state['lookup_map'] = {}
+        st.session_state['focus_node'] = None # Reset isolation
+    
+    if st.button("Reset View (Show All)"):
+        st.session_state['focus_node'] = None
         st.rerun()
 
-# --- 3. PROCESSING ENGINE ---
+# --- 3. DIALOG FUNCTION (The "Elegant Bubble") ---
+@st.dialog("Details & Actions")
+def show_node_details(node_id):
+    info = st.session_state['lookup_map'].get(node_id, {})
+    
+    # Header with Icon
+    col1, col2 = st.columns([1, 4])
+    with col1:
+        # Display a large emoji/icon based on type
+        icon_map = {"Concept": "💡", "Standard": "📜", "Role": "👤", "Process": "🔄", "Tool": "💻", "Organization": "🏢"}
+        st.markdown(f"# {icon_map.get(info.get('type'), '📄')}")
+    with col2:
+        st.subheader(info.get('label', node_id))
+        st.caption(f"Type: {info.get('type', 'General')} | Importance: {info.get('importance', 5)}/10")
+
+    st.markdown("---")
+    st.markdown(f"### {info.get('desc', 'No definition available.')}")
+    st.markdown("---")
+    
+    # The "Isolation" Feature
+    if st.button(f"🔭 Isolate '{info.get('label')}' & Connections"):
+        st.session_state['focus_node'] = node_id
+        st.rerun()
+
+# --- 4. DATA PROCESSING ---
 if st.session_state.get('trigger_gen') and uploaded_files:
     full_text = ""
-    with st.spinner(f"Reading {len(uploaded_files)} files..."):
-        for pdf_file in uploaded_files:
+    with st.spinner("Processing Documents..."):
+        for pdf in uploaded_files:
             try:
-                reader = PdfReader(pdf_file)
+                reader = PdfReader(pdf)
                 for page in reader.pages:
                     full_text += page.extract_text() + "\n"
-            except:
-                pass
+            except: pass
 
     if full_text:
-        with st.spinner("Gemini is extracting definitions and structure..."):
+        with st.spinner("AI Architect is structuring the ontology..."):
             try:
                 model = genai.GenerativeModel('gemini-2.0-flash')
                 
-                # UPDATED PROMPT: Asking for 'type' and 'description'
                 prompt = f"""
-                Analyze the text and extract a Knowledge Graph.
+                Act as a Senior BIM Ontologist. Extract a Knowledge Graph from the text.
                 
-                Rules:
-                1. Identify top {node_limit} concepts.
-                2. For each node, determine its TYPE (Concept, Organization, Standard, Person, or Tool).
-                3. For each node, write a 1-sentence DEFINITION based on the text.
-                4. Output STRICT JSON format.
-                
-                Format:
+                1. ONTOLOGY (Classify nodes strictly):
+                   - "Concept" (Theoretical ideas, terms)
+                   - "Standard" (ISO, PAS, Guidelines)
+                   - "Role" (Job titles, Stakeholders)
+                   - "Process" (Workflows, Actions)
+                   - "Tool" (Software, Hardware)
+                   - "Organization" (Companies, Institutes)
+
+                2. METRICS:
+                   - Node "importance": 1 to 30 (Frequency/Relevance)
+                   - Edge "strength": 1 to 5 (Connection strength)
+
+                3. OUTPUT: JSON ONLY.
                 {{
-                  "nodes": [ 
-                    {{
-                        "id": "Name", 
-                        "label": "Name", 
-                        "type": "Concept", 
-                        "description": "Definition goes here..."
-                    }} 
-                  ],
-                  "edges": [ {{"source": "Name", "target": "Name", "label": "verb"}} ]
+                  "nodes": [ {{"id": "UniqueName", "label": "Short Label", "type": "Concept", "importance": 10, "desc": "Definition"}} ],
+                  "edges": [ {{"source": "ID", "target": "ID", "label": "verb", "strength": 3}} ]
                 }}
                 
-                Text: {full_text[:80000]}
+                Text: {full_text[:90000]}
                 """
                 
                 response = model.generate_content(prompt)
@@ -98,44 +122,50 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                 
                 nodes = []
                 edges = []
-                lookup = {} # Fast dictionary to find descriptions
+                lookup = {}
                 existing = set()
                 
-                # Color Palette for Types
-                type_colors = {
-                    "Concept": "#FF6F61",      # Coral Red
-                    "Organization": "#6B5B95", # Purple
-                    "Standard": "#88B04B",     # Green
-                    "Person": "#F7CAC9",       # Pink
-                    "Tool": "#92A8D1",         # Blue
-                    "Other": "#955251"
+                # --- SHAPE & COLOR MAPPING ---
+                # Squares, Triangles, Diamonds, Hexagons (Octagon proxy), Dots
+                ontology_style = {
+                    "Concept":      {"shape": "dot",      "color": "#FF6F61"}, # Circle (Coral)
+                    "Standard":     {"shape": "square",   "color": "#88B04B"}, # Square (Green)
+                    "Role":         {"shape": "triangle", "color": "#EFC050"}, # Triangle (Yellow)
+                    "Process":      {"shape": "diamond",  "color": "#6B5B95"}, # Diamond (Purple)
+                    "Tool":         {"shape": "hexagon",  "color": "#92A8D1"}, # Hexagon (Blue)
+                    "Organization": {"shape": "star",     "color": "#D65076"}  # Star (Pink)
                 }
 
                 for n in data.get('nodes', []):
                     if n['id'] not in existing:
-                        # Pick color based on type
-                        node_color = type_colors.get(n.get('type', 'Other'), "#955251")
+                        style = ontology_style.get(n.get('type'), {"shape": "dot", "color": "#999"})
+                        
+                        # Scale size (Base 15 + Importance)
+                        size = 15 + (n.get('importance', 5) * 1.5)
                         
                         nodes.append(Node(
                             id=n['id'], 
                             label=n['label'], 
-                            size=25, 
-                            color=node_color,
-                            # We store the description in the 'title' field which shows on hover
-                            title=n.get('description', '') 
+                            size=size,
+                            shape=style["shape"],
+                            color=style["color"],
+                            title="Click for details" # Hover text
                         ))
                         
-                        # Store details in our lookup map
-                        lookup[n['id']] = {
-                            "desc": n.get('description', 'No definition found.'),
-                            "type": n.get('type', 'General')
-                        }
-                        
+                        lookup[n['id']] = n
                         existing.add(n['id'])
                 
                 for e in data.get('edges', []):
                     if e['source'] in existing and e['target'] in existing:
-                        edges.append(Edge(source=e['source'], target=e['target'], label=e['label']))
+                        # Width based on strength
+                        width = e.get('strength', 1) * 1.5
+                        edges.append(Edge(
+                            source=e['source'], 
+                            target=e['target'], 
+                            label=e['label'],
+                            width=width,
+                            color="#d3d3d3" # Light grey organic lines
+                        ))
                 
                 st.session_state['graph_data'] = {'nodes': nodes, 'edges': edges}
                 st.session_state['lookup_map'] = lookup
@@ -143,34 +173,59 @@ if st.session_state.get('trigger_gen') and uploaded_files:
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# --- 4. VISUALIZATION & INTERACTION ---
+# --- 5. VISUALIZATION LOGIC (WITH ISOLATION) ---
 if st.session_state['graph_data']:
     
-    # Draw the graph and CAPTURE the clicked node ID
-    # agraph returns the 'id' of the node you click
-    clicked_node_id = agraph(
-        nodes=st.session_state['graph_data']['nodes'], 
-        edges=st.session_state['graph_data']['edges'], 
-        config=Config(
-            width=1000, 
-            height=700, 
-            directed=True, 
-            physics=True, 
-            nodeHighlightBehavior=True, 
-            highlightColor="#F7A7A6"
-        )
-    )
+    # A. Determine which nodes to show (All vs Isolated)
+    display_nodes = []
+    display_edges = []
     
-    # --- 5. HANDLE THE CLICK ---
-    # If the user clicked something, look it up in our map
-    if clicked_node_id and clicked_node_id in st.session_state['lookup_map']:
-        info = st.session_state['lookup_map'][clicked_node_id]
+    if st.session_state['focus_node']:
+        # Isolation Mode: Find neighbors
+        target = st.session_state['focus_node']
+        neighbor_ids = set()
+        neighbor_ids.add(target)
         
-        # Display nicely in the sidebar
-        with details_placeholder.container():
-            st.info(f"**Selected:** {clicked_node_id}")
-            st.write(f"**Type:** {info['type']}")
-            st.write(f"**Definition:** {info['desc']}")
-            
-    elif not clicked_node_id:
-        details_placeholder.info("👈 Click a node to see its definition.")
+        # 1. Find Edges connected to target
+        for e in st.session_state['graph_data']['edges']:
+            if e.source == target or e.target == target:
+                display_edges.append(e)
+                neighbor_ids.add(e.source)
+                neighbor_ids.add(e.target)
+        
+        # 2. Filter Nodes
+        for n in st.session_state['graph_data']['nodes']:
+            if n.id in neighbor_ids:
+                display_nodes.append(n)
+                
+        st.info(f"🔭 Focused on: {target} (Double-click disabled in focus mode)")
+        
+    else:
+        # Show All
+        display_nodes = st.session_state['graph_data']['nodes']
+        display_edges = st.session_state['graph_data']['edges']
+
+    # B. Configuration
+    config = Config(
+        width=1200, 
+        height=700, 
+        directed=True, 
+        physics=True, 
+        hierarchy=False,
+        # Interaction settings
+        nodeHighlightBehavior=True, 
+        highlightColor="#F7A7A6",
+        collapsible=False,
+        # Physics settings for "Organic" feel
+        graphviz_layout=False,
+        solver='forceAtlas2Based', # Good for organic clustering
+        gravity=grav,
+        smooth={'enabled': True, 'type': 'continuous', 'roundness': 0.5} # Curved lines
+    )
+
+    # C. Render
+    clicked_id = agraph(nodes=display_nodes, edges=display_edges, config=config)
+    
+    # D. Handle Click -> Open Dialog
+    if clicked_id:
+        show_node_details(clicked_id)
