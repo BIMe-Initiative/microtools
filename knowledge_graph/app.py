@@ -16,13 +16,22 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- 1. LOAD DATA ---
+# --- 1. LOAD DATA ---
 @st.cache_data
 def load_graph_data():
-    """Loads the pre-built JSON file."""
-    if os.path.exists("knowledge_graph.json"):
-        with open("knowledge_graph.json", "r") as f:
+    """Loads the pre-built JSON file relative to this script."""
+    # Get the folder where this app.py file lives
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    # Build the full path to the json file
+    json_path = os.path.join(current_dir, "knowledge_graph.json")
+    
+    if os.path.exists(json_path):
+        with open(json_path, "r") as f:
             return json.load(f)
-    return None
+    else:
+        # Debug info: Print where we looked so we know if it fails again
+        st.error(f"File not found. Looked at: {json_path}")
+        return None
 
 master_data = load_graph_data()
 
