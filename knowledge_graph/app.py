@@ -6,10 +6,10 @@ from pypdf import PdfReader
 
 # --- PAGE CONFIG ---
 st.set_page_config(layout="wide", page_title="BIMe Knowledge Base")
-
 st.title("💠 BIMe Interactive Knowledge Graph")
 
-# --- 1. SETUP & STATE ---
+# --- 1. SETUP & STATE MANAGEMENT ---
+# We initialize state variables to persist data across re-runs (clicks)
 if 'graph_data' not in st.session_state:
     st.session_state['graph_data'] = None
 if 'lookup_map' not in st.session_state:
@@ -22,44 +22,44 @@ try:
 except:
     st.error("API Key missing. Please check Streamlit Secrets.")
 
-# --- 2. SIDEBAR CONTROLS ---
+# --- 2. SIDEBAR (The Control Center) ---
 with st.sidebar:
     st.header("🎛️ Graph Controls")
     
-    # Input
     uploaded_files = st.file_uploader("Upload Sources (PDF):", type=["pdf"], accept_multiple_files=True)
     
     st.divider()
     
-    # THE 3 SLIDERS
-    st.subheader("Complexity Settings")
-    max_concepts = st.slider("Key Concepts (Parents)", 5, 30, 15, help("How many main topics to find."))
-    child_density = st.slider("Detail Level (Children)", 1, 5, 3, help("How many sub-nodes per concept."))
-    
-    st.subheader("Visual Layout")
-    spacing = st.slider("Node Spacing", 100, 600, 300, help("Physical distance between nodes."))
-    
-    st.divider()
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("Generate Graph", type="primary"):
-            st.session_state['trigger_gen'] = True
-            st.session_state['selected_node_id'] = None
-    with col2:
-        if st.button("Clear"):
-            st.session_state['graph_data'] = None
-            st.session_state['lookup_map'] = {}
-            st.rerun()
+    # --- FORM START ---
+    # This prevents the app from running until you click "Update Graph"
+    with st.form("graph_settings_form"):
+        st.subheader("Complexity Settings")
+        # Slider 1: Parent Concepts
+        max_concepts = st.slider("Key Concepts (Parents)", 5, 30, 15)
+        # Slider 2: Children
+        child_density = st.slider("Detail Level (Children)", 1, 5, 3)
+        
+        st.subheader("Visual Layout")
+        # Slider 3: Spacing
+        spacing = st.slider("Node Spacing", 100, 600, 300)
+        
+        # The Trigger Button
+        submitted = st.form_submit_button("Generate / Update Graph", type="primary")
+    # --- FORM END ---
 
-    # --- DESCRIPTION PANEL (IN SIDEBAR) ---
+    if st.button("Clear Data"):
+        st.session_state['graph_data'] = None
+        st.session_state['lookup_map'] = {}
+        st.session_state['selected_node_id'] = None
+        st.rerun()
+
+    # --- DESCRIPTION PANEL ---
     st.divider()
     st.subheader("📖 Concept Details")
     
-    # We use a placeholder to update this area dynamically
     details_area = st.empty()
     
-    # Logic to display details if a node is selected
+    # Instant Lookup (No AI call here)
     if st.session_state['selected_node_id']:
         node_id = st.session_state['selected_node_id']
         info = st.session_state['lookup_map'].get(node_id, {})
@@ -72,8 +72,8 @@ with st.sidebar:
         details_area.info("Click a node in the graph to see its definition here.")
 
 
-# --- 3. PROCESSING ENGINE ---
-if st.session_state.get('trigger_gen') and uploaded_files:
+# --- 3. THE AI GENERATION ENGINE (Only runs if Form Submitted) ---
+if submitted and uploaded_files:
     full_text = ""
     with st.spinner("Reading documents..."):
         for pdf in uploaded_files:
@@ -84,21 +84,18 @@ if st.session_state.get('trigger_gen') and uploaded_files:
             except: pass
 
     if full_text:
-        with st.spinner("Gemini is structuring the data..."):
+        with st.spinner("Gemini is restructuring the Knowledge Graph..."):
             try:
                 model = genai.GenerativeModel('gemini-2.0-flash')
                 
-                # Prompt tuning: We explicitly ask for "Key Concepts" vs "Sub-Concepts"
-                # based on the slider values.
                 prompt = f"""
-                Act as a Data Architect. Extract a Knowledge Graph from the text.
+                Act as a Data Architect. Extract a Knowledge Graph.
                 
-                GOAL: Create a structured hierarchy.
+                STRUCTURE RULES:
                 1. Identify exactly {max_concepts} "Parent" concepts (Major topics).
-                2. For each Parent, identify {child_density} "Child" concepts (Sub-topics).
-                3. Total nodes should be roughly {max_concepts * (1 + child_density)}.
+                2. For each Parent, identify {child_density} "Child" concepts.
                 
-                ONTOLOGY TYPES: "Concept", "Standard", "Role", "Process".
+                ONTOLOGY TYPES: "Concept", "Standard", "Role", "Process", "Tool", "Organization".
                 
                 OUTPUT JSON:
                 {{
@@ -106,7 +103,7 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                   "edges": [ {{"source": "Name", "target": "Name", "label": "verb"}} ]
                 }}
                 
-                Text: {full_text[:90000]}
+                Text sample: {full_text[:90000]}
                 """
                 
                 response = model.generate_content(prompt)
@@ -118,81 +115,60 @@ if st.session_state.get('trigger_gen') and uploaded_files:
                 lookup = {}
                 existing = set()
                 
-                # --- SOLID BRAND COLORS ---
-                # #8dc63f (Green), #5ec6c8 (Teal), #dfc024 (Yellow), #ed1f79 (Pink)
-                # We map types to these colors.
+                # Colors: #8dc63f (Green), #5ec6c8 (Teal), #dfc024 (Yellow), #ed1f79 (Pink)
                 color_map = {
-                    "Concept": "#8dc63f",  # Green
-                    "Standard": "#5ec6c8", # Teal
-                    "Process": "#dfc024",  # Yellow
-                    "Role": "#ed1f79",     # Pink
-                    "Tool": "#5ec6c8",     # Teal (Reuse)
-                    "Organization": "#dfc024" # Yellow (Reuse)
+                    "Concept": "#8dc63f", "Standard": "#5ec6c8", 
+                    "Process": "#dfc024", "Role": "#ed1f79", 
+                    "Tool": "#5ec6c8", "Organization": "#dfc024"
                 }
 
                 for n in data.get('nodes', []):
                     if n['id'] not in existing:
-                        # Fallback color is Green (#8dc63f)
                         node_color = color_map.get(n.get('type'), "#8dc63f")
-                        
                         nodes.append(Node(
-                            id=n['id'], 
-                            label=n['label'], 
-                            size=20,           # Standard size
-                            shape="dot",       # ALWAYS DOT
-                            color=node_color,
-                            title="Click for details"
+                            id=n['id'], label=n['label'], size=20, shape="dot",
+                            color=node_color, title="Click to view details"
                         ))
-                        
                         lookup[n['id']] = n
                         existing.add(n['id'])
                 
                 for e in data.get('edges', []):
                     if e['source'] in existing and e['target'] in existing:
-                        edges.append(Edge(
-                            source=e['source'], 
-                            target=e['target'], 
-                            label=e['label'],
-                            color="#d3d3d3" # Standard grey lines
-                        ))
+                        edges.append(Edge(source=e['source'], target=e['target'], label=e['label'], color="#d3d3d3"))
                 
+                # SAVE TO STATE (This prevents re-running logic on click)
                 st.session_state['graph_data'] = {'nodes': nodes, 'edges': edges}
                 st.session_state['lookup_map'] = lookup
+                st.session_state['selected_node_id'] = None # Reset selection on new graph
                 
             except Exception as e:
                 st.error(f"Error: {e}")
 
-# --- 4. VISUALIZATION ---
+
+# --- 4. VISUALIZATION (Runs from Memory) ---
 if st.session_state['graph_data']:
     
-    # Configuration (Linked to Spacing Slider)
+    # We define config here so it updates when the Spacing slider changes
+    # But because spacing is in the FORM, it only updates on Submit (which is what you want)
     config = Config(
-        width=1200, 
-        height=750, 
-        directed=True, 
-        physics=True, 
-        hierarchy=False,
-        nodeHighlightBehavior=True, 
-        highlightColor="#ed1f79", # Highlight in Pink
-        collapsible=False,
+        width=1200, height=750, directed=True, physics=True, hierarchy=False,
+        nodeHighlightBehavior=True, highlightColor="#ed1f79", collapsible=False,
         solver='forceAtlas2Based',
         forceAtlas2Based={
-            "gravitationalConstant": -100,
-            "centralGravity": 0.005,
-            "springLength": spacing,       # <--- SLIDER CONTROL
-            "springConstant": 0.05,
-            "damping": 0.4
+            "gravitationalConstant": -100, "centralGravity": 0.005,
+            "springLength": spacing, "springConstant": 0.05, "damping": 0.4
         }
     )
 
-    # Render & Capture Click
+    # Render Graph
+    # The 'key' argument is vital! It stops Streamlit from seeing this widget as "new" every time.
     clicked_id = agraph(
         nodes=st.session_state['graph_data']['nodes'], 
         edges=st.session_state['graph_data']['edges'], 
         config=config
     )
     
-    # Update State on Click (This triggers the sidebar update)
-    if clicked_id:
+    # Check if click happened
+    if clicked_id and clicked_id != st.session_state['selected_node_id']:
         st.session_state['selected_node_id'] = clicked_id
-        st.rerun() # Rerun to update the sidebar immediately
+        st.rerun() # Fast rerun just to update the sidebar
