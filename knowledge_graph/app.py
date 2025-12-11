@@ -32,7 +32,7 @@ if not data: st.stop()
 # Separate Nodes by Role
 ontology_nodes = [n for n in data['nodes'] if n.get('type') != 'Source']
 library_nodes = [n for n in data['nodes'] if n.get('type') == 'Source']
-all_edges = data['edges']
+all_edges_raw = data['edges'] # Keep raw dicts separate
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
@@ -56,8 +56,9 @@ with tab1:
         # Filter Logic
         disp_nodes = []
         valid_ids = set()
+        
+        # 1. Build Nodes
         for n in ontology_nodes:
-            # Safe type check
             n_type = str(n.get('type', 'Unknown'))
             n_label = str(n.get('label', n['id']))
             
@@ -68,7 +69,12 @@ with tab1:
                                      title=n.get('desc', '')))
                 valid_ids.add(n['id'])
         
-        disp_edges = [e for e in all_edges if e['source'] in valid_ids and e['target'] in valid_ids]
+        # 2. Build Edges (The FIX: Convert dict to Edge object)
+        disp_edges = []
+        for e in all_edges_raw:
+            if e['source'] in valid_ids and e['target'] in valid_ids:
+                disp_edges.append(Edge(source=e['source'], target=e['target'], 
+                                     label=e.get('label', ''), color="#d3d3d3"))
         
         config = Config(width=900, height=600, directed=True, physics=True, 
                         solver='forceAtlas2Based', forceAtlas2Based={"springLength": ont_spacing})
@@ -93,7 +99,6 @@ with tab2:
             # List all ontology concepts that have at least one connection
             opts = sorted([str(n.get('label', n['id'])) for n in ontology_nodes])
             sel = st.selectbox("Select Topic:", ["All"] + opts)
-            # Find ID for label
             if sel != "All": 
                 found = next((n['id'] for n in ontology_nodes if n.get('label') == sel), None)
                 focus_id = found
@@ -101,9 +106,9 @@ with tab2:
         lib_spacing = st.slider("Spread", 100, 500, 250, key="s2")
 
     with col2:
-        # Library Filter Logic (Neighbors)
         lib_disp_nodes = []
         lib_valid_ids = set()
+        lib_disp_edges = []
         
         if focus_id:
             # 1. Add the Focus Node
@@ -114,18 +119,19 @@ with tab2:
                                          color=root.get('color', '#888'), borderWidth=3))
                 lib_valid_ids.add(root['id'])
                 
-                # 2. Find Neighbors (1st Degree)
+                # 2. Find Neighbors (1st Degree) and Collect Relevant Edge Dicts
                 neighbor_ids = set()
-                relevant_edges = []
-                for e in all_edges:
+                relevant_edge_dicts = []
+                
+                for e in all_edges_raw:
                     if e['source'] == focus_id:
                         neighbor_ids.add(e['target'])
-                        relevant_edges.append(e)
+                        relevant_edge_dicts.append(e)
                     elif e['target'] == focus_id:
                         neighbor_ids.add(e['source'])
-                        relevant_edges.append(e)
+                        relevant_edge_dicts.append(e)
                 
-                # 3. Add Neighbors
+                # 3. Add Neighbor Nodes
                 for n in data['nodes']:
                     if n['id'] in neighbor_ids:
                         lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
@@ -133,39 +139,34 @@ with tab2:
                                                  color=n.get('color', '#888')))
                         lib_valid_ids.add(n['id'])
                 
-                lib_disp_edges = relevant_edges
+                # 4. Convert Edge Dicts to Objects (The FIX)
+                for e in relevant_edge_dicts:
+                    lib_disp_edges.append(Edge(source=e['source'], target=e['target'], 
+                                             label=e.get('label', ''), color="#ccc"))
+
         else:
-            # Show Everything (Filtered)
-            # Just show Sources and their immediate connections
+            # Show All Mode (Filtered to just Library + immediate links)
             for n in library_nodes:
                 lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
                                          size=n.get('size', 20), shape=n.get('shape', 'dot'), 
                                          color=n.get('color', '#888')))
                 lib_valid_ids.add(n['id'])
             
-            # Add connected topics
-            lib_disp_edges = []
-            for e in all_edges:
-                # If edge connects a known Source to something else
+            # Find connections and add targets
+            for e in all_edges_raw:
                 if e['source'] in lib_valid_ids or e['target'] in lib_valid_ids:
-                    lib_disp_edges.append(e)
-                    # Make sure we add the visible target nodes too
-                    if e['source'] not in lib_valid_ids:
-                        # Find the node
-                        tgt = next((x for x in data['nodes'] if x['id'] == e['source']), None)
-                        if tgt: 
-                            lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
-                                                     size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
-                                                     color=tgt.get('color', '#888')))
-                            lib_valid_ids.add(tgt['id'])
-                    if e['target'] not in lib_valid_ids:
-                        # Find the node
-                        tgt = next((x for x in data['nodes'] if x['id'] == e['target']), None)
-                        if tgt: 
-                            lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
-                                                     size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
-                                                     color=tgt.get('color', '#888')))
-                            lib_valid_ids.add(tgt['id'])
+                    # Add edge object
+                    lib_disp_edges.append(Edge(source=e['source'], target=e['target'], color="#d3d3d3"))
+                    
+                    # Ensure both ends are visible
+                    for target_id in [e['source'], e['target']]:
+                        if target_id not in lib_valid_ids:
+                            tgt = next((x for x in data['nodes'] if x['id'] == target_id), None)
+                            if tgt:
+                                lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
+                                                         size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
+                                                         color=tgt.get('color', '#888')))
+                                lib_valid_ids.add(tgt['id'])
 
         config = Config(width=900, height=600, directed=True, physics=True, 
                         solver='forceAtlas2Based', forceAtlas2Based={"springLength": lib_spacing})
