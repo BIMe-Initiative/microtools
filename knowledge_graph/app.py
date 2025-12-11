@@ -42,8 +42,11 @@ with tab1:
     col1, col2 = st.columns([1, 3])
     with col1:
         st.subheader("Structure Explorer")
-        # Filter by Main Categories
-        cats = sorted(list(set([n.get('type') for n in ontology_nodes])))
+        
+        # FIX: Handle None values safely
+        raw_cats = [str(n.get('type', 'Unknown')) for n in ontology_nodes]
+        cats = sorted(list(set(raw_cats)))
+        
         sel_cats = st.multiselect("Show Categories:", cats, default=cats)
         
         ont_search = st.text_input("Find Concept:", placeholder="e.g. Asset Management")
@@ -54,10 +57,15 @@ with tab1:
         disp_nodes = []
         valid_ids = set()
         for n in ontology_nodes:
-            if n.get('type') in sel_cats and ont_search.lower() in n.get('label', '').lower():
-                disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
-                                     size=n['size'], shape=n['shape'], color=n['color'], 
-                                     title=n.get('desc')))
+            # Safe type check
+            n_type = str(n.get('type', 'Unknown'))
+            n_label = str(n.get('label', n['id']))
+            
+            if n_type in sel_cats and ont_search.lower() in n_label.lower():
+                disp_nodes.append(Node(id=n['id'], label=n_label, 
+                                     size=n.get('size', 20), shape=n.get('shape', 'dot'), 
+                                     color=n.get('color', '#888'), 
+                                     title=n.get('desc', '')))
                 valid_ids.add(n['id'])
         
         disp_edges = [e for e in all_edges if e['source'] in valid_ids and e['target'] in valid_ids]
@@ -77,17 +85,17 @@ with tab2:
         
         if view_mode == "By Publication":
             # List all library files
-            opts = sorted([n['id'] for n in library_nodes])
+            opts = sorted([str(n['id']) for n in library_nodes])
             sel = st.selectbox("Select Publication:", ["All"] + opts)
             if sel != "All": focus_id = sel
             
         else: # By Topic
             # List all ontology concepts that have at least one connection
-            opts = sorted([n['label'] for n in ontology_nodes])
+            opts = sorted([str(n.get('label', n['id'])) for n in ontology_nodes])
             sel = st.selectbox("Select Topic:", ["All"] + opts)
             # Find ID for label
             if sel != "All": 
-                found = next((n['id'] for n in ontology_nodes if n['label'] == sel), None)
+                found = next((n['id'] for n in ontology_nodes if n.get('label') == sel), None)
                 focus_id = found
 
         lib_spacing = st.slider("Spread", 100, 500, 250, key="s2")
@@ -101,8 +109,9 @@ with tab2:
             # 1. Add the Focus Node
             root = next((n for n in data['nodes'] if n['id'] == focus_id), None)
             if root:
-                lib_disp_nodes.append(Node(id=root['id'], label=root.get('label', root['id']), 
-                                         size=30, shape=root['shape'], color=root['color'], borderWidth=3))
+                lib_disp_nodes.append(Node(id=root['id'], label=str(root.get('label', root['id'])), 
+                                         size=30, shape=root.get('shape', 'dot'), 
+                                         color=root.get('color', '#888'), borderWidth=3))
                 lib_valid_ids.add(root['id'])
                 
                 # 2. Find Neighbors (1st Degree)
@@ -119,8 +128,9 @@ with tab2:
                 # 3. Add Neighbors
                 for n in data['nodes']:
                     if n['id'] in neighbor_ids:
-                        lib_disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
-                                                 size=n['size'], shape=n['shape'], color=n['color']))
+                        lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
+                                                 size=n.get('size', 20), shape=n.get('shape', 'dot'), 
+                                                 color=n.get('color', '#888')))
                         lib_valid_ids.add(n['id'])
                 
                 lib_disp_edges = relevant_edges
@@ -128,8 +138,9 @@ with tab2:
             # Show Everything (Filtered)
             # Just show Sources and their immediate connections
             for n in library_nodes:
-                lib_disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
-                                         size=n['size'], shape=n['shape'], color=n['color']))
+                lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
+                                         size=n.get('size', 20), shape=n.get('shape', 'dot'), 
+                                         color=n.get('color', '#888')))
                 lib_valid_ids.add(n['id'])
             
             # Add connected topics
@@ -143,15 +154,17 @@ with tab2:
                         # Find the node
                         tgt = next((x for x in data['nodes'] if x['id'] == e['source']), None)
                         if tgt: 
-                            lib_disp_nodes.append(Node(id=tgt['id'], label=tgt.get('label', tgt['id']), 
-                                                     size=tgt['size'], shape=tgt['shape'], color=tgt['color']))
+                            lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
+                                                     size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
+                                                     color=tgt.get('color', '#888')))
                             lib_valid_ids.add(tgt['id'])
                     if e['target'] not in lib_valid_ids:
                         # Find the node
                         tgt = next((x for x in data['nodes'] if x['id'] == e['target']), None)
                         if tgt: 
-                            lib_disp_nodes.append(Node(id=tgt['id'], label=tgt.get('label', tgt['id']), 
-                                                     size=tgt['size'], shape=tgt['shape'], color=tgt['color']))
+                            lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
+                                                     size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
+                                                     color=tgt.get('color', '#888')))
                             lib_valid_ids.add(tgt['id'])
 
         config = Config(width=900, height=600, directed=True, physics=True, 
