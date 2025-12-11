@@ -1,0 +1,411 @@
+{
+  "nodes": [
+    {
+      "id": "BIMei Ontology 251211.pdf",
+      "type": "Document",
+      "desc": "BIMei Ontology document describing topics, projects, conceptual hierarchy, tools, websites, publications, contributors, supporters and sources.",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#eeeeee",
+      "shape": "icon",
+      "size": 40
+    },
+    {
+      "id": "A",
+      "type": "Project",
+      "desc": "BIM Dictionary Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "B",
+      "type": "Project",
+      "desc": "Knowledge Sharing Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "C",
+      "type": "Project",
+      "desc": "Competence & Learning Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "D",
+      "type": "Project",
+      "desc": "Performance Improvement Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "E",
+      "type": "Project",
+      "desc": "Macro Adoption Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "F",
+      "type": "Project",
+      "desc": "Integrated Information Project",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#dfc024",
+      "shape": "star",
+      "size": 30
+    },
+    {
+      "id": "TP01",
+      "type": "Topic",
+      "desc": "Additive Manufacturing",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "TP03",
+      "type": "Topic",
+      "desc": "Artificial Intelligence",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "TP05",
+      "type": "Topic",
+      "desc": "Asset Management",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "TP07",
+      "type": "Topic",
+      "desc": "Circular Economy",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "TP15",
+      "type": "Topic",
+      "desc": "Interoperability",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "TP36",
+      "type": "Topic",
+      "desc": "Blockchain",
+      "source": "BIMei Ontology 251211.pdf",
+      "color": "#5ec6c8",
+      "shape": "diamond",
+      "size": 25
+    },
+    {
+      "id": "Managerial",
+      "type": "CompetencySet",
+      "desc": "Decision-making abilities which drive the selection/adoption of long-term strategies and initiatives.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Functional",
+      "type": "CompetencySet",
+      "desc": "Non-technical, overall abilities required to initiate, manage and deliver projects.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Technical",
+      "type": "CompetencySet",
+      "desc": "Abilities required to generate Project Deliverables across disciplines and specialties.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Supportive",
+      "type": "CompetencySet",
+      "desc": "Abilities needed to maintain information technology and communication systems.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Administration",
+      "type": "CompetencySet",
+      "desc": "Day-to-day organizational activities required to meet and maintain strategic objectives.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Operation",
+      "type": "CompetencySet",
+      "desc": "Daily, hands-on individual efforts required to deliver a project or part/aspect of a project.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Implementation",
+      "type": "CompetencySet",
+      "desc": "Activities required to introduce BIM concepts, tools and workflows into an organization.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Research & Development",
+      "type": "CompetencySet",
+      "desc": "Abilities required to evaluate existing processes, investigate new solutions and facilitate their adoption.",
+      "source": "201in Competency Table.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "201in Competency Table.pdf",
+      "type": "Document",
+      "desc": "Document describing Competency Items within Competency Sets and Competency Topics.",
+      "source": "201in Competency Table.pdf",
+      "color": "#eeeeee",
+      "shape": "icon",
+      "size": 40
+    },
+    {
+      "id": "Strategic Planning",
+      "type": "Competency",
+      "desc": "Identifying strategic objectives and developing implementation strategies.",
+      "source": "201in Competency Table.pdf",
+      "color": "#ed1f79",
+      "shape": "dot",
+      "size": 20
+    },
+    {
+      "id": "Collaboration",
+      "type": "Competency",
+      "desc": "Preparing the documentation necessary to enable Model-based Collaboration between Project Participants.",
+      "source": "201in Competency Table.pdf",
+      "color": "#ed1f79",
+      "shape": "dot",
+      "size": 20
+    },
+    {
+      "id": "Model Management",
+      "type": "Competency",
+      "desc": "Managing and maintaining BIModels generated using standardized processes, protocols, and specifications",
+      "source": "201in Competency Table.pdf",
+      "color": "#ed1f79",
+      "shape": "dot",
+      "size": 20
+    },
+    {
+      "id": "Clash Detection",
+      "type": "ModelUse",
+      "desc": "Detecting clashes in a model.",
+      "source": "211in Model Uses Table v1.26.pdf",
+      "color": "#8dc63f",
+      "shape": "square",
+      "size": 20
+    },
+    {
+      "id": "211in Model Uses Table v1.26.pdf",
+      "type": "Document",
+      "desc": "Document listing Model Uses, categorized as General, Domain, and Custom.",
+      "source": "211in Model Uses Table v1.26.pdf",
+      "color": "#eeeeee",
+      "shape": "icon",
+      "size": 40
+    },
+    {
+      "id": "General Model Uses",
+      "type": "ModelUseCategory",
+      "desc": "Model Uses applicable across industries, information systems and knowledge domains.",
+      "source": "211in Model Uses Table v1.26.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Domain Model Uses",
+      "type": "ModelUseCategory",
+      "desc": "Industry-specific Model Uses.",
+      "source": "211in Model Uses Table v1.26.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    },
+    {
+      "id": "Custom Model Uses",
+      "type": "ModelUseCategory",
+      "desc": "Combination of General and Domain model uses tailored to each project.",
+      "source": "211in Model Uses Table v1.26.pdf",
+      "color": "#999999",
+      "shape": "triangle",
+      "size": 15
+    }
+  ],
+  "edges": [
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "A",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "B",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "C",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "D",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "E",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "F",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP01",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP03",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP05",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP07",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP15",
+      "label": "includes"
+    },
+    {
+      "source": "BIMei Ontology 251211.pdf",
+      "target": "TP36",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Managerial",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Functional",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Technical",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Supportive",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Administration",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Operation",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Implementation",
+      "label": "includes"
+    },
+    {
+      "source": "201in Competency Table.pdf",
+      "target": "Research & Development",
+      "label": "includes"
+    },
+    {
+      "source": "Managerial",
+      "target": "Strategic Planning",
+      "label": "includes"
+    },
+    {
+      "source": "Functional",
+      "target": "Collaboration",
+      "label": "includes"
+    },
+    {
+      "source": "Technical",
+      "target": "Model Management",
+      "label": "includes"
+    },
+    {
+      "source": "211in Model Uses Table v1.26.pdf",
+      "target": "Clash Detection",
+      "label": "includes"
+    },
+    {
+      "source": "211in Model Uses Table v1.26.pdf",
+      "target": "General Model Uses",
+      "label": "includes"
+    },
+    {
+      "source": "211in Model Uses Table v1.26.pdf",
+      "target": "Domain Model Uses",
+      "label": "includes"
+    },
+    {
+      "source": "211in Model Uses Table v1.26.pdf",
+      "target": "Custom Model Uses",
+      "label": "includes"
+    }
+  ]
+}
