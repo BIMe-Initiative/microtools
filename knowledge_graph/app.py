@@ -3,96 +3,157 @@ from streamlit_agraph import agraph, Node, Edge, Config
 import json
 import os
 
-st.set_page_config(layout="wide", page_title="BIMei KB")
+st.set_page_config(layout="wide", page_title="BIMei Explorer")
 
-# --- CUSTOM CSS ---
+# --- CSS ---
 st.markdown("""
 <style>
     .stAppHeader {display:none;}
     div[data-testid="stMarkdownContainer"] p {font-family: 'Helvetica Neue', sans-serif;}
+    /* Tab Styling */
+    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
+    .stTabs [data-baseweb="tab"] { height: 50px; white-space: pre-wrap; background-color: #f0f2f6; border-radius: 4px 4px 0 0; gap: 1px; padding-top: 10px; padding-bottom: 10px; }
+    .stTabs [aria-selected="true"] { background-color: #ffffff; border-top: 2px solid #ed1f79;}
 </style>
 """, unsafe_allow_html=True)
 
-st.title("💠 BIMei Knowledge Base")
+st.title("💠 BIMei Knowledge Ecosystem")
 
 @st.cache_data
-def load_graph_data():
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    json_path = os.path.join(current_dir, "knowledge_graph.json")
-    if os.path.exists(json_path):
-        with open(json_path, "r") as f: return json.load(f)
+def load_data():
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "knowledge_graph.json")
+    if os.path.exists(path):
+        with open(path, "r") as f: return json.load(f)
     return None
 
-master_data = load_graph_data()
+data = load_data()
+if not data: st.stop()
 
-# --- SIDEBAR ---
-with st.sidebar:
-    st.header("🎛️ Filters")
-    if not master_data: st.stop()
-    
-    # Filter by the Short Type (stored in 'type')
-    all_types = sorted(list(set([n.get('type', 'Unknown') for n in master_data['nodes']])))
-    selected_types = st.multiselect("Category:", all_types, default=all_types)
-    spacing = st.slider("Spacing", 100, 600, 300)
-    search_query = st.text_input("Search:")
+# Separate Nodes by Role
+ontology_nodes = [n for n in data['nodes'] if n.get('type') != 'Source']
+library_nodes = [n for n in data['nodes'] if n.get('type') == 'Source']
+all_edges = data['edges']
 
-# --- PROCESSING ---
-display_nodes = []
-display_edges = []
-valid_ids = set()
+# --- TABS ---
+tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
 
-for n in master_data['nodes']:
-    display_label = n.get('label', n['id'])
-    
-    if search_query.lower() in display_label.lower() and n.get('type') in selected_types:
-        display_nodes.append(Node(
-            id=n['id'],
-            label=display_label,
-            size=n.get('size', 20),
-            shape=n.get('shape', 'dot'),
-            color=n.get('color', '#888'),
-            title=n.get('desc', 'No definition'),
-            borderWidth=1
-        ))
-        valid_ids.add(n['id'])
-
-for e in master_data['edges']:
-    if e['source'] in valid_ids and e['target'] in valid_ids:
-        display_edges.append(Edge(source=e['source'], target=e['target'], color="#d3d3d3"))
-
-# --- POP-UP DIALOG ---
-@st.dialog("Concept Details")
-def show_details(node_id):
-    node = next((i for i in master_data['nodes'] if i["id"] == node_id), None)
-    if node:
-        # Icon Mapping
-        icon_map = {
-            "Topic": "💎", "Project": "🌟", "Hierarchy": "🔺", 
-            "Tool": "🛠️", "Website": "💻", "Publication": "📄", 
-            "Contributor": "👤", "Supporter": "❤️", "Source": "📚",
-            "ModelUse": "🟩", "Competency": "🔴"
-        }
-        icon = icon_map.get(node.get('type'), "🔹")
+# === TAB 1: ONTOLOGY ===
+with tab1:
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.subheader("Structure Explorer")
+        # Filter by Main Categories
+        cats = sorted(list(set([n.get('type') for n in ontology_nodes])))
+        sel_cats = st.multiselect("Show Categories:", cats, default=cats)
         
-        c1, c2 = st.columns([1, 5])
-        with c1: st.markdown(f"<h1>{icon}</h1>", unsafe_allow_html=True)
-        with c2:
-            st.subheader(node.get('label', node_id))
-            # CHANGED: "UID" -> "Code"
-            if node.get('code'):
-                st.caption(f"**Code:** {node.get('code')} | **Category:** {node.get('category_full', node.get('type'))}")
-            else:
-                st.caption(f"**Category:** {node.get('category_full', node.get('type'))}")
+        ont_search = st.text_input("Find Concept:", placeholder="e.g. Asset Management")
+        ont_spacing = st.slider("Spread", 100, 500, 250, key="s1")
 
-        st.markdown("---")
-        st.write("**Description:**")
-        st.info(node.get('desc', "Not provided"))
+    with col2:
+        # Filter Logic
+        disp_nodes = []
+        valid_ids = set()
+        for n in ontology_nodes:
+            if n.get('type') in sel_cats and ont_search.lower() in n.get('label', '').lower():
+                disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
+                                     size=n['size'], shape=n['shape'], color=n['color'], 
+                                     title=n.get('desc')))
+                valid_ids.add(n['id'])
         
-        if node.get('parent'):
-            st.write(f"**Parent Concept:** {node.get('parent')}")
+        disp_edges = [e for e in all_edges if e['source'] in valid_ids and e['target'] in valid_ids]
+        
+        config = Config(width=900, height=600, directed=True, physics=True, 
+                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": ont_spacing})
+        agraph(nodes=disp_nodes, edges=disp_edges, config=config)
 
-config = Config(width=1200, height=800, directed=True, physics=True, 
-                solver='forceAtlas2Based', forceAtlas2Based={"springLength": spacing})
+# === TAB 2: LIBRARY ===
+with tab2:
+    col1, col2 = st.columns([1, 3])
+    with col1:
+        st.subheader("Content Navigator")
+        view_mode = st.radio("Focus Mode:", ["By Topic", "By Publication"])
+        
+        focus_id = None
+        
+        if view_mode == "By Publication":
+            # List all library files
+            opts = sorted([n['id'] for n in library_nodes])
+            sel = st.selectbox("Select Publication:", ["All"] + opts)
+            if sel != "All": focus_id = sel
+            
+        else: # By Topic
+            # List all ontology concepts that have at least one connection
+            opts = sorted([n['label'] for n in ontology_nodes])
+            sel = st.selectbox("Select Topic:", ["All"] + opts)
+            # Find ID for label
+            if sel != "All": 
+                found = next((n['id'] for n in ontology_nodes if n['label'] == sel), None)
+                focus_id = found
 
-clicked_id = agraph(nodes=display_nodes, edges=display_edges, config=config)
-if clicked_id: show_details(clicked_id)
+        lib_spacing = st.slider("Spread", 100, 500, 250, key="s2")
+
+    with col2:
+        # Library Filter Logic (Neighbors)
+        lib_disp_nodes = []
+        lib_valid_ids = set()
+        
+        if focus_id:
+            # 1. Add the Focus Node
+            root = next((n for n in data['nodes'] if n['id'] == focus_id), None)
+            if root:
+                lib_disp_nodes.append(Node(id=root['id'], label=root.get('label', root['id']), 
+                                         size=30, shape=root['shape'], color=root['color'], borderWidth=3))
+                lib_valid_ids.add(root['id'])
+                
+                # 2. Find Neighbors (1st Degree)
+                neighbor_ids = set()
+                relevant_edges = []
+                for e in all_edges:
+                    if e['source'] == focus_id:
+                        neighbor_ids.add(e['target'])
+                        relevant_edges.append(e)
+                    elif e['target'] == focus_id:
+                        neighbor_ids.add(e['source'])
+                        relevant_edges.append(e)
+                
+                # 3. Add Neighbors
+                for n in data['nodes']:
+                    if n['id'] in neighbor_ids:
+                        lib_disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
+                                                 size=n['size'], shape=n['shape'], color=n['color']))
+                        lib_valid_ids.add(n['id'])
+                
+                lib_disp_edges = relevant_edges
+        else:
+            # Show Everything (Filtered)
+            # Just show Sources and their immediate connections
+            for n in library_nodes:
+                lib_disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
+                                         size=n['size'], shape=n['shape'], color=n['color']))
+                lib_valid_ids.add(n['id'])
+            
+            # Add connected topics
+            lib_disp_edges = []
+            for e in all_edges:
+                # If edge connects a known Source to something else
+                if e['source'] in lib_valid_ids or e['target'] in lib_valid_ids:
+                    lib_disp_edges.append(e)
+                    # Make sure we add the visible target nodes too
+                    if e['source'] not in lib_valid_ids:
+                        # Find the node
+                        tgt = next((x for x in data['nodes'] if x['id'] == e['source']), None)
+                        if tgt: 
+                            lib_disp_nodes.append(Node(id=tgt['id'], label=tgt.get('label', tgt['id']), 
+                                                     size=tgt['size'], shape=tgt['shape'], color=tgt['color']))
+                            lib_valid_ids.add(tgt['id'])
+                    if e['target'] not in lib_valid_ids:
+                        # Find the node
+                        tgt = next((x for x in data['nodes'] if x['id'] == e['target']), None)
+                        if tgt: 
+                            lib_disp_nodes.append(Node(id=tgt['id'], label=tgt.get('label', tgt['id']), 
+                                                     size=tgt['size'], shape=tgt['shape'], color=tgt['color']))
+                            lib_valid_ids.add(tgt['id'])
+
+        config = Config(width=900, height=600, directed=True, physics=True, 
+                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": lib_spacing})
+        agraph(nodes=lib_disp_nodes, edges=lib_disp_edges, config=config)
