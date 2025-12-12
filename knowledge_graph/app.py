@@ -5,34 +5,59 @@ import os
 
 st.set_page_config(layout="wide", page_title="BIMei Explorer")
 
-# --- CSS ---
+# --- CSS (Restoring Cards & Clean UI) ---
 st.markdown("""
 <style>
     .stAppHeader {display:none;}
     div[data-testid="stMarkdownContainer"] p {font-family: 'Helvetica Neue', sans-serif;}
-    /* Tab Styling */
-    .stTabs [data-baseweb="tab-list"] { gap: 10px; }
-    .stTabs [data-baseweb="tab"] { height: 50px; white-space: pre-wrap; background-color: #f0f2f6; border-radius: 4px 4px 0 0; gap: 1px; padding-top: 10px; padding-bottom: 10px; }
-    .stTabs [aria-selected="true"] { background-color: #ffffff; border-top: 2px solid #ed1f79;}
 </style>
 """, unsafe_allow_html=True)
 
 st.title("💠 BIMei Knowledge Ecosystem")
 
+# --- DATA LOADER ---
 @st.cache_data
-def load_data():
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "knowledge_graph.json")
-    if os.path.exists(path):
-        with open(path, "r") as f: return json.load(f)
-    return None
+def load_all_data():
+    base = os.path.dirname(os.path.abspath(__file__))
+    
+    # Load Ontology
+    onto_path = os.path.join(base, "ontology_graph.json")
+    onto_data = {"nodes": [], "edges": []}
+    if os.path.exists(onto_path):
+        with open(onto_path, "r") as f: onto_data = json.load(f)
+        
+    # Load Library
+    lib_path = os.path.join(base, "library_graph.json")
+    lib_data = {"nodes": [], "edges": []}
+    if os.path.exists(lib_path):
+        with open(lib_path, "r") as f: lib_data = json.load(f)
+        
+    return onto_data, lib_data
 
-data = load_data()
-if not data: st.stop()
+onto_data, lib_data = load_all_data()
 
-# Separate Nodes by Role
-ontology_nodes = [n for n in data['nodes'] if n.get('type') != 'Source']
-library_nodes = [n for n in data['nodes'] if n.get('type') == 'Source']
-all_edges_raw = data['edges'] # Keep raw dicts separate
+# Combine for lookup purposes
+all_nodes_dict = {n['id']: n for n in onto_data['nodes']}
+all_nodes_dict.update({n['id']: n for n in lib_data['nodes']})
+
+# --- POP-UP CARD LOGIC ---
+@st.dialog("Details")
+def show_card(node_id):
+    node = all_nodes_dict.get(node_id)
+    if not node: return
+
+    # Header
+    icon_map = {"Project": "🌟", "Topic": "💎", "Source": "📚", "Competency": "🔴", "ModelUse": "🟩"}
+    icon = icon_map.get(node.get('type'), "🔹")
+    
+    c1, c2 = st.columns([1, 5])
+    with c1: st.markdown(f"<h1>{icon}</h1>", unsafe_allow_html=True)
+    with c2:
+        st.subheader(node.get('label', node_id))
+        st.caption(f"ID: {node['id']} | Type: {node.get('type')}")
+    
+    st.divider()
+    st.write(node.get('desc', "No description provided."))
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
@@ -41,133 +66,90 @@ tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
 with tab1:
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.subheader("Structure Explorer")
-        
-        # FIX: Handle None values safely
-        raw_cats = [str(n.get('type', 'Unknown')) for n in ontology_nodes]
-        cats = sorted(list(set(raw_cats)))
-        
-        sel_cats = st.multiselect("Show Categories:", cats, default=cats)
-        
-        ont_search = st.text_input("Find Concept:", placeholder="e.g. Asset Management")
-        ont_spacing = st.slider("Spread", 100, 500, 250, key="s1")
+        st.subheader("Filters")
+        # Extract Categories
+        cats = sorted(list(set([n.get('type', 'Unknown') for n in onto_data['nodes']])))
+        sel_cats = st.multiselect("Category", cats, default=cats)
+        search = st.text_input("Search Ontology", "")
+        spacing = st.slider("Spacing", 100, 500, 300, key="s1")
 
     with col2:
-        # Filter Logic
+        # Build Graph
         disp_nodes = []
         valid_ids = set()
         
-        # 1. Build Nodes
-        for n in ontology_nodes:
-            n_type = str(n.get('type', 'Unknown'))
-            n_label = str(n.get('label', n['id']))
-            
-            if n_type in sel_cats and ont_search.lower() in n_label.lower():
-                disp_nodes.append(Node(id=n['id'], label=n_label, 
+        for n in onto_data['nodes']:
+            if n.get('type') in sel_cats and search.lower() in n.get('label', '').lower():
+                disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
                                      size=n.get('size', 20), shape=n.get('shape', 'dot'), 
-                                     color=n.get('color', '#888'), 
-                                     title=n.get('desc', '')))
+                                     color=n.get('color', '#888')))
                 valid_ids.add(n['id'])
         
-        # 2. Build Edges (The FIX: Convert dict to Edge object)
         disp_edges = []
-        for e in all_edges_raw:
+        for e in onto_data['edges']:
             if e['source'] in valid_ids and e['target'] in valid_ids:
-                disp_edges.append(Edge(source=e['source'], target=e['target'], 
-                                     label=e.get('label', ''), color="#d3d3d3"))
-        
+                disp_edges.append(Edge(source=e['source'], target=e['target'], color="#ddd"))
+
         config = Config(width=900, height=600, directed=True, physics=True, 
-                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": ont_spacing})
-        agraph(nodes=disp_nodes, edges=disp_edges, config=config)
+                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": spacing})
+        
+        clicked = agraph(nodes=disp_nodes, edges=disp_edges, config=config)
+        if clicked: show_card(clicked)
 
 # === TAB 2: LIBRARY ===
 with tab2:
     col1, col2 = st.columns([1, 3])
     with col1:
-        st.subheader("Content Navigator")
-        view_mode = st.radio("Focus Mode:", ["By Topic", "By Publication"])
+        st.subheader("Navigator")
+        mode = st.radio("Browse By:", ["Topic", "Publication"])
         
-        focus_id = None
+        selected_focus = None
         
-        if view_mode == "By Publication":
-            # List all library files
-            opts = sorted([str(n['id']) for n in library_nodes])
-            sel = st.selectbox("Select Publication:", ["All"] + opts)
-            if sel != "All": focus_id = sel
+        if mode == "Publication":
+            pubs = sorted([n['id'] for n in lib_data['nodes']])
+            sel = st.selectbox("Select Publication", ["None"] + pubs)
+            if sel != "None": selected_focus = sel
             
         else: # By Topic
-            # List all ontology concepts that have at least one connection
-            opts = sorted([str(n.get('label', n['id'])) for n in ontology_nodes])
-            sel = st.selectbox("Select Topic:", ["All"] + opts)
-            if sel != "All": 
-                found = next((n['id'] for n in ontology_nodes if n.get('label') == sel), None)
-                focus_id = found
-
-        lib_spacing = st.slider("Spread", 100, 500, 250, key="s2")
+            # Find topics that actually have links
+            linked_topics = set([e['target'] for e in lib_data['edges']])
+            # Filter ontology nodes that are in that set
+            valid_topics = [n['id'] for n in onto_data['nodes'] if n['id'] in linked_topics]
+            sel = st.selectbox("Select Topic", ["None"] + sorted(valid_topics))
+            if sel != "None": selected_focus = sel
+            
+        l_spacing = st.slider("Spacing", 100, 500, 300, key="s2")
 
     with col2:
-        lib_disp_nodes = []
-        lib_valid_ids = set()
-        lib_disp_edges = []
-        
-        if focus_id:
-            # 1. Add the Focus Node
-            root = next((n for n in data['nodes'] if n['id'] == focus_id), None)
-            if root:
-                lib_disp_nodes.append(Node(id=root['id'], label=str(root.get('label', root['id'])), 
-                                         size=30, shape=root.get('shape', 'dot'), 
-                                         color=root.get('color', '#888'), borderWidth=3))
-                lib_valid_ids.add(root['id'])
-                
-                # 2. Find Neighbors (1st Degree) and Collect Relevant Edge Dicts
-                neighbor_ids = set()
-                relevant_edge_dicts = []
-                
-                for e in all_edges_raw:
-                    if e['source'] == focus_id:
-                        neighbor_ids.add(e['target'])
-                        relevant_edge_dicts.append(e)
-                    elif e['target'] == focus_id:
-                        neighbor_ids.add(e['source'])
-                        relevant_edge_dicts.append(e)
-                
-                # 3. Add Neighbor Nodes
-                for n in data['nodes']:
-                    if n['id'] in neighbor_ids:
-                        lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
-                                                 size=n.get('size', 20), shape=n.get('shape', 'dot'), 
-                                                 color=n.get('color', '#888')))
-                        lib_valid_ids.add(n['id'])
-                
-                # 4. Convert Edge Dicts to Objects (The FIX)
-                for e in relevant_edge_dicts:
-                    lib_disp_edges.append(Edge(source=e['source'], target=e['target'], 
-                                             label=e.get('label', ''), color="#ccc"))
-
-        else:
-            # Show All Mode (Filtered to just Library + immediate links)
-            for n in library_nodes:
-                lib_disp_nodes.append(Node(id=n['id'], label=str(n.get('label', n['id'])), 
-                                         size=n.get('size', 20), shape=n.get('shape', 'dot'), 
-                                         color=n.get('color', '#888')))
-                lib_valid_ids.add(n['id'])
+        if selected_focus:
+            l_nodes = []
+            l_edges = []
+            ids_to_show = set()
+            ids_to_show.add(selected_focus)
             
-            # Find connections and add targets
-            for e in all_edges_raw:
-                if e['source'] in lib_valid_ids or e['target'] in lib_valid_ids:
-                    # Add edge object
-                    lib_disp_edges.append(Edge(source=e['source'], target=e['target'], color="#d3d3d3"))
-                    
-                    # Ensure both ends are visible
-                    for target_id in [e['source'], e['target']]:
-                        if target_id not in lib_valid_ids:
-                            tgt = next((x for x in data['nodes'] if x['id'] == target_id), None)
-                            if tgt:
-                                lib_disp_nodes.append(Node(id=tgt['id'], label=str(tgt.get('label', tgt['id'])), 
-                                                         size=tgt.get('size', 20), shape=tgt.get('shape', 'dot'), 
-                                                         color=tgt.get('color', '#888')))
-                                lib_valid_ids.add(tgt['id'])
-
-        config = Config(width=900, height=600, directed=True, physics=True, 
-                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": lib_spacing})
-        agraph(nodes=lib_disp_nodes, edges=lib_disp_edges, config=config)
+            # Find Neighbors in Library Data
+            # (Library Edges are Source -> Topic)
+            for e in lib_data['edges']:
+                if e['source'] == selected_focus or e['target'] == selected_focus:
+                    ids_to_show.add(e['source'])
+                    ids_to_show.add(e['target'])
+                    l_edges.append(Edge(source=e['source'], target=e['target'], color="#bfef45"))
+            
+            # Retrieve Node Data
+            for nid in ids_to_show:
+                n = all_nodes_dict.get(nid)
+                if n:
+                    # Highlight the focus node
+                    size = 30 if nid == selected_focus else n.get('size', 20)
+                    l_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
+                                      size=size, shape=n.get('shape', 'dot'), 
+                                      color=n.get('color', '#888')))
+            
+            config = Config(width=900, height=600, directed=True, physics=True, 
+                            solver='forceAtlas2Based', forceAtlas2Based={"springLength": l_spacing})
+            
+            clicked_lib = agraph(nodes=l_nodes, edges=l_edges, config=config)
+            if clicked_lib: show_card(clicked_lib)
+            
+        else:
+            st.info("👈 Select a Publication or Topic to explore the connections.")
