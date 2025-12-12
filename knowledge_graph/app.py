@@ -5,7 +5,7 @@ import os
 
 st.set_page_config(layout="wide", page_title="BIMei Explorer")
 
-# --- CSS (Restoring Cards & Clean UI) ---
+# --- CSS ---
 st.markdown("""
 <style>
     .stAppHeader {display:none;}
@@ -36,9 +36,12 @@ def load_all_data():
 
 onto_data, lib_data = load_all_data()
 
-# Combine for lookup purposes
-all_nodes_dict = {n['id']: n for n in onto_data['nodes']}
-all_nodes_dict.update({n['id']: n for n in lib_data['nodes']})
+# Combine for lookup purposes (Safely handling IDs)
+all_nodes_dict = {}
+for n in onto_data.get('nodes', []):
+    if n.get('id'): all_nodes_dict[n['id']] = n
+for n in lib_data.get('nodes', []):
+    if n.get('id'): all_nodes_dict[n['id']] = n
 
 # --- POP-UP CARD LOGIC ---
 @st.dialog("Details")
@@ -54,7 +57,7 @@ def show_card(node_id):
     with c1: st.markdown(f"<h1>{icon}</h1>", unsafe_allow_html=True)
     with c2:
         st.subheader(node.get('label', node_id))
-        st.caption(f"ID: {node['id']} | Type: {node.get('type')}")
+        st.caption(f"ID: {node.get('id')} | Type: {node.get('type')}")
     
     st.divider()
     st.write(node.get('desc', "No description provided."))
@@ -67,9 +70,11 @@ with tab1:
     col1, col2 = st.columns([1, 3])
     with col1:
         st.subheader("Filters")
-        # Extract Categories
-        cats = sorted(list(set([n.get('type', 'Unknown') for n in onto_data['nodes']])))
+        # Extract Categories safely
+        raw_cats = [str(n.get('type', 'Unknown')) for n in onto_data.get('nodes', [])]
+        cats = sorted(list(set(raw_cats)))
         sel_cats = st.multiselect("Category", cats, default=cats)
+        
         search = st.text_input("Search Ontology", "")
         spacing = st.slider("Spacing", 100, 500, 300, key="s1")
 
@@ -78,17 +83,28 @@ with tab1:
         disp_nodes = []
         valid_ids = set()
         
-        for n in onto_data['nodes']:
-            if n.get('type') in sel_cats and search.lower() in n.get('label', '').lower():
-                disp_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
-                                     size=n.get('size', 20), shape=n.get('shape', 'dot'), 
-                                     color=n.get('color', '#888')))
+        for n in onto_data.get('nodes', []):
+            n_type = str(n.get('type', 'Unknown'))
+            n_label = str(n.get('label', n.get('id', '')))
+            
+            if n_type in sel_cats and search.lower() in n_label.lower():
+                disp_nodes.append(Node(
+                    id=n['id'], 
+                    label=n_label, 
+                    size=n.get('size', 20), 
+                    shape=n.get('shape', 'dot'), 
+                    color=n.get('color', '#888')
+                ))
                 valid_ids.add(n['id'])
         
         disp_edges = []
-        for e in onto_data['edges']:
-            if e['source'] in valid_ids and e['target'] in valid_ids:
-                disp_edges.append(Edge(source=e['source'], target=e['target'], color="#ddd"))
+        for e in onto_data.get('edges', []):
+            # SAFE ACCESS: Use .get() to avoid crashing on bad data
+            src = e.get('source')
+            tgt = e.get('target')
+            
+            if src and tgt and src in valid_ids and tgt in valid_ids:
+                disp_edges.append(Edge(source=src, target=tgt, color="#ddd"))
 
         config = Config(width=900, height=600, directed=True, physics=True, 
                         solver='forceAtlas2Based', forceAtlas2Based={"springLength": spacing})
@@ -106,15 +122,18 @@ with tab2:
         selected_focus = None
         
         if mode == "Publication":
-            pubs = sorted([n['id'] for n in lib_data['nodes']])
+            pubs = sorted([str(n['id']) for n in lib_data.get('nodes', [])])
             sel = st.selectbox("Select Publication", ["None"] + pubs)
             if sel != "None": selected_focus = sel
             
         else: # By Topic
             # Find topics that actually have links
-            linked_topics = set([e['target'] for e in lib_data['edges']])
+            linked_topics = set()
+            for e in lib_data.get('edges', []):
+                if e.get('target'): linked_topics.add(e['target'])
+            
             # Filter ontology nodes that are in that set
-            valid_topics = [n['id'] for n in onto_data['nodes'] if n['id'] in linked_topics]
+            valid_topics = [n['id'] for n in onto_data.get('nodes', []) if n['id'] in linked_topics]
             sel = st.selectbox("Select Topic", ["None"] + sorted(valid_topics))
             if sel != "None": selected_focus = sel
             
@@ -128,12 +147,15 @@ with tab2:
             ids_to_show.add(selected_focus)
             
             # Find Neighbors in Library Data
-            # (Library Edges are Source -> Topic)
-            for e in lib_data['edges']:
-                if e['source'] == selected_focus or e['target'] == selected_focus:
-                    ids_to_show.add(e['source'])
-                    ids_to_show.add(e['target'])
-                    l_edges.append(Edge(source=e['source'], target=e['target'], color="#bfef45"))
+            for e in lib_data.get('edges', []):
+                src = e.get('source')
+                tgt = e.get('target')
+                
+                if src == selected_focus or tgt == selected_focus:
+                    if src and tgt:
+                        ids_to_show.add(src)
+                        ids_to_show.add(tgt)
+                        l_edges.append(Edge(source=src, target=tgt, color="#bfef45"))
             
             # Retrieve Node Data
             for nid in ids_to_show:
@@ -141,9 +163,13 @@ with tab2:
                 if n:
                     # Highlight the focus node
                     size = 30 if nid == selected_focus else n.get('size', 20)
-                    l_nodes.append(Node(id=n['id'], label=n.get('label', n['id']), 
-                                      size=size, shape=n.get('shape', 'dot'), 
-                                      color=n.get('color', '#888')))
+                    l_nodes.append(Node(
+                        id=n['id'], 
+                        label=str(n.get('label', n['id'])), 
+                        size=size, 
+                        shape=n.get('shape', 'dot'), 
+                        color=n.get('color', '#888')
+                    ))
             
             config = Config(width=900, height=600, directed=True, physics=True, 
                             solver='forceAtlas2Based', forceAtlas2Based={"springLength": l_spacing})
