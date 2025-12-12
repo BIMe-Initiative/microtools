@@ -36,18 +36,27 @@ def load_all_data():
 
 onto_data, lib_data = load_all_data()
 
-# Combine for lookup purposes (Safely handling IDs)
+# Combine for lookup
 all_nodes_dict = {}
 for n in onto_data.get('nodes', []):
     if n.get('id'): all_nodes_dict[n['id']] = n
 for n in lib_data.get('nodes', []):
     if n.get('id'): all_nodes_dict[n['id']] = n
 
+# --- SESSION STATE FOR DIALOGS ---
+if 'dialog_node_id' not in st.session_state:
+    st.session_state['dialog_node_id'] = None
+
 # --- POP-UP CARD LOGIC ---
-@st.dialog("Details")
-def show_card(node_id):
+@st.dialog("Concept Details")
+def show_card():
+    node_id = st.session_state['dialog_node_id']
+    if not node_id: return
+
     node = all_nodes_dict.get(node_id)
-    if not node: return
+    if not node: 
+        st.error("Node data not found.")
+        return
 
     # Header
     icon_map = {"Project": "🌟", "Topic": "💎", "Source": "📚", "Competency": "🔴", "ModelUse": "🟩"}
@@ -61,6 +70,51 @@ def show_card(node_id):
     
     st.divider()
     st.write(node.get('desc', "No description provided."))
+    
+    # Simple "Close" check (Streamlit handles X automatically)
+
+# --- HELPER: GET NEIGHBORS (Depth Logic) ---
+def get_neighborhood(data_source, focus_id, depth=1):
+    """Returns nodes and edges within 'depth' steps of focus_id"""
+    active_ids = {focus_id}
+    visited_edges = []
+    
+    # Iterate for 'depth' steps
+    for _ in range(depth):
+        next_step_ids = set()
+        for e in data_source.get('edges', []):
+            src = e.get('source')
+            tgt = e.get('target')
+            
+            if src in active_ids or tgt in active_ids:
+                if src and tgt:
+                    # Add edge
+                    if e not in visited_edges:
+                        visited_edges.append(e)
+                    # Add neighbors to next step
+                    next_step_ids.add(src)
+                    next_step_ids.add(tgt)
+        
+        active_ids.update(next_step_ids)
+        
+    # Return Node Objects and Edge Objects
+    nodes_out = []
+    for nid in active_ids:
+        n = all_nodes_dict.get(nid)
+        if n:
+            is_focus = (nid == focus_id)
+            nodes_out.append(Node(
+                id=n['id'],
+                label=str(n.get('label', n['id'])),
+                size=30 if is_focus else 20,
+                shape=n.get('shape', 'dot'),
+                color=n.get('color', '#888'),
+                borderWidth=3 if is_focus else 1
+            ))
+            
+    edges_out = [Edge(source=e['source'], target=e['target'], color="#bfef45") for e in visited_edges]
+    return nodes_out, edges_out
+
 
 # --- TABS ---
 tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
@@ -70,16 +124,16 @@ with tab1:
     col1, col2 = st.columns([1, 3])
     with col1:
         st.subheader("Filters")
-        # Extract Categories safely
+        
+        # 1. Categories
         raw_cats = [str(n.get('type', 'Unknown')) for n in onto_data.get('nodes', [])]
         cats = sorted(list(set(raw_cats)))
         sel_cats = st.multiselect("Category", cats, default=cats)
         
         search = st.text_input("Search Ontology", "")
-        spacing = st.slider("Spacing", 100, 500, 300, key="s1")
-
+        
     with col2:
-        # Build Graph
+        # Build Ontology Graph
         disp_nodes = []
         valid_ids = set()
         
@@ -99,18 +153,21 @@ with tab1:
         
         disp_edges = []
         for e in onto_data.get('edges', []):
-            # SAFE ACCESS: Use .get() to avoid crashing on bad data
             src = e.get('source')
             tgt = e.get('target')
-            
-            if src and tgt and src in valid_ids and tgt in valid_ids:
+            if src in valid_ids and tgt in valid_ids:
                 disp_edges.append(Edge(source=src, target=tgt, color="#ddd"))
 
         config = Config(width=900, height=600, directed=True, physics=True, 
-                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": spacing})
+                        solver='forceAtlas2Based', forceAtlas2Based={"springLength": 200})
         
-        clicked = agraph(nodes=disp_nodes, edges=disp_edges, config=config)
-        if clicked: show_card(clicked)
+        clicked_ont = agraph(nodes=disp_nodes, edges=disp_edges, config=config)
+        
+        # Handle Click
+        if clicked_ont:
+            st.session_state['dialog_node_id'] = clicked_ont
+            show_card()
+
 
 # === TAB 2: LIBRARY ===
 with tab2:
@@ -122,9 +179,13 @@ with tab2:
         selected_focus = None
         
         if mode == "Publication":
-            pubs = sorted([str(n['id']) for n in lib_data.get('nodes', [])])
-            sel = st.selectbox("Select Publication", ["None"] + pubs)
-            if sel != "None": selected_focus = sel
+            # Create Mapping: Label -> ID
+            pub_map = {n.get('label', n['id']): n['id'] for n in lib_data.get('nodes', []) if n.get('type') == 'Source'}
+            sorted_names = sorted(pub_map.keys())
+            
+            sel_name = st.selectbox("Select Publication", ["None"] + sorted_names)
+            if sel_name != "None":
+                selected_focus = pub_map[sel_name]
             
         else: # By Topic
             # Find topics that actually have links
@@ -132,50 +193,34 @@ with tab2:
             for e in lib_data.get('edges', []):
                 if e.get('target'): linked_topics.add(e['target'])
             
-            # Filter ontology nodes that are in that set
-            valid_topics = [n['id'] for n in onto_data.get('nodes', []) if n['id'] in linked_topics]
-            sel = st.selectbox("Select Topic", ["None"] + sorted(valid_topics))
-            if sel != "None": selected_focus = sel
+            # Create Mapping: Label -> ID for valid topics
+            topic_map = {}
+            for n in onto_data.get('nodes', []):
+                if n['id'] in linked_topics:
+                    topic_map[n.get('label', n['id'])] = n['id']
             
-        l_spacing = st.slider("Spacing", 100, 500, 300, key="s2")
+            sorted_topics = sorted(topic_map.keys())
+            sel_topic = st.selectbox("Select Topic", ["None"] + sorted_topics)
+            if sel_topic != "None":
+                selected_focus = topic_map[sel_topic]
+            
+        # THE NEW SLIDER: DEPTH
+        depth = st.slider("Connection Depth", 1, 3, 1, help("1=Direct Links, 2=Friends of Friends"))
 
     with col2:
         if selected_focus:
-            l_nodes = []
-            l_edges = []
-            ids_to_show = set()
-            ids_to_show.add(selected_focus)
-            
-            # Find Neighbors in Library Data
-            for e in lib_data.get('edges', []):
-                src = e.get('source')
-                tgt = e.get('target')
-                
-                if src == selected_focus or tgt == selected_focus:
-                    if src and tgt:
-                        ids_to_show.add(src)
-                        ids_to_show.add(tgt)
-                        l_edges.append(Edge(source=src, target=tgt, color="#bfef45"))
-            
-            # Retrieve Node Data
-            for nid in ids_to_show:
-                n = all_nodes_dict.get(nid)
-                if n:
-                    # Highlight the focus node
-                    size = 30 if nid == selected_focus else n.get('size', 20)
-                    l_nodes.append(Node(
-                        id=n['id'], 
-                        label=str(n.get('label', n['id'])), 
-                        size=size, 
-                        shape=n.get('shape', 'dot'), 
-                        color=n.get('color', '#888')
-                    ))
+            # Use the Helper Function for Depth Logic
+            l_nodes, l_edges = get_neighborhood(lib_data, selected_focus, depth=depth)
             
             config = Config(width=900, height=600, directed=True, physics=True, 
-                            solver='forceAtlas2Based', forceAtlas2Based={"springLength": l_spacing})
+                            solver='forceAtlas2Based', forceAtlas2Based={"springLength": 250})
             
             clicked_lib = agraph(nodes=l_nodes, edges=l_edges, config=config)
-            if clicked_lib: show_card(clicked_lib)
+            
+            # Handle Click
+            if clicked_lib:
+                st.session_state['dialog_node_id'] = clicked_lib
+                show_card()
             
         else:
             st.info("👈 Select a Publication or Topic to explore the connections.")
