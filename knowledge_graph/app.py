@@ -43,20 +43,19 @@ for n in lib_data.get('nodes', []):
 
 # --- HELPER: EDGE STYLING ---
 def get_edge_style(label):
-    label = label.upper()
-    if "DEFINES" in label: return "#ed1f79" # Pink/Red (Origin)
-    if "INCLUDES" in label: return "#4363d8" # Blue (Structural)
-    if "EXTENDS" in label: return "#f58231" # Orange (Evolution)
-    return "#cccccc" # Grey (General Discussion)
+    label = str(label).upper()
+    if "DEFINES" in label: return "#ed1f79" 
+    if "INCLUDES" in label: return "#4363d8" 
+    if "EXTENDS" in label: return "#f58231" 
+    return "#cccccc" 
 
-# --- POP-UP ---
+# --- POP-UP (DIALOG) ---
 @st.dialog("Details")
-def show_card():
-    node_id = st.session_state.get('dialog_node_id')
-    if not node_id: return
-    
+def show_card(node_id):
     node = all_nodes_dict.get(node_id)
-    if not node: return
+    if not node: 
+        st.error("Data not found")
+        return
 
     icon_map = {"Project": "🌟", "Topic": "💎", "Source": "📚", "Competency": "🔴", "ModelUse": "🟩"}
     icon = icon_map.get(node.get('type'), "🔹")
@@ -70,7 +69,9 @@ def show_card():
     st.divider()
     st.write(node.get('desc', "No description provided."))
 
-if 'dialog_node_id' not in st.session_state: st.session_state['dialog_node_id'] = None
+# Initialize Session State for Click Tracking
+if 'last_clicked' not in st.session_state:
+    st.session_state['last_clicked'] = None
 
 # --- UI ---
 tab1, tab2 = st.tabs(["🧬 Ontology Explorer", "📚 Knowledge Library"])
@@ -83,7 +84,7 @@ with tab1:
         cats = sorted(list(set([str(n.get('type')) for n in onto_data.get('nodes', [])])))
         sel_cats = st.multiselect("Category", cats, default=cats)
         search = st.text_input("Search", "")
-        spacing = st.slider("Spacing", 100, 500, 250, key="s1")
+        spacing = st.slider("Node Spacing", 100, 500, 250, key="s1")
 
     with col2:
         disp_nodes = []
@@ -98,17 +99,19 @@ with tab1:
         disp_edges = []
         for e in onto_data.get('edges', []):
             if e.get('source') in valid_ids and e.get('target') in valid_ids:
-                # Style edge based on label (includes vs defines)
                 color = get_edge_style(e.get('label', ''))
                 disp_edges.append(Edge(source=e['source'], target=e['target'], 
                                      label=e.get('label'), color=color))
 
         config = Config(width=900, height=600, directed=True, physics=True, 
                         solver='forceAtlas2Based', forceAtlas2Based={"springLength": spacing})
-        clicked = agraph(nodes=disp_nodes, edges=disp_edges, config=config)
-        if clicked: 
-            st.session_state['dialog_node_id'] = clicked
-            show_card()
+        
+        clicked_ont = agraph(nodes=disp_nodes, edges=disp_edges, config=config)
+        
+        # CRASH FIX: Only open if the ID CHANGED
+        if clicked_ont and clicked_ont != st.session_state['last_clicked']:
+            st.session_state['last_clicked'] = clicked_ont
+            show_card(clicked_ont)
 
 # === TAB 2: LIBRARY ===
 with tab2:
@@ -116,7 +119,6 @@ with tab2:
     with col1:
         st.subheader("Navigator")
         
-        # USE CASE FILTER
         use_case = st.selectbox("I want to see:", 
                                 ["Everything", "Origins (Where concepts are Defined)", "Coverage (What discusses what)"])
         
@@ -128,12 +130,15 @@ with tab2:
             sel = st.selectbox("Select File", ["None"] + pubs)
             if sel != "None": selected_focus = sel
         else:
-            # Only show topics that have connections
             linked = set([e['target'] for e in lib_data.get('edges', []) if e.get('target')])
             topics = [n for n in onto_data.get('nodes', []) if n['id'] in linked]
+            # MAP LABEL TO ID FOR DROPDOWN
             topic_map = {n.get('label', n['id']): n['id'] for n in topics}
             sel = st.selectbox("Select Topic", ["None"] + sorted(topic_map.keys()))
             if sel != "None": selected_focus = topic_map[sel]
+            
+        # RESTORED SLIDER
+        l_spacing = st.slider("Node Spacing", 100, 500, 250, key="s2")
 
     with col2:
         if selected_focus:
@@ -141,12 +146,9 @@ with tab2:
             l_edges = []
             ids_to_show = {selected_focus}
             
-            # FILTER EDGES BASED ON USE CASE
-            relevant_edges = []
             for e in lib_data.get('edges', []):
-                label = e.get('label', '').upper()
+                label = str(e.get('label', '')).upper()
                 
-                # Filter Logic
                 if use_case == "Origins (Where concepts are Defined)" and "DEFINES" not in label: continue
                 if use_case == "Coverage (What discusses what)" and "DISCUSSES" not in label: continue
                 
@@ -157,12 +159,9 @@ with tab2:
                     if src and tgt:
                         ids_to_show.add(src)
                         ids_to_show.add(tgt)
-                        
-                        # Apply Color Coding
                         edge_color = get_edge_style(label)
                         l_edges.append(Edge(source=src, target=tgt, label=label, color=edge_color))
 
-            # Nodes
             for nid in ids_to_show:
                 n = all_nodes_dict.get(nid)
                 if n:
@@ -172,11 +171,14 @@ with tab2:
                                       color=n.get('color', '#888')))
             
             config = Config(width=900, height=600, directed=True, physics=True, 
-                            solver='forceAtlas2Based', forceAtlas2Based={"springLength": 250})
+                            solver='forceAtlas2Based', forceAtlas2Based={"springLength": l_spacing})
+            
             clicked_lib = agraph(nodes=l_nodes, edges=l_edges, config=config)
-            if clicked_lib: 
-                st.session_state['dialog_node_id'] = clicked_lib
-                show_card()
+            
+            # CRASH FIX: Only open if the ID CHANGED
+            if clicked_lib and clicked_lib != st.session_state['last_clicked']:
+                st.session_state['last_clicked'] = clicked_lib
+                show_card(clicked_lib)
         else:
             st.info("👈 Select a Focus to see the network.")
             st.markdown("""
