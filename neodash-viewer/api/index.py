@@ -27,7 +27,7 @@ def ask_graph():
 
         # --- PART A: Get Text Answer from AI ---
         chain = GraphCypherQAChain.from_llm(
-            ChatGoogleGenerativeAI(model="gemini-1.5-flash", google_api_key=GOOGLE_KEY),
+            ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=GOOGLE_KEY),
             graph=graph,
             verbose=True,
             return_intermediate_steps=True,
