@@ -2,7 +2,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from langchain_community.graphs import Neo4jGraph
-from langchain_community.chains import GraphCypherQAChain
+ffrom langchain.chains import GraphCypherQAChain
 from langchain_google_genai import ChatGoogleGenerativeAI # <--- CHANGED
 
 app = Flask(__name__)
