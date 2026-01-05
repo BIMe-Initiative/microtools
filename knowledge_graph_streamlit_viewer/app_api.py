@@ -42,13 +42,17 @@ def get_node_color(node_type):
 
 def parse_path_data():
     """Parse path data from URL parameters"""
-    query_params = st.experimental_get_query_params()
+    query_params = st.query_params
+    
+    st.write("Debug - Query params:", dict(query_params))
     
     if 'paths' in query_params:
         try:
             # Decode URL-encoded JSON
-            paths_json = urllib.parse.unquote(query_params['paths'][0])
+            paths_json = urllib.parse.unquote(query_params['paths'])
+            st.write("Debug - Decoded JSON:", paths_json[:200] + "...")
             paths_data = json.loads(paths_json)
+            st.write("Debug - Parsed data:", paths_data)
             return paths_data
         except Exception as e:
             st.error(f"Error parsing path data: {e}")
