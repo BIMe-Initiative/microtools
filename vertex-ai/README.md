@@ -1,1 +1,0 @@
-# Vertex AI Configuration\n\nThis folder contains Vertex AI agent configuration files for the BIMei chatbot.\n\n## Structure\n- `playbooks/` - Agent playbooks\n- `tools/` - Tool configurations\n- `flows/` - Conversation flows\n- `intents/` - Intent definitions
