@@ -1,0 +1,24 @@
+{
+  "name": "47a20ed7-af62-47aa-97e3-4022fade95a0",
+  "actions": [ {
+    "userUtterance": {
+      "text": "Translate this page into Spanish"
+    }
+  }, {
+    "playbookTransition": {
+      "playbook": "Translation"
+    }
+  } ],
+  "playbookOutput": {
+    "executionSummary": "The translation playbook successfully translated the Research page content into Spanish and presented it to the user.",
+    "actionParameters": {
+      "last_translated_url": "https://BIMexcellence.org/research/"
+    }
+  },
+  "displayName": "Route to translation",
+  "retrievalStrategy": "DEFAULT",
+  "description": "The user is on the Research page (https://bimexcellence.org/research/) and asks to translate it. The agent routes to the Translation playbook.",
+  "tokenCount": 120,
+  "conversationState": "OUTPUT_STATE_OK",
+  "languageCode": "en"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "b0833a97-e96b-4644-bcfb-18564b2b1682",
+  "actions": [ {
+    "userUtterance": {
+      "text": "Can you translate this page into Spanish?\n"
+    }
+  }, {
+    "agentUtterance": {
+      "text": "I can translate only part of this page. It is better to use the translation dropdown in the header. "
+    }
+  } ],
+  "playbookInput": {
+    "precedingConversationSummary": "The user is viewing the Privacy page and wants to read the content in Spanish.",
+    "actionParameters": {
+      "current_page_url": "https://bimexcellence.org/current-page-url/",
+      "last_translated_url": "https://bimexcellence.org/last-translated-url/"
+    }
+  },
+  "playbookOutput": {
+    "executionSummary": "The user has requested the page to be translated and was directed to instead use the translation function.",
+    "actionParameters": {
+      "last_translated_url": "https://bimexcellence.org/last-translated-url"
+    }
+  },
+  "displayName": "Page Translation",
+  "retrievalStrategy": "DEFAULT",
+  "tokenCount": 194,
+  "conversationState": "OUTPUT_STATE_OK",
+  "languageCode": "en"
+}
