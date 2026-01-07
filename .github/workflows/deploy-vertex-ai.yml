@@ -29,25 +29,17 @@ jobs:
       run: |
         cd bimei-vertex-cx-chatbot
         PLAYBOOK_FILE=$(ls E_VertexAI_DefaultPlaybook_*.md | head -1)
-        PLAYBOOK_CONTENT=$(cat "$PLAYBOOK_FILE" | base64 -w 0)
         
         curl -X PATCH \
-          "https://aiplatform.googleapis.com/v1/projects/bimei-ai/locations/australia-southeast1/agents/bimei-assistant" \
+          "https://conversationalagents.googleapis.com/v1/projects/bimei-ai/locations/global/agents/c2608896-0bd0-492e-a87b-83476edbe3ef/playbooks/8516ac6f-bd0a-4351-a175-6ac0e7046080" \
           -H "Authorization: Bearer $(gcloud auth print-access-token)" \
           -H "Content-Type: application/json" \
           -d "{
-            \"instructions\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
-          }"
-    
-    - name: Deploy Graph Handler Playbook via API
-      run: |
-        cd bimei-vertex-cx-chatbot
-        PLAYBOOK_FILE=$(ls F_VertexAI_KnowledgeGraph_Handler_Playbook_*.md | head -1)
-        
-        curl -X PATCH \
-          "https://aiplatform.googleapis.com/v1/projects/bimei-ai/locations/australia-southeast1/agents/bimei-graph-specialist" \
-          -H "Authorization: Bearer $(gcloud auth print-access-token)" \
-          -H "Content-Type: application/json" \
-          -d "{
-            \"instructions\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
+            \"instruction\": {
+              \"steps\": [
+                {
+                  \"text\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
+                }
+              ]
+            }
           }"
