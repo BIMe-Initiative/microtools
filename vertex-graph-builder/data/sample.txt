@@ -1,0 +1,1 @@
+Bilal Succar is a technology architect based in Melbourne. He is currently exploring GraphRAG, a technique that combines Knowledge Graphs with Generative AI. He uses Vertex AI for the LLM layer and Neo4j for the database layer. This project aims to reduce hallucinations in automated reasoning systems.

@@ -1,0 +1,18 @@
+{
+  "name": "bimei-graph-api",
+  "version": "1.0.0",
+  "description": "API for BIMei Knowledge Graph",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=graphQuery --signature-type=http"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.3.0",
+    "@langchain/community": "^0.3.0",
+    "@langchain/core": "^0.3.0",
+    "@langchain/google-vertexai": "^0.1.0",
+    "dotenv": "^16.4.5",
+    "langchain": "^0.3.0",
+    "neo4j-driver": "^5.19.0"
+  }
+}

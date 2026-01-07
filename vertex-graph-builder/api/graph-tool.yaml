@@ -1,0 +1,36 @@
+openapi: 3.0.0
+info:
+  title: BIMei Knowledge Graph API
+  description: A tool for querying the BIMexcellence Knowledge Graph to answer structural questions about competencies, definitions, and relationships.
+  version: 1.0.0
+servers:
+  - url: https://us-central1-bimei-ai.cloudfunctions.net/graphQuery  # <--- PASTE YOUR URL HERE
+paths:
+  /:
+    post:
+      summary: Query the Knowledge Graph
+      description: Sends a natural language question to the graph database to retrieve precise definitions, lists of components, or relationships between BIM concepts. Use this when the user asks about "Components of X", "How is X defined", or "Action Statements".
+      operationId: queryGraph
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: The natural language question to ask the graph (e.g., "What are the components of Competency?").
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                    description: The answer retrieved from the knowledge graph.
+                  source:
+                    type: string
