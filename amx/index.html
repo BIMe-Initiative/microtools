@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Adaptive Maturity Matrix</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <link rel="stylesheet" href="../common/brand.css" />
+</head>
+<body>
+<!-- Adaptive Maturity Matrix – single-card + compare, Typepad-ready -->
+<div id="amx-widget" lang="en" role="region" aria-label="Adaptive Maturity Matrix">
+  <style>
+    /* ===== Theme ===== */
+    #amx-widget{
+      --amx-brand:#f73f37;--amx-text:#111827;--amx-muted:#6b7280;--amx-border:#e5e7eb;
+      --amx-bg:#ffffff;--amx-soft:#fafafa;--amx-badge-bg:#fde8e7;--amx-badge-br:#f8c6c3;
+      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-width:650px;margin:0 auto;color:var(--amx-text)
+    }
+    #amx-widget *{box-sizing:border-box}
+    #amx-widget .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,1px,1px);white-space:nowrap;border:0}
+
+    /* ===== Top bar ===== */
+    #amx-widget .topbar{display:grid;gap:10px;margin:8px 0 12px}
+    #amx-widget .searchbox{display:flex;gap:8px;width:100%}
+    #amx-widget input[type="search"]{flex:1;padding:12px;border:1px solid var(--amx-border);border-radius:0;font-size:14px;background:#fff}
+    #amx-widget input[type="search"]:focus{outline:2px solid var(--amx-brand);outline-offset:2px}
+    #amx-widget .switch{display:flex;align-items:center;gap:8px}
+    #amx-widget .chk{width:18px;height:18px}
+
+    /* Flat buttons & links */
+    #amx-widget .btn{appearance:none;background:var(--amx-brand);color:#fff;border:0;border-radius:0;padding:10px 12px;font-size:13px;cursor:pointer}
+    #amx-widget .btn:hover{filter:brightness(0.95)}
+    #amx-widget .btn:active{filter:brightness(0.9)}
+    #amx-widget .btn:focus-visible{outline:2px solid var(--amx-brand);outline-offset:2px}
+    #amx-widget .linkish{background:transparent;border:0;color:var(--amx-brand);text-decoration:underline;cursor:pointer;font-size:13px;padding:0}
+
+    /* Search results (full text, left-aligned) */
+    #amx-widget .results{border:1px solid var(--amx-border);border-radius:12px;padding:8px;background:var(--amx-bg);display:none;text-align:left}
+    #amx-widget .results h4{font-size:12px;font-weight:700;color:#374151;margin:6px 6px 8px}
+    #amx-widget .resitem{display:block;border:1px dashed var(--amx-border);border-radius:0;padding:10px;margin:0 0 6px;background:var(--amx-soft);cursor:pointer;text-align:left}
+    #amx-widget .resitem:hover{background:#fff}
+    #amx-widget .r-title{font-size:13px;font-weight:700;margin:0 0 4px}
+    #amx-widget .r-meta{font-size:11px;color:var(--amx-muted);margin:0 0 4px}
+    #amx-widget .r-snippet{font-size:12px;color:var(--amx-text);white-space:pre-line}
+    #amx-widget mark{background:#fff3c4}
+
+    /* Badges */
+    #amx-widget .mini{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    #amx-widget .badge{display:inline-block;padding:3px 10px;font-size:11px;border-radius:999px;background:var(--amx-badge-bg);color:var(--amx-text);border:1px solid var(--amx-badge-br)}
+
+    /* ===== Single-card mode ===== */
+    #amx-widget #amx-single{border:1px solid var(--amx-border);border-radius:12px;background:var(--amx-bg);padding:12px}
+    #amx-widget .rowbar{display:grid;gap:10px;margin-bottom:8px}
+    #amx-widget label{display:block;font-size:12px;color:#374151;margin-bottom:4px}
+    /* Dropdown styling (square, white, faint dividers) */
+    #amx-widget select{width:100%;padding:10px 12px;border:1px solid var(--amx-border);border-radius:0;font-size:14px;background:#fff;appearance:none;-webkit-appearance:none}
+    #amx-widget select:focus{outline:2px solid var(--amx-brand);outline-offset:2px}
+    #amx-widget select option{border-bottom:1px solid #f0f0f0}
+
+    /* PMI tabs (flat; active: white + bold brand text; others: dim bg + normal text) */
+    #amx-widget .tablist{display:flex;gap:6px;margin:6px 0 6px;border-bottom:1px solid #f1f5f9}
+    #amx-widget .tab{border:1px solid var(--amx-border);padding:8px 10px;cursor:pointer;font-weight:400;font-size:12px;color:#374151;background:var(--amx-soft)}
+    #amx-widget .tab[aria-selected="true"]{background:#fff;color:var(--amx-brand);font-weight:700}
+    #amx-widget .tab:hover{background:#fff}
+    #amx-widget .tab:active{filter:brightness(0.98)}
+    #amx-widget .tab:focus-visible{outline:2px solid var(--amx-brand);outline-offset:2px}
+
+    /* Card body */
+    #amx-widget .card{padding:10px}
+    #amx-widget .title{font-weight:700;margin:8px 0 4px;font-size:16px;line-height:1.25}
+    #amx-widget .meta{font-size:12px;color:var(--amx-muted);margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
+    #amx-widget .body{font-size:14px;line-height:1.5;color:var(--amx-text);white-space:pre-line}
+    #amx-widget .actions{margin-top:10px;display:flex;gap:12px;flex-wrap:wrap}
+
+    /* ===== Compare mode ===== */
+    #amx-widget #amx-compare{display:none;border:1px solid var(--amx-border);border-radius:12px;background:var(--amx-bg);padding:12px}
+    #amx-widget .cmp-grid{display:grid;gap:12px}
+    @media (min-width:560px){#amx-widget .cmp-grid{grid-template-columns:1fr 1fr}}
+    #amx-widget .cmp-card{border:1px solid var(--amx-border);border-radius:12px;background:#fff;display:flex;flex-direction:column}
+    #amx-widget .cmp-controls{padding:12px;border-bottom:1px solid var(--amx-border);display:grid;gap:8px;background:var(--amx-soft)}
+    @media (min-width:380px){#amx-widget .cmp-controls{grid-template-columns:1fr 1fr}}
+
+    /* Footer */
+    #amx-widget .foot{margin-top:10px;font-size:11px;color:#6b7280}
+    #amx-widget .foot a{color:var(--amx-brand)}
+  </style>
+
+  <!-- Top controls -->
+  <div class="topbar">
+    <div class="searchbox">
+      <label class="sr-only" for="amx-search">Search text across matrix</label>
+      <input id="amx-search" type="search" placeholder="Search text across matrix" aria-label="Search text across matrix">
+    </div>
+    <div class="switch">
+      <input id="amx-compare-toggle" class="chk" type="checkbox" aria-controls="amx-compare" aria-expanded="false">
+      <label for="amx-compare-toggle"><strong>Compare mode</strong></label>
+    </div>
+    <div id="amx-results" class="results" aria-live="polite"></div>
+  </div>
+
+  <!-- SINGLE CARD -->
+  <div id="amx-single" role="region" aria-label="Single cell view">
+    <div class="rowbar">
+      <div>
+        <label for="single-row">Adaptive Capacity</label>
+        <select id="single-row" aria-label="Select Adaptive Capacity"></select>
+      </div>
+    </div>
+
+    <div class="tablist" role="tablist" aria-label="Process Maturity"></div>
+
+    <div class="mini">
+      <span class="badge" id="single-ac-badge"></span>
+      <span class="badge" id="single-pm-badge"></span>
+      <span class="badge" id="single-code-badge"></span>
+    </div>
+
+    <div class="card">
+      <h3 class="title" id="single-title"></h3>
+      <div class="meta" id="single-meta"></div>
+      <div class="body" id="single-body"></div>
+      <div class="actions">
+        <button type="button" class="btn" id="single-copy">Copy text</button>
+        <button type="button" class="linkish" id="single-link">Permalink</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPARE -->
+  <div id="amx-compare" role="region" aria-label="Compare two cells">
+    <div class="cmp-grid">
+      <!-- Left column -->
+      <div class="cmp-card" id="cmp-left">
+        <div class="cmp-controls">
+          <div>
+            <label for="cmp-left-row">Adaptive Capacity</label>
+            <select id="cmp-left-row"></select>
+          </div>
+          <div>
+            <label for="cmp-left-col">Process Maturity</label>
+            <select id="cmp-left-col"></select>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="title"></h3>
+          <div class="meta"></div>
+          <div class="body"></div>
+          <div class="actions">
+            <button type="button" class="btn" data-copy-left>Copy text</button>
+            <button type="button" class="linkish" data-link-left>Permalink</button>
+          </div>
+        </div>
+      </div>
+      <!-- Right column -->
+      <div class="cmp-card" id="cmp-right">
+        <div class="cmp-controls">
+          <div>
+            <label for="cmp-right-row">Adaptive Capacity</label>
+            <select id="cmp-right-row"></select>
+          </div>
+          <div>
+            <label for="cmp-right-col">Process Maturity</label>
+            <select id="cmp-right-col"></select>
+          </div>
+        </div>
+        <div class="card">
+          <h3 class="title"></h3>
+          <div class="meta"></div>
+          <div class="body"></div>
+          <div class="actions">
+            <button type="button" class="btn" data-copy-right>Copy text</button>
+            <button type="button" class="linkish" data-link-right>Permalink</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="foot">
+    Adaptive Maturity Matrix | Microstate Comparison Tool v1.0 (250820) | Content by Succar (2025) | Developed by ChangeAgents AEC for the BIMe Initiative - Project D | Available as is under a
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> license.
+  </div>
+
+  <script>
+    (function(){
+      /* === Set this when the post is published === */
+      const qs = new URLSearchParams(location.search);
+      const AMX_PERMALINK_BASE = qs.get("base") || "";
+
+
+      const ROWS = ["Resistant","Receptive","Responsive","Reformative","Regenerative"];
+      const COLS = ["Ad-hoc","Defined","Managed","Integrated","Optimised"];
+
+      const ROW_META = {
+        "Resistant":   { code:"AC: Low",      desc:"Low Adaptive Capacity" },
+        "Receptive":   { code:"AC: Med-Low",  desc:"Medium–Low Adaptive Capacity" },
+        "Responsive":  { code:"AC: Medium",   desc:"Medium Adaptive Capacity" },
+        "Reformative": { code:"AC: Med-High", desc:"Medium–High Adaptive Capacity" },
+        "Regenerative":{ code:"AC: High",     desc:"High Adaptive Capacity" }
+      };
+      const COL_META = {
+        "Ad-hoc":    { code:"PM: Low" },
+        "Defined":   { code:"PM: Med–Low" },
+        "Managed":   { code:"PM: Medium" },
+        "Integrated":{ code:"PM: Med–High" },
+        "Optimised": { code:"PM: High" }
+      };
+
+      const CELLS = {
+        "Resistant":{"Ad-hoc":"Frequent improvisation while retaining inefficient legacy routines; no responses to disruption and no learning from mistakes; practices replicated without reflection; risks are largely unseen, and requests for change is unheard; innovation champions and incentives are absent","Defined":"Procedures are documented then treated as scripture; no responses or learning from disruption; practices locked into rigid templates; risk remains largely unseen while unyielding gatekeepers block change; deviations from legacy workflows are summarily rejected; new ideas dismissed; absence of incentives prevents champions from emerging","Managed":"Management enforces strict conformity to legacy methods; no responses or learning beyond memorising directives; risks are unseen or dismissed as noise; change efforts are non-existent or indefinitely stalled; management activity preserves order and without generating improvement","Integrated":"End-to-end workflows are welded together by prescriptive procedures and integrated dashboards; managers monitor for any variance only to keep everything as is; no learning except within the system and practices are frozen; risks go unrecognised and requests for change are frowned-upon or die in wait of multi-layer sign-off loops","Optimised":"Well-honed machine-like organisation yields consistent performance; optimisations are incremental due to fossilised practices; no willingness to learn or pivot to new solutions; efficiency masks fragility with risk signals ignored and change forcibly blocked; a highly optimised yet brittle machine that might stop or irrecoverably collapse with any disruption"},
+        "Receptive":{"Ad-hoc":"Disruptions are acknowledged but responses are slow, non-systemic and nonadaptive; learning is imitative; blindness to operational and environmental risks persists; cultural complacency dampens attempts to change; fixes are forgotten once the immediate crisis passes; occasional champions surface yet lack organisational support","Defined":"Documented processes provide a stable frame yet permit only timid alterations; disruptions prompt incremental tweaks not full pivots; learning is imitative with brief exploratory bursts whose lessons are seldom learned; risk is partially acknowledged but thinly analysed; change only accepted if nestled within existing procedures; scattered champions pilot improvements, but momentum fades for lack of mandate or resources","Managed":"Management tracks disruptions and issues cautious instructions; responses activated only on command; learning copies prior fixes, and practices only receive minor tweaks; risk is acknowledged but mitigation favours the least-impact option; every change requires supervisory sign-off; improvement momentum follows managerial directives yet lacks the vitality to grow","Integrated":"Control rooms (e.g. boards, committees) centrally monitor disruptions and respond through rigid scripts; agility is muted, and most responses are nonadaptive; learning copies prior fixes with only minor, low-impact tweaks allowed; risks are logged but thinly analysed, and every change must thread a narrow hole or cross a long bureaucratic corridor","Optimised":"Controlled improvements reflect a flicker of agility and vitality; disruptions are acknowledged through established norms; responses follow tested paths only; learning optimises prior fixes, and new knowledge percolate; risk is noted yet under-analysed; minor change within silos is welcomed and system-wide transformations discussed yet seldom implemented"},
+        "Responsive":{"Ad-hoc":"Disruptions trigger organised yet limited adaptive responses; experience steers reactive actions; fleeting patches of agility appear; learning is based on repetition and calibration; disrupted practices are restored rather than re-designed (“only first aid is provided”); risk is no longer ignored, and change is tolerated; adaptive responses are accepted provided they mimic past responses; attempts at long-term improvements stall due to lack of strategic intent","Defined":"Process guides are tweaked after each disruption; agility flares briefly, and resilience inches upward; learning remains iterative and anchored to precedents; risk is acknowledged and given cursory analysis; change is nudged rather than re-engineered and only approved when it reinforces existing templates; lacking stewardship, improvements are disjoined and short-lived","Managed":"Management reacts with agility to most disruptions; learning is iterative and cumulative (feedback loops close); practices are steadily enhanced through controlled pilots that scale when evidence is favourable; reviews that balance risk-opportunity precede decisions, and change is implemented with clear action plans; confidence and momentum grow, silo walls start to crumble; and improvements become rhythmic","Integrated":"Cross-functional teams operate under a common roadmap; responsiveness to disruption is mostly adaptive; pivoting to new solutions is fast yet coordinated; learning is iterative; practices are synchronised across teams/ units; structured risk-opportunity reviews guide adjustments; change is implemented through shared action plans; the momentum builds, yet improvements still require passing hard approval gates","Optimised":"Closed-loop controls optimise operations in near-real time in response to any disruption, thus keeping performance on target; learning is iterative, and practices are synchronised across functions; risk and opportunities are well-balanced during process optimisation reviews; preparedness for disruptive change is factored into the evolving system; new rules and standards are adopted but only after whole-system testing"},
+        "Reformative":{"Ad-hoc":"Disruption sends the energetic organisation into unknown new directions; learning is exploratory across diverse domains; practices are reinvented with or without need; risk-taking with or without clear rewards is tolerated; change is chased with haste; team cohesion grows around ad-hoc wins yet fails to crystallise into durable culture; operational successes and failures oscillate yielding erratic breakthroughs and backslides","Defined":"Process manuals are re-written following disruptions; agility turns proactive, and learning becomes exploratory; risk-taking is tolerated inside loosely defined guardrails; and change is championed; lacking permanent mechanisms, momentum evaporates once champions leave or teams disband","Managed":"Management is proactive, agile and responds adaptively to most disruptions; learning is exploratory, and lessons are shared broadly; practices are re-engineered to meet moving targets; calculated risk is welcomed within governance gates; transformations are guided by roadmaps; momentum accelerates, although progress still relies on discrete projects rather than a unifying platform","Integrated":"Interconnected teams coordinate swift responses to disruption; learning is exploratory and collaborative, and practices are iteratively redesigned through rapid-feedback loops; calculated risks are welcomed, and change initiatives energise the network; lean guiding structures steer progress without dictating it","Optimised":"Integrated teams use rapid-feedback cycles to redesign practices on the fly; proactive and adaptive responses are the norm; learning is exploratory, and lessons are immediately implemented; calculated risk-taking is encouraged; change initiatives energise the network, and improvements spread quickly without needing internal or external mandates"},
+        "Regenerative":{"Ad-hoc":"Continuous trialling without capturing lessons; extensive learning and experimentation without application; continuous recombination of knowledge and resources into impermanent structures; risk-taking is encouraged even without guardrails; incessant change is expected; progress hinges on isolated initiatives rather than orchestrated programmes","Defined":"Process maps evolve almost continuously; high agility allows rapid pivoting in response to disruptions; learning embraces disciplined experimentation and lessons are captured; risk is weighed and hedged; change flows seamlessly but – lacking structure – implementation is hampered; progress is reliant on champions and informal networks that are unable to scale","Managed":"Management sustains a portfolio of linked renewal programmes; responsiveness is adaptive and habitual; learning is experimental yet swiftly codified; risk is countered through predictive processes and capabilities, and a rolling cadence of change keeps the organisation ahead of innovation curves; improvements accelerate and are self-reinforcing, yet – due to lack of integration - may overlap or generate avoidable waste","Integrated":"Organisation operates as a fluid network for joint learning and co-creation; pivots are anticipatory, enabled by real-time recombination of resources; learning is experimental and swiftly codified, and a confident risk appetite plus seamless change cycles turn disruption into advantage; high energy and integrated - but lightweight - systems sustain continuous improvement","Optimised":"An antifragile organisation that senses, learns and elevates itself autonomously within its ecosystem; agility is habitual, learning experimental and instantly codified, and resilience reinforced through real-time recombination of resources; minimal rules, a strong shared purpose and flexible connections sustain perpetual renewal, while a confident risk appetite turns every stressor into fresh advantage"}
+      };
+
+      /* ---------- Utilities ---------- */
+      const $  = sel => document.querySelector(sel);
+      const $$ = sel => Array.from(document.querySelectorAll(sel));
+      const baseUrl = () => AMX_PERMALINK_BASE || (location.origin + location.pathname);
+      function cellCode(row,col){ return ["a","b","c","d","e"][COLS.indexOf(col)] + (ROWS.indexOf(row)+1); }
+      function cellTitle(row,col){ return `${col} ${row}`; }
+      function decodeCode(code){ const m=/^([a-e])([1-5])$/.exec(code||""); if(!m) return [ROWS[0],COLS[0]]; return [ROWS[+m[2]-1], COLS[["a","b","c","d","e"].indexOf(m[1])]]; }
+      function parseHashCompare(){ const raw=(location.hash||"").replace("#",""); if(!raw) return [null,null]; const parts=raw.split("~"); return [parts[0]||null, parts[1]||null]; }
+
+      /* Robust clipboard copy (with fallback) */
+      async function copyToClipboard(text){
+        try{ await navigator.clipboard.writeText(text); }
+        catch(e){
+          const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+          document.body.appendChild(ta); ta.focus(); ta.select(); try{ document.execCommand("copy"); }catch(e2){} document.body.removeChild(ta);
+        }
+      }
+
+      /* ---------- Search (full text) ---------- */
+      const searchInput=$("#amx-search"), resultsBox=$("#amx-results"), cmpToggle=$("#amx-compare-toggle");
+      function searchAll(q){
+        q=q.trim(); if(q.length<2){ resultsBox.style.display="none"; resultsBox.innerHTML=""; return; }
+        const safe=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const rx=new RegExp(safe,"gi"); const items=[];
+        ROWS.forEach(r=>COLS.forEach(c=>{
+          const title=cellTitle(r,c), text=CELLS[r][c];
+          if(rx.test(title)||rx.test(text)){ rx.lastIndex=0; const full=text.replace(rx,'<mark>$&</mark>'); items.push({code:cellCode(r,c),title,meta:`${ROW_META[r].desc} · ${COL_META[c].code}`,full}); }
+        }));
+        items.sort((a,b)=>a.code.localeCompare(b.code));
+        resultsBox.innerHTML = [`<h4>${items.length} result${items.length===1?"":"s"}</h4>`, ...items.map(it=>`
+          <button class="resitem" data-code="${it.code}">
+            <div class="r-title">${it.title} [${it.code}]</div>
+            <div class="r-meta">${it.meta}</div>
+            <div class="r-snippet">${it.full}</div>
+          </button>
+        `)].join("");
+        resultsBox.style.display="block";
+        $$(".resitem").forEach(btn=>btn.addEventListener("click",()=>{
+          const code=btn.getAttribute("data-code");
+          if(cmpToggle.checked){ cmpToggle.checked=false; toggleCompare(false); }
+          openSingleByCode(code,true); resultsBox.style.display="none";
+        }));
+      }
+      searchInput.addEventListener("input",()=>searchAll(searchInput.value));
+
+      /* ---------- SINGLE CARD ---------- */
+      const single=$("#amx-single");
+      const rowSel=$("#single-row"), acBadge=$("#single-ac-badge"), pmBadge=$("#single-pm-badge"), codeBadge=$("#single-code-badge");
+      const titleEl=$("#single-title"), metaEl=$("#single-meta"), bodyEl=$("#single-body"), copyBtn=$("#single-copy"), linkBtn=$("#single-link");
+      const tablist=$(".tablist");
+
+      function initSingle(){
+        ROWS.forEach(r=>rowSel.add(new Option(r,r)));
+        COLS.forEach((c,i)=>{
+          const b=document.createElement("button");
+          b.className="tab"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", i===0 ? "true":"false");
+          b.textContent=c; b.dataset.col=c;
+          b.addEventListener("click",()=>selectPM(c));
+          b.addEventListener("keydown",(e)=>{
+            if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
+              e.preventDefault();
+              const tabs=$$(".tab");
+              let idx=tabs.indexOf(document.activeElement); if(idx===-1) idx=0;
+              idx = e.key==="ArrowRight" ? (idx+1)%tabs.length : (idx-1+tabs.length)%tabs.length;
+              tabs[idx].focus(); tabs[idx].click();
+            }
+          });
+          tablist.appendChild(b);
+        });
+        rowSel.addEventListener("change",()=>updateSingle(rowSel.value, currentPM()));
+      }
+      function currentPM(){ const t=tablist.querySelector('.tab[aria-selected="true"]'); return t ? t.dataset.col : COLS[0]; }
+      function selectPM(col){
+        tablist.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.col===col ? "true":"false"));
+        updateSingle(rowSel.value,col);
+      }
+      function updateSingle(row,col){
+        const txt=CELLS[row][col], code=cellCode(row,col);
+        acBadge.textContent=ROW_META[row].code;
+        pmBadge.textContent=COL_META[col].code;
+        codeBadge.textContent=`Cell: ${code}`;
+        titleEl.textContent=cellTitle(row,col);
+        metaEl.textContent=`${ROW_META[row].desc} · ${COL_META[col].code}`;
+        bodyEl.textContent=txt;
+        if(!cmpToggle.checked){ history.replaceState(null,"","#"+code); }
+      }
+      function openSingleByCode(code,scroll){
+        const [r,c]=decodeCode(code);
+        rowSel.value=r; tablist.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.col===c ? "true":"false"));
+        updateSingle(r,c);
+        if(scroll) setTimeout(()=>single.scrollIntoView({behavior:"smooth",block:"start"}),60);
+      }
+      copyBtn.addEventListener("click",async ()=>{
+        const code=cellCode(rowSel.value,currentPM());
+        const text=`${cellTitle(rowSel.value,currentPM())} [${code}]\n${ROW_META[rowSel.value].desc} · ${COL_META[currentPM()].code}\n\n${CELLS[rowSel.value][currentPM()]}`;
+        await copyToClipboard(text); copyBtn.textContent="Copied"; setTimeout(()=>copyBtn.textContent="Copy text",1200);
+      });
+      linkBtn.addEventListener("click",async ()=>{
+        const code=cellCode(rowSel.value,currentPM());
+        const url=baseUrl()+"#"+code;
+        await copyToClipboard(url);
+        const el=linkBtn; const prev=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=prev,1200);
+      });
+
+      /* ---------- COMPARE ---------- */
+      const cmp=$("#amx-compare");
+      function toggleCompare(on){
+        cmp.style.display = on ? "block":"none";
+        single.style.display = on ? "none":"block";
+        $("#amx-compare-toggle").setAttribute("aria-expanded", on ? "true":"false");
+        if(on){ initCompareSelects(); updateCompare(); } else { history.replaceState(null,"","#"+cellCode(rowSel.value,currentPM())); }
+      }
+      $("#amx-compare-toggle").addEventListener("change",()=>toggleCompare($("#amx-compare-toggle").checked));
+
+      function initCompareSelects(){
+        const lr=$("#cmp-left-row"), lc=$("#cmp-left-col"), rr=$("#cmp-right-row"), rc=$("#cmp-right-col");
+        if(!lr.options.length){ ROWS.forEach(r=>{ lr.add(new Option(r,r)); rr.add(new Option(r,r)); }); }
+        if(!lc.options.length){ COLS.forEach(c=>{ lc.add(new Option(c,c)); rc.add(new Option(c,c)); }); }
+        const [L,R]=parseHashCompare();
+        const [lRow,lCol]=L?decodeCode(L):[ROWS[2],COLS[2]];
+        const [rRow,rCol]=R?decodeCode(R):[ROWS[4],COLS[4]];
+        lr.value=lRow; lc.value=lCol; rr.value=rRow; rc.value=rCol;
+        [lr,lc,rr,rc].forEach(el=>{ if(!el._wired){ el.addEventListener("change",updateCompare); el._wired=true; }});
+      }
+      function updateCompare(){
+        const lr=$("#cmp-left-row").value, lc=$("#cmp-left-col").value, rr=$("#cmp-right-row").value, rc=$("#cmp-right-col").value;
+        const L={title:cellTitle(lr,lc), meta:`${ROW_META[lr].desc} · ${COL_META[lc].code}`, text:CELLS[lr][lc], code:cellCode(lr,lc)};
+        const R={title:cellTitle(rr,rc), meta:`${ROW_META[rr].desc} · ${COL_META[rc].code}`, text:CELLS[rr][rc], code:cellCode(rr,rc)};
+        const Lc=$("#cmp-left .card"), Rc=$("#cmp-right .card");
+        Lc.querySelector(".title").textContent=`${L.title} [${L.code}]`;  Lc.querySelector(".meta").textContent=L.meta;  Lc.querySelector(".body").textContent=L.text;
+        Rc.querySelector(".title").textContent=`${R.title} [${R.code}]`;  Rc.querySelector(".meta").textContent=R.meta;  Rc.querySelector(".body").textContent=R.text;
+
+        $("[data-copy-left]").onclick  = ()=>copyToClipboard(`${L.title} [${L.code}]\n${L.meta}\n\n${L.text}`);
+        $("[data-copy-right]").onclick = ()=>copyToClipboard(`${R.title} [${R.code}]\n${R.meta}\n\n${R.text}`);
+        $("[data-link-left]").onclick  = async ()=>{ const u=baseUrl()+"#"+L.code; await copyToClipboard(u); const el=$("[data-link-left]"); const p=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=p,1200); };
+        $("[data-link-right]").onclick = async ()=>{ const u=baseUrl()+"#"+R.code; await copyToClipboard(u); const el=$("[data-link-right]"); const p=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=p,1200); };
+
+        history.replaceState(null,"","#"+L.code+"~"+R.code);
+      }
+
+      /* ---------- Init ---------- */
+      function init(){
+        // Build single-card UI
+        initSingle();
+        // Single or compare from hash
+        const [L,R]=parseHashCompare();
+        if(L && R){ $("#amx-compare-toggle").checked=true; toggleCompare(true); }
+        else if(L){ openSingleByCode(L,false); }
+        else { rowSel.value=ROWS[0]; tablist.querySelectorAll(".tab").forEach((t,i)=>t.setAttribute("aria-selected", i===0?"true":"false")); updateSingle(ROWS[0],COLS[0]); }
+      }
+      init();
+    })();
+  </script>
+</div>
+
+ 
+  </div>
+
+  <!-- auto-resizer at the end -->
+  <script src="../common/embed.js"></script>
+</body>
+</html>

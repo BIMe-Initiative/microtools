@@ -1,0 +1,7 @@
+Flask
+flask-cors
+langchain
+langchain-community
+langchain-core
+langchain-google-genai
+neo4j>=5.0.0

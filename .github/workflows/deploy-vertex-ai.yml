@@ -1,0 +1,45 @@
+name: Deploy to Vertex AI
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'bimei-vertex-cx-chatbot/E_VertexAI_DefaultPlaybook_*.md'
+      - 'bimei-vertex-cx-chatbot/F_VertexAI_KnowledgeGraph_Handler_Playbook_*.md'
+      - 'bimei-vertex-cx-chatbot/G_Graph_Tool_*.yaml'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v2'
+      with:
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+    
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
+      with:
+        project_id: 'bimei-ai'
+    
+    - name: Deploy Default Playbook via API
+      run: |
+        cd bimei-vertex-cx-chatbot
+        PLAYBOOK_FILE=$(ls E_VertexAI_DefaultPlaybook_*.md | head -1)
+        
+        curl -X PATCH \
+          "https://conversationalagents.googleapis.com/v1/projects/bimei-ai/locations/global/agents/c2608896-0bd0-492e-a87b-83476edbe3ef/playbooks/8516ac6f-bd0a-4351-a175-6ac0e7046080" \
+          -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"instruction\": {
+              \"steps\": [
+                {
+                  \"text\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
+                }
+              ]
+            }
+          }"
