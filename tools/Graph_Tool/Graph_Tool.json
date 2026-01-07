@@ -1,9 +1,0 @@
-{
-  "name": "c076dc47-a24a-435b-8a2d-34e1097b6560",
-  "displayName": "Graph_Tool",
-  "description": "Use this tool ONLY for complex questions involving relationships, hidden connections, multi-hop reasoning, or patterns between entities (e.g., 'How is X related to Y?' or 'Find the common link between A and B'). Do NOT use this for simple definitions or summaries; use the Data Store for those. This tool accesses the GraphRAG knowledge base.",
-  "openApiSpec": {
-    "ignoreUnknownFields": true
-  },
-  "toolType": "CUSTOMIZED_TOOL"
-}
