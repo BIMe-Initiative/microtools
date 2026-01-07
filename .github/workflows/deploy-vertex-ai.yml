@@ -25,35 +25,29 @@ jobs:
       with:
         project_id: 'bimei-ai'
     
-    - name: Install gcloud alpha components
-      run: gcloud components install alpha --quiet
-    
-    - name: Deploy Default Playbook
+    - name: Deploy Default Playbook via API
       run: |
         cd bimei-vertex-cx-chatbot
         PLAYBOOK_FILE=$(ls E_VertexAI_DefaultPlaybook_*.md | head -1)
-        gcloud alpha generative-ai tools update bimei-assistant \
-          --display-name="BIMei Assistant" \
-          --instructions-file="$PLAYBOOK_FILE" \
-          --region=australia-southeast1 \
-          --quiet
+        PLAYBOOK_CONTENT=$(cat "$PLAYBOOK_FILE" | base64 -w 0)
+        
+        curl -X PATCH \
+          "https://aiplatform.googleapis.com/v1/projects/bimei-ai/locations/australia-southeast1/agents/bimei-assistant" \
+          -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"instructions\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
+          }"
     
-    - name: Deploy Graph Handler Playbook  
+    - name: Deploy Graph Handler Playbook via API
       run: |
         cd bimei-vertex-cx-chatbot
         PLAYBOOK_FILE=$(ls F_VertexAI_KnowledgeGraph_Handler_Playbook_*.md | head -1)
-        gcloud alpha generative-ai tools update bimei-graph-specialist \
-          --display-name="BIMei Graph Specialist" \
-          --instructions-file="$PLAYBOOK_FILE" \
-          --region=australia-southeast1 \
-          --quiet
-    
-    - name: Deploy Graph Tool
-      run: |
-        cd bimei-vertex-cx-chatbot
-        TOOL_FILE=$(ls G_Graph_Tool_*.yaml | head -1)
-        gcloud alpha generative-ai tools update graph-query-tool \
-          --display-name="Graph Query Tool" \
-          --openapi-spec-file="$TOOL_FILE" \
-          --region=australia-southeast1 \
-          --quiet
+        
+        curl -X PATCH \
+          "https://aiplatform.googleapis.com/v1/projects/bimei-ai/locations/australia-southeast1/agents/bimei-graph-specialist" \
+          -H "Authorization: Bearer $(gcloud auth print-access-token)" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"instructions\": \"$(cat "$PLAYBOOK_FILE" | sed 's/"/\\"/g' | tr '\n' ' ')\"
+          }"
