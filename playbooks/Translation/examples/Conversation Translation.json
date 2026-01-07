@@ -1,0 +1,30 @@
+{
+  "name": "30ba6071-b81b-44b0-a54d-7e5cb459d30e",
+  "actions": [ {
+    "userUtterance": {
+      "text": "Translate that into Spanish please."
+    }
+  }, {
+    "agentUtterance": {
+      "text": "Aquí tienes la traducción de la respuesta anterior:\n\n**Elementos de Competencia**\nLos Elementos de Competencia son los bloques de construcción individuales de los marcos de competencias. Representan habilidades, conocimientos o atributos específicos que se pueden medir y evaluar.\n\nCan I help you with anything else?"
+    }
+  } ],
+  "playbookInput": {
+    "precedingConversationSummary": "User asks the agent to summarize the conversation into a language other than English.",
+    "actionParameters": {
+      "current_page_url": "https://bimexcellence.org/current-page-url/",
+      "last_translated_url": "https://bimexcellence.org/last-translated-url/"
+    }
+  },
+  "playbookOutput": {
+    "executionSummary": "Last response in the conversation translated successfully into Spanish",
+    "actionParameters": {
+    
+    }
+  },
+  "displayName": "Conversation Translation",
+  "retrievalStrategy": "DEFAULT",
+  "tokenCount": 202,
+  "conversationState": "OUTPUT_STATE_OK",
+  "languageCode": "es"
+}

@@ -1,0 +1,14 @@
+{
+  "trainingPhrases": [ {
+    "parts": [ {
+      "text": "summarize this page for {"
+    }, {
+      "text": "url",
+      "parameterId": "final_url"
+    }, {
+      "text": "}"
+    } ],
+    "repeatCount": 1,
+    "languageCode": "en"
+  } ]
+}
