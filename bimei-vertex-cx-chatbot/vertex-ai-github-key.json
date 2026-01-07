@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "bimei-ai",
+  "private_key_id": "***REMOVED***",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCuAO3sMWnbv+oq\nLESPQIJGalsYn2dxIu4KdJ/JOT3XKotaJRVGHoEVG+r+r5mswpdUwvH9MbHTrXQ0\n/8bCQPb4RnCJZwdF9wpI94TQfUrOcZAIQSHy5xPsdtkKoYTXz68isQ1U+uasIBoc\nuvRXqAxcMsbrAQ6sA1RyAlG2L1yOz3MbYksiYeZPTHIj0diZsTgofq5X4maWywdC\nAopmctMjlA19tKrz+UEbL+OLQLvwjymXiPdFlHtGZlarf8emBpnsM43FBvfiKCDd\nEyLZGudciXb5iNWZQUXMfkCUk8bvQzfTQs8ykXq/hm0Q+yfN/z0awmNdzQyHNxM/\nwOr53Y2lAgMBAAECggEACo5z4Mh+q55RDo3w+t/nB26caDoDhJGh73Bz4TlfzxX9\nrlJhoAdpvWYcM6djo1+K3tGU7M9/AmCblDuQS2i1kwpy+WMOxefe795UaHGxgCTT\noCyTarEqPEZZlJOIA6/N6ETlkipGpFquOt/8wvSnC1DpUIiX40ewb9pEKtFkxCUo\nKvfBcH5J3kncK2hwHmEU6OIKPHnzbpfLhhXjLgATPvYa2aKFWbuFaygn81rCKMQM\nRH+1OTLrJoyhdHzwJ8bPDBpa1NKBQnHT8RNxLWlKBTk4p9LyArml1M0l4BFK2FBD\nCjNj0nsyCsWX1zKyxV8EWdsPs8v9ujX4qSt8AlPVYQKBgQDdhijyysIsM0bqt8WP\ngJbh7QHE+dAKAkUcLapta3kIiKBvWRRhxhHOOBKyoOvr0KuQRE5bDXOyj/HSORvy\noDwyJ0s3Jyly2AeeFh8TBeKQPFgXbAe9WMRWug/9kif0Bklb/qEX7ht+YmBYWdww\nz9fm9cPJkFZMgnqlVLErgWCi9wKBgQDJFXyJxmLLU+0pVh4WLiTxJev4Zo8E+tGA\nE7z9Tz20ANpC/SInbLBjhQI0z19GXlSYQn12C05Y1/M6t4P73a4mric/fZYLrLJi\np5KQivLW9sbi1WKWFX/9FEybyMjeI38NHuflP1+LsJ3txmkC1dyJmO2Aov0XL0Ab\njxvG0qORQwKBgB+y7PUhMnvksocv2ONaAT0/DvvCy5RDEuSfXD3gHSetdVe5pYMA\nNtgNig9pm5jY+VPhklzRJfctRetRJMCpUTPUD51Ky1GVvDFQ9Q1h0DPXjrt7R/g+\nVYobgeJFIdZ3d9PkMeUcu25wYV0DLtEFTN3N2UBkmRTFrwstfVS+ZLetAoGAFzL0\naEzMDxtCrFc0J2jxeCTg4Yqri26Ihxc/4ZWnz8GdbMcZjqTagNDSnVcjbdHqPprF\nML5DLrrTY/3SK1e7BNloy8loazZkaj9dCHIPbD+SWI83zYrzdjZGVF7I1eAQg2oC\nZQ93rX0V613NtbcIt5M+K24idu9LnSJYmQqqNlMCgYEA2DBCvlXh+V2RqKa0wOpb\nzYzPFh1ilwcdbr9ksiaDC34ufONeFkVcXBFrj/zlPgXPEz+gYPbWGY5FONFu/2Yj\niM6aastGvOEQqOEVM55bsZXBzIVq/BlmcmT5POOvFPIM0f2U6Ww4V1L4e12bvi8d\nEnThLgpTVuAA7VIIdeyEW7U=\n-----END PRIVATE KEY-----\n",
+  "client_email": "***REMOVED***",
+  "client_id": "***REMOVED***",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/vertex-ai-github%40bimei-ai.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
