@@ -1,0 +1,25 @@
+{
+  "name": "bimei-vertex-cx-chatbot",
+  "version": "1.0.0",
+  "description": "BIMei Vertex CX Chatbot with Google Cloud integration",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=bimei-chatbot",
+    "deploy": "gcloud functions deploy bimei-chatbot --runtime nodejs20 --trigger-http --allow-unauthenticated --region australia-southeast1",
+    "deploy-dev": "gcloud functions deploy bimei-chatbot-dev --runtime nodejs20 --trigger-http --allow-unauthenticated --region australia-southeast1"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@google-cloud/dialogflow-cx": "^4.0.0",
+    "@google-cloud/aiplatform": "^3.0.0",
+    "@google-cloud/storage": "^7.0.0",
+    "@langchain/community": "^0.3.0",
+    "@langchain/google-vertexai": "^0.1.0",
+    "neo4j-driver": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "BIM Excellence Initiative",
+  "license": "MIT"
+}
