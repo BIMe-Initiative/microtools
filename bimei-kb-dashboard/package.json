@@ -1,0 +1,19 @@
+{
+  "name": "bimei-dashboard-api",
+  "version": "1.0.0",
+  "description": "Unified API for BIMei Knowledge Dashboard",
+  "main": "index.js",
+  "scripts": {
+    "start": "functions-framework --target=dashboardApi"
+  },
+  "dependencies": {
+    "@google-cloud/functions-framework": "^3.0.0",
+    "@langchain/google-vertexai": "^0.1.0",
+    "@langchain/community": "^0.3.0",
+    "axios": "^1.6.0",
+    "neo4j-driver": "^5.0.0"
+  },
+  "engines": {
+    "node": "20"
+  }
+}

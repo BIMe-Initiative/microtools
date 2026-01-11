@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMei Knowledge Dashboard</title>
+</head>
+<body>
+  <!-- BIMei KB Dashboard - WordPress Ready -->
+  <div class="bimei-kb-dashboard-wp" id="bimei-kb-dashboard-wp">
+    <style>
+      /* WordPress-Safe CSS - All styles isolated with !important */
+      .bimei-kb-dashboard-wp {
+        all: initial !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        max-width: 1200px !important;
+        margin: 0 auto !important;
+        padding: 20px !important;
+        background: #f8fafc !important;
+        border-radius: 12px !important;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+        z-index: 1000 !important;
+      }
+
+      .bimei-kb-dashboard-wp * {
+        box-sizing: border-box !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 24px !important;
+        padding-bottom: 16px !important;
+        border-bottom: 2px solid #e2e8f0 !important;
+        flex-wrap: wrap !important;
+        gap: 12px !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-title {
+        font-size: 24px !important;
+        font-weight: 700 !important;
+        color: #1a202c !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-version {
+        font-size: 14px !important;
+        color: #718096 !important;
+        background: #ffffff !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        border: 1px solid #e2e8f0 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-query-bar {
+        display: flex !important;
+        gap: 12px !important;
+        margin-bottom: 24px !important;
+        align-items: stretch !important;
+        flex-wrap: wrap !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-input {
+        flex: 1 !important;
+        min-width: 300px !important;
+        padding: 12px 16px !important;
+        border: 2px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        outline: none !important;
+        transition: border-color 0.2s ease !important;
+        background: #ffffff !important;
+        color: #2d3748 !important;
+        font-family: inherit !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-input:focus {
+        border-color: #3182ce !important;
+        box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1) !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-submit {
+        padding: 12px 24px !important;
+        background: #3182ce !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        font-size: 16px !important;
+        cursor: pointer !important;
+        transition: all 0.2s ease !important;
+        font-weight: 600 !important;
+        min-width: 100px !important;
+        font-family: inherit !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-submit:hover {
+        background: #2c5aa0 !important;
+        transform: translateY(-1px) !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-submit:disabled {
+        background: #a0aec0 !important;
+        cursor: not-allowed !important;
+        transform: none !important;
+      }
+
+      /* Responsive Grid Layout */
+      .bimei-kb-dashboard-wp .bimei-kb-wp-modules {
+        display: grid !important;
+        gap: 20px !important;
+        grid-template-columns: 1fr !important;
+      }
+
+      /* Desktop Layout */
+      @media (min-width: 1024px) {
+        .bimei-kb-dashboard-wp .bimei-kb-wp-modules {
+          grid-template-columns: 2fr 1fr 1fr !important;
+          grid-template-areas: 
+            "text sources evidence"
+            "path graph graph" !important;
+        }
+        .bimei-kb-dashboard-wp .bimei-kb-wp-module-text { grid-area: text !important; }
+        .bimei-kb-dashboard-wp .bimei-kb-wp-module-sources { grid-area: sources !important; }
+        .bimei-kb-dashboard-wp .bimei-kb-wp-module-evidence { grid-area: evidence !important; }
+        .bimei-kb-dashboard-wp .bimei-kb-wp-module-path { grid-area: path !important; }
+        .bimei-kb-dashboard-wp .bimei-kb-wp-module-graph { grid-area: graph !important; }
+      }
+
+      /* Tablet Layout */
+      @media (max-width: 1023px) and (min-width: 768px) {
+        .bimei-kb-dashboard-wp .bimei-kb-wp-modules {
+          grid-template-columns: 1fr 1fr !important;
+        }
+      }
+
+      /* Mobile Layout */
+      @media (max-width: 767px) {
+        .bimei-kb-dashboard-wp {
+          padding: 16px !important;
+          margin: 0 !important;
+        }
+        
+        .bimei-kb-dashboard-wp .bimei-kb-wp-query-bar {
+          flex-direction: column !important;
+        }
+        
+        .bimei-kb-dashboard-wp .bimei-kb-wp-input {
+          min-width: 100% !important;
+        }
+        
+        .bimei-kb-dashboard-wp .bimei-kb-wp-submit {
+          width: 100% !important;
+        }
+
+        .bimei-kb-dashboard-wp .bimei-kb-wp-header {
+          flex-direction: column !important;
+          align-items: flex-start !important;
+        }
+      }
+
+      /* Module Styles */
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module {
+        background: #ffffff !important;
+        border: 1px solid #e2e8f0 !important;
+        border-radius: 8px !important;
+        padding: 20px !important;
+        min-height: 200px !important;
+        position: relative !important;
+        transition: box-shadow 0.2s ease !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1) !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module-header {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        margin-bottom: 16px !important;
+        padding-bottom: 8px !important;
+        border-bottom: 1px solid #f1f5f9 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module-title {
+        font-size: 18px !important;
+        font-weight: 600 !important;
+        color: #2d3748 !important;
+        margin: 0 !important;
+        line-height: 1.2 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module-status {
+        font-size: 12px !important;
+        padding: 4px 8px !important;
+        border-radius: 4px !important;
+        font-weight: 500 !important;
+        text-transform: capitalize !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-status-loading {
+        background: #fef5e7 !important;
+        color: #d69e2e !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-status-success {
+        background: #f0fff4 !important;
+        color: #38a169 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-status-error {
+        background: #fed7d7 !important;
+        color: #e53e3e !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-status-idle {
+        background: #edf2f7 !important;
+        color: #718096 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module-content {
+        min-height: 120px !important;
+        line-height: 1.5 !important;
+        color: #4a5568 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-loading-spinner {
+        width: 24px !important;
+        height: 24px !important;
+        border: 2px solid #e2e8f0 !important;
+        border-top: 2px solid #3182ce !important;
+        border-radius: 50% !important;
+        animation: bimei-kb-wp-spin 1s linear infinite !important;
+        margin: 40px auto !important;
+        display: block !important;
+      }
+
+      @keyframes bimei-kb-wp-spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-module-graph {
+        min-height: 400px !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-error-message {
+        color: #e53e3e !important;
+        font-size: 14px !important;
+        text-align: center !important;
+        padding: 20px !important;
+        background: #fed7d7 !important;
+        border-radius: 6px !important;
+        border: 1px solid #feb2b2 !important;
+      }
+
+      .bimei-kb-dashboard-wp .bimei-kb-wp-no-data {
+        color: #718096 !important;
+        font-style: italic !important;
+        text-align: center !important;
+        padding: 40px 20px !important;
+        background: #f7fafc !important;
+        border-radius: 6px !important;
+      }
+
+      /* WordPress Theme Override Protection */
+      .bimei-kb-dashboard-wp a {
+        color: #3182ce !important;
+        text-decoration: none !important;
+      }
+
+      .bimei-kb-dashboard-wp a:hover {
+        text-decoration: underline !important;
+      }
+
+      .bimei-kb-dashboard-wp button {
+        font-family: inherit !important;
+        cursor: pointer !important;
+      }
+
+      .bimei-kb-dashboard-wp input {
+        font-family: inherit !important;
+      }
+
+      /* Accessibility */
+      .bimei-kb-dashboard-wp :focus {
+        outline: 2px solid #3182ce !important;
+        outline-offset: 2px !important;
+      }
+
+      .bimei-kb-dashboard-wp button:focus,
+      .bimei-kb-dashboard-wp input:focus {
+        outline-offset: 0 !important;
+      }
+    </style>
+
+    <!-- Header -->
+    <div class="bimei-kb-wp-header">
+      <h1 class="bimei-kb-wp-title">BIMei Knowledge Dashboard</h1>
+      <div class="bimei-kb-wp-version">v1.0.0</div>
+    </div>
+
+    <!-- Query Bar -->
+    <div class="bimei-kb-wp-query-bar">
+      <input 
+        type="text" 
+        class="bimei-kb-wp-input" 
+        id="bimei-kb-wp-query-input"
+        placeholder="Ask about BIMei knowledge..."
+        autocomplete="off"
+        aria-label="Enter your BIMei knowledge query"
+      >
+      <button 
+        class="bimei-kb-wp-submit" 
+        id="bimei-kb-wp-submit-btn"
+        aria-label="Submit query"
+      >
+        Search
+      </button>
+    </div>
+
+    <!-- Modules Grid -->
+    <div class="bimei-kb-wp-modules">
+      <!-- Text Response Module -->
+      <div class="bimei-kb-wp-module bimei-kb-wp-module-text" id="bimei-kb-wp-module-text">
+        <div class="bimei-kb-wp-module-header">
+          <h3 class="bimei-kb-wp-module-title">Response</h3>
+          <span class="bimei-kb-wp-module-status bimei-kb-wp-status-idle" id="bimei-kb-wp-status-text">Ready</span>
+        </div>
+        <div class="bimei-kb-wp-module-content" id="bimei-kb-wp-content-text">
+          <div class="bimei-kb-wp-no-data">Enter a query to get started</div>
+        </div>
+      </div>
+
+      <!-- Sources Module -->
+      <div class="bimei-kb-wp-module bimei-kb-wp-module-sources" id="bimei-kb-wp-module-sources">
+        <div class="bimei-kb-wp-module-header">
+          <h3 class="bimei-kb-wp-module-title">Sources</h3>
+          <span class="bimei-kb-wp-module-status bimei-kb-wp-status-idle" id="bimei-kb-wp-status-sources">Ready</span>
+        </div>
+        <div class="bimei-kb-wp-module-content" id="bimei-kb-wp-content-sources">
+          <div class="bimei-kb-wp-no-data">Sources will appear here</div>
+        </div>
+      </div>
+
+      <!-- SEW Evidence Module -->
+      <div class="bimei-kb-wp-module bimei-kb-wp-module-evidence" id="bimei-kb-wp-module-evidence">
+        <div class="bimei-kb-wp-module-header">
+          <h3 class="bimei-kb-wp-module-title">Evidence</h3>
+          <span class="bimei-kb-wp-module-status bimei-kb-wp-status-idle" id="bimei-kb-wp-status-evidence">Ready</span>
+        </div>
+        <div class="bimei-kb-wp-module-content" id="bimei-kb-wp-content-evidence">
+          <div class="bimei-kb-wp-no-data">Evidence metrics will appear here</div>
+        </div>
+      </div>
+
+      <!-- Path Visualization Module -->
+      <div class="bimei-kb-wp-module bimei-kb-wp-module-path" id="bimei-kb-wp-module-path">
+        <div class="bimei-kb-wp-module-header">
+          <h3 class="bimei-kb-wp-module-title">Knowledge Path</h3>
+          <span class="bimei-kb-wp-module-status bimei-kb-wp-status-idle" id="bimei-kb-wp-status-path">Ready</span>
+        </div>
+        <div class="bimei-kb-wp-module-content" id="bimei-kb-wp-content-path">
+          <div class="bimei-kb-wp-no-data">Knowledge path will appear here</div>
+        </div>
+      </div>
+
+      <!-- Interactive Graph Module -->
+      <div class="bimei-kb-wp-module bimei-kb-wp-module-graph" id="bimei-kb-wp-module-graph">
+        <div class="bimei-kb-wp-module-header">
+          <h3 class="bimei-kb-wp-module-title">Interactive Graph</h3>
+          <span class="bimei-kb-wp-module-status bimei-kb-wp-status-idle" id="bimei-kb-wp-status-graph">Ready</span>
+        </div>
+        <div class="bimei-kb-wp-module-content" id="bimei-kb-wp-content-graph">
+          <div class="bimei-kb-wp-no-data">Interactive graph will appear here</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // WordPress-Safe Dashboard Implementation with Domain Authentication
+    (function() {
+      'use strict';
+      
+      // Domain Authentication
+      const ALLOWED_DOMAINS = [
+        'bimexcellence.org',
+        'www.bimexcellence.org',
+        'localhost' // For testing
+      ];
+      
+      function checkDomainAuth() {
+        try {
+          const parentDomain = window.parent.location.hostname;
+          const isAllowed = ALLOWED_DOMAINS.some(domain => 
+            parentDomain === domain || parentDomain.endsWith('.' + domain)
+          );
+          
+          if (!isAllowed && window.parent !== window) {
+            document.body.innerHTML = '<div style="padding: 40px; text-align: center; color: #e53e3e; font-family: Arial, sans-serif;"><h2>Access Denied</h2><p>This dashboard can only be embedded on authorized domains.</p></div>';
+            return false;
+          }
+          return true;
+        } catch (e) {
+          // Cross-origin restriction - assume it's embedded properly
+          return true;
+        }
+      }
+      
+      // Check domain authorization before initializing
+      if (!checkDomainAuth()) {
+        return;
+      }
+      
+      // Namespace everything to avoid conflicts
+      window.BIMeiKBDashboardWP = window.BIMeiKBDashboardWP || {};
+      
+      class WordPressDashboard {
+        constructor() {
+          this.sessionId = this.generateSessionId();
+          this.config = {
+            apiEndpoint: 'https://australia-southeast1-bimei-ai.cloudfunctions.net/dashboardApi'
+          };
+          this.state = {
+            query: '',
+            loading: false,
+            results: {}
+          };
+          
+          this.init();
+        }
+
+        init() {
+          this.setupEventListeners();
+          console.log('BIMei KB Dashboard (WordPress) initialized');
+        }
+
+        generateSessionId() {
+          return 'wp_dash_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+        }
+
+        setupEventListeners() {
+          const input = document.getElementById('bimei-kb-wp-query-input');
+          const submitBtn = document.getElementById('bimei-kb-wp-submit-btn');
+
+          if (input && submitBtn) {
+            submitBtn.addEventListener('click', () => this.handleQuery());
+            input.addEventListener('keypress', (e) => {
+              if (e.key === 'Enter') this.handleQuery();
+            });
+          }
+        }
+
+        async handleQuery() {
+          const input = document.getElementById('bimei-kb-wp-query-input');
+          const query = input.value.trim();
+          
+          if (!query) return;
+
+          this.state.query = query;
+          this.state.loading = true;
+          
+          // Update UI
+          const submitBtn = document.getElementById('bimei-kb-wp-submit-btn');
+          if (submitBtn) submitBtn.disabled = true;
+          
+          // Show loading states
+          this.setAllModulesLoading();
+
+          try {
+            // Real API call to unified endpoint
+            const response = await fetch(this.config.apiEndpoint, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                query,
+                modules: ['text', 'sources', 'evidence', 'path', 'graph'],
+                sessionId: this.sessionId
+              })
+            });
+
+            if (!response.ok) {
+              throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+            }
+
+            const data = await response.json();
+            this.state.results = data.results;
+            this.showResults(data.results);
+            
+          } catch (error) {
+            console.error('Query failed:', error);
+            this.showError('Failed to process query. Please try again.');
+          } finally {
+            this.state.loading = false;
+            if (submitBtn) submitBtn.disabled = false;
+          }
+        }
+
+        setAllModulesLoading() {
+          const modules = ['text', 'sources', 'evidence', 'path', 'graph'];
+          
+          modules.forEach(module => {
+            this.updateModuleStatus(module, 'loading');
+            this.updateModuleContent(module, '<div class="bimei-kb-wp-loading-spinner"></div>');
+          });
+        }
+
+        generateMockData(query) {
+          return {
+            results: {
+              text: {
+                content: `**Building Information Modeling (BIM)** is a digital representation of physical and functional characteristics of a facility. It serves as a *shared knowledge resource* for information about a facility forming a reliable basis for decisions during its life-cycle. BIM processes support the creation and management of information throughout the project lifecycle.`,
+                source: 'BIMei Knowledge Base',
+                mode: 'expert'
+              },
+              sources: {
+                links: [
+                  { url: 'https://bimdictionary.com/en/building-information-modeling', title: '[Dictionary] Building Information Modeling', type: 'dictionary' },
+                  { url: 'https://bimexcellence.org/bim-fundamentals', title: '[Page] BIM Fundamentals Guide', type: 'page' },
+                  { url: 'https://bimexcellence.org/resources/bim-guide.pdf', title: '[PDF] Complete BIM Implementation Guide', type: 'pdf' }
+                ]
+              },
+              evidence: {
+                score: 8.7,
+                confidence: 'High',
+                tier: 'high',
+                metrics: { hops: 2, raw: 1.85, normalised: 0.95, decay: 0.85 }
+              },
+              path: {
+                nodes: [
+                  { id: 'bim1', label: 'Building Information Modeling', type: 'Construct' },
+                  { id: 'proc1', label: 'BIM Process', type: 'Process' },
+                  { id: 'mu1', label: 'Model Uses', type: 'InformationUse' }
+                ],
+                edges: [
+                  { relation: 'CONTAINS' },
+                  { relation: 'ENABLES' }
+                ],
+                hops: 2
+              },
+              graph: {
+                answer: 'BIM is a comprehensive digital process that involves creating, managing, and sharing building information throughout the project lifecycle. It connects various stakeholders, processes, and information uses.',
+                cypher: 'MATCH (bim:Construct)-[:CONTAINS]->(proc:Process)-[:ENABLES]->(mu:InformationUse) WHERE bim.name CONTAINS "BIM" RETURN bim, proc, mu',
+                visual: {
+                  nodes: [
+                    { id: '1', label: 'BIM Process', group: 'Construct' },
+                    { id: '2', label: 'Information Management', group: 'Process' },
+                    { id: '3', label: 'Model Uses', group: 'InformationUse' },
+                    { id: '4', label: 'Stakeholder Collaboration', group: 'Activity' }
+                  ],
+                  edges: [
+                    { from: '1', to: '2', label: 'CONTAINS' },
+                    { from: '2', to: '3', label: 'ENABLES' },
+                    { from: '1', to: '4', label: 'FACILITATES' }
+                  ]
+                }
+              }
+            }
+          };
+        }
+
+        showResults(results) {
+          // Text Response
+          if (results.text && !results.text.error) {
+            this.updateModuleStatus('text', 'success');
+            this.updateModuleContent('text', this.formatTextResponse(results.text));
+          }
+
+          // Sources
+          if (results.sources && !results.sources.error && results.sources.links?.length > 0) {
+            this.updateModuleStatus('sources', 'success');
+            this.updateModuleContent('sources', this.formatSources(results.sources.links));
+          } else {
+            this.updateModuleStatus('sources', 'success');
+            this.updateModuleContent('sources', '<div class="bimei-kb-wp-no-data">No sources available</div>');
+          }
+
+          // Evidence
+          if (results.evidence && !results.evidence.error) {
+            this.updateModuleStatus('evidence', 'success');
+            this.updateModuleContent('evidence', this.formatEvidence(results.evidence));
+          }
+
+          // Path
+          if (results.path && !results.path.error && results.path.nodes?.length > 0) {
+            this.updateModuleStatus('path', 'success');
+            this.updateModuleContent('path', this.formatPath(results.path));
+          }
+
+          // Graph
+          if (results.graph && !results.graph.error) {
+            this.updateModuleStatus('graph', 'success');
+            this.updateModuleContent('graph', this.formatGraph(results.graph));
+          }
+        }
+
+        formatTextResponse(data) {
+          const content = data.content || 'No content available';
+          const source = data.source || 'BIMei AI';
+          const mode = data.mode || 'default';
+          const wordCount = content.split(/\s+/).length;
+          
+          return `
+            <div style="line-height: 1.6; color: #2d3748;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #718096;">
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                  <span><strong>Source:</strong> ${this.escapeHtml(source)}</span>
+                  <span><strong>Mode:</strong> ${mode}</span>
+                  <span><strong>Words:</strong> ${wordCount}</span>
+                </div>
+              </div>
+              <div>${this.parseMarkdown(content)}</div>
+            </div>
+          `;
+        }
+
+        formatSources(links) {
+          const sourcesList = links.map((link, index) => {
+            const typeIcon = this.getTypeIcon(link.type);
+            const title = link.title || this.extractTitleFromUrl(link.url);
+            
+            return `
+              <div style="margin-bottom: 12px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff;">
+                <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                  <span style="font-size: 14px;">${typeIcon}</span>
+                  <span style="font-size: 11px; color: #718096; text-transform: uppercase; font-weight: 600; flex: 1;">${link.type}</span>
+                  <span style="font-size: 10px; color: #a0aec0;">#${index + 1}</span>
+                </div>
+                <a href="${link.url}" target="_blank" style="color: #3182ce; text-decoration: none; font-size: 14px; line-height: 1.4; display: block;">
+                  ${this.escapeHtml(title)}
+                </a>
+              </div>
+            `;
+          }).join('');
+          
+          return `
+            <div>
+              <div style="margin-bottom: 12px; font-size: 12px; color: #718096;">
+                ${links.length} source${links.length !== 1 ? 's' : ''} found
+              </div>
+              ${sourcesList}
+            </div>
+          `;
+        }
+
+        formatEvidence(data) {
+          const score = data.score || 0;
+          const confidence = data.confidence || 'Unknown';
+          const metrics = data.metrics || {};
+          
+          return `
+            <div style="text-align: center;">
+              <div style="font-size: 36px; font-weight: 700; color: #38a169; margin-bottom: 8px;">
+                ${score.toFixed(1)}
+              </div>
+              <div style="font-size: 14px; color: #38a169; font-weight: 600; margin-bottom: 16px;">
+                ${confidence} Confidence
+              </div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+                <div>
+                  <div style="font-weight: 600; color: #4a5568;">${metrics.hops || 0}</div>
+                  <div style="color: #718096;">Hops</div>
+                </div>
+                <div>
+                  <div style="font-weight: 600; color: #4a5568;">${(metrics.normalised || 0).toFixed(2)}</div>
+                  <div style="color: #718096;">Normalised</div>
+                </div>
+                <div>
+                  <div style="font-weight: 600; color: #4a5568;">${(metrics.raw || 0).toFixed(2)}</div>
+                  <div style="color: #718096;">Raw Score</div>
+                </div>
+                <div>
+                  <div style="font-weight: 600; color: #4a5568;">${(metrics.decay || 0).toFixed(2)}</div>
+                  <div style="color: #718096;">Decay</div>
+                </div>
+              </div>
+            </div>
+          `;
+        }
+
+        formatPath(data) {
+          const nodes = data.nodes || [];
+          const edges = data.edges || [];
+          
+          let pathHtml = `
+            <div style="margin-bottom: 12px; text-align: center; font-size: 12px; color: #718096;">
+              ${nodes.length} nodes, ${data.hops || 0} hops
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+          `;
+          
+          nodes.forEach((node, i) => {
+            const nodeColor = this.getNodeColor(node.type);
+            pathHtml += `
+              <div style="background: ${nodeColor}; color: white; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 500; text-align: center; max-width: 250px;">
+                <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">${node.type}</div>
+                <div>${this.escapeHtml(node.label)}</div>
+              </div>
+            `;
+            
+            if (i < edges.length) {
+              const edge = edges[i];
+              pathHtml += `
+                <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                  <div style="font-size: 10px; color: #718096; background: white; padding: 3px 8px; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600;">
+                    ${edge.relation || 'CONNECTS'}
+                  </div>
+                  <div style="color: #cbd5e0; font-size: 16px;">↓</div>
+                </div>
+              `;
+            }
+          });
+          
+          pathHtml += '</div>';
+          return pathHtml;
+        }
+
+        formatGraph(data) {
+          const answer = data.answer || 'No answer available';
+          const visual = data.visual || { nodes: [], edges: [] };
+          
+          return `
+            <div>
+              <div style="margin-bottom: 16px; padding: 14px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 10px; border: 1px solid #e2e8f0;">
+                <div style="font-size: 14px; font-weight: 600; color: #2d3748; margin-bottom: 8px;">Graph Answer</div>
+                <div style="font-size: 13px; line-height: 1.5; color: #4a5568;">${this.escapeHtml(answer)}</div>
+              </div>
+              
+              ${visual.nodes.length > 0 ? `
+                <div style="margin-bottom: 16px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="font-size: 12px; font-weight: 600; color: #718096;">Graph Visualization</div>
+                    <div style="font-size: 11px; color: #a0aec0;">
+                      ${visual.nodes.length} nodes • ${visual.edges.length} relationships
+                    </div>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+                    ${visual.nodes.slice(0, 8).map(node => `
+                      <div style="background: ${this.getNodeColor(node.group)}; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; font-weight: 500;">
+                        <div style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">${node.group || 'Node'}</div>
+                        <div>${this.escapeHtml(node.label || 'Unknown')}</div>
+                      </div>
+                    `).join('')}
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+        }
+
+        // Utility methods
+        updateModuleStatus(moduleName, status) {
+          const statusEl = document.getElementById(`bimei-kb-wp-status-${moduleName}`);
+          if (statusEl) {
+            statusEl.className = `bimei-kb-wp-module-status bimei-kb-wp-status-${status}`;
+            statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+          }
+        }
+
+        updateModuleContent(moduleName, content) {
+          const contentEl = document.getElementById(`bimei-kb-wp-content-${moduleName}`);
+          if (contentEl) {
+            contentEl.innerHTML = content;
+          }
+        }
+
+        showError(message) {
+          const modules = ['text', 'sources', 'evidence', 'path', 'graph'];
+          modules.forEach(module => {
+            this.updateModuleStatus(module, 'error');
+            this.updateModuleContent(module, `<div class="bimei-kb-wp-error-message">${message}</div>`);
+          });
+        }
+
+        parseMarkdown(text) {
+          return text
+            .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+            .replace(/\*(.*?)\*/g, '<em>$1</em>')
+            .replace(/`([^`]+)`/g, '<code style="background: #f1f5f9; padding: 2px 4px; border-radius: 3px; font-size: 0.9em;">$1</code>')
+            .replace(/\n\n/g, '</p><p>')
+            .replace(/\n/g, '<br>')
+            .replace(/^/, '<p>')
+            .replace(/$/, '</p>');
+        }
+
+        escapeHtml(text) {
+          return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        }
+
+        extractTitleFromUrl(url) {
+          try {
+            const urlObj = new URL(url);
+            const segments = urlObj.pathname.split('/').filter(s => s);
+            if (segments.length > 0) {
+              return segments[segments.length - 1].replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+            }
+            return urlObj.hostname;
+          } catch {
+            return url;
+          }
+        }
+
+        getTypeIcon(type) {
+          const icons = {
+            'dictionary': '📚',
+            'pdf': '📄',
+            'page': '🌐',
+            'external': '🔗'
+          };
+          return icons[type] || '📄';
+        }
+
+        getNodeColor(type) {
+          const colors = {
+            'Construct': '#3182ce',
+            'InformationUse': '#e53e3e',
+            'ActionStatement': '#38a169',
+            'DictionaryItem': '#d69e2e',
+            'Content': '#805ad5',
+            'Deliverable': '#dd6b20',
+            'Resource': '#319795',
+            'Process': '#9f7aea',
+            'Activity': '#f56565'
+          };
+          return colors[type] || '#718096';
+        }
+      }
+
+      // Initialize when DOM is ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+          window.BIMeiKBDashboardWP.instance = new WordPressDashboard();
+        });
+      } else {
+        window.BIMeiKBDashboardWP.instance = new WordPressDashboard();
+      }
+    })();
+  </script>
+</body>
+</html>

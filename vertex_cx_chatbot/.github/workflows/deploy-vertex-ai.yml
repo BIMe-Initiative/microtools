@@ -1,0 +1,40 @@
+name: Deploy to Vertex AI
+
+on:
+  push:
+    branches: [ main ]
+    paths: 
+      - 'vertex-ai/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup Google Cloud CLI
+      uses: google-github-actions/setup-gcloud@v2
+      with:
+        project_id: ${{ secrets.GCP_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        export_default_credentials: true
+        
+    - name: Deploy Playbooks to Vertex AI
+      run: |
+        # Deploy default playbook
+        gcloud alpha conversational-agents playbooks update default \
+          --agent=projects/${{ secrets.GCP_PROJECT_ID }}/locations/global/agents/${{ secrets.AGENT_ID }} \
+          --source=vertex-ai/playbooks/default.md
+          
+        # Deploy knowledge graph handler playbook  
+        gcloud alpha conversational-agents playbooks update knowledge-graph-handler \
+          --agent=projects/${{ secrets.GCP_PROJECT_ID }}/locations/global/agents/${{ secrets.AGENT_ID }} \
+          --source=vertex-ai/playbooks/knowledge-graph-handler.md
+          
+        # Deploy graph tool
+        gcloud alpha conversational-agents tools update graph-tool \
+          --agent=projects/${{ secrets.GCP_PROJECT_ID }}/locations/global/agents/${{ secrets.AGENT_ID }} \
+          --source=vertex-ai/tools/graph-tool.yaml

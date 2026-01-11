@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMei Knowledge Dashboard - MOCK VERSION</title>
+  <style>
+    /* Same styles as main dashboard */
+    .bimei-kb-dashboard {
+      max-width: 1200px !important;
+      margin: 0 auto !important;
+      padding: 20px !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      background: #f8fafc !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+    }
+
+    .bimei-kb-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 24px !important;
+      padding-bottom: 16px !important;
+      border-bottom: 2px solid #e2e8f0 !important;
+    }
+
+    .bimei-kb-title {
+      font-size: 24px !important;
+      font-weight: 700 !important;
+      color: #1a202c !important;
+      margin: 0 !important;
+    }
+
+    .bimei-kb-query-bar {
+      display: flex !important;
+      gap: 12px !important;
+      margin-bottom: 24px !important;
+      align-items: center !important;
+    }
+
+    .bimei-kb-input {
+      flex: 1 !important;
+      padding: 12px 16px !important;
+      border: 2px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      outline: none !important;
+      transition: border-color 0.2s !important;
+    }
+
+    .bimei-kb-input:focus {
+      border-color: #3182ce !important;
+    }
+
+    .bimei-kb-submit {
+      padding: 12px 24px !important;
+      background: #3182ce !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      cursor: pointer !important;
+      transition: background-color 0.2s !important;
+    }
+
+    .bimei-kb-submit:hover {
+      background: #2c5aa0 !important;
+    }
+
+    .bimei-kb-submit:disabled {
+      background: #a0aec0 !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Responsive Grid Layout */
+    .bimei-kb-modules {
+      display: grid !important;
+      gap: 20px !important;
+      grid-template-columns: 2fr 1fr !important;
+      grid-template-rows: auto auto !important;
+    }
+
+    /* Desktop Layout */
+    @media (min-width: 1024px) {
+      .bimei-kb-modules {
+        grid-template-columns: 2fr 1fr 1fr !important;
+        grid-template-areas: 
+          "text sources evidence"
+          "path graph graph" !important;
+      }
+      .bimei-kb-module-text { grid-area: text !important; }
+      .bimei-kb-module-sources { grid-area: sources !important; }
+      .bimei-kb-module-evidence { grid-area: evidence !important; }
+      .bimei-kb-module-path { grid-area: path !important; }
+      .bimei-kb-module-graph { grid-area: graph !important; }
+    }
+
+    /* Tablet Layout */
+    @media (max-width: 1023px) and (min-width: 768px) {
+      .bimei-kb-modules {
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-areas: 
+          "text text"
+          "sources evidence"
+          "path path"
+          "graph graph" !important;
+      }
+    }
+
+    /* Mobile Layout */
+    @media (max-width: 767px) {
+      .bimei-kb-modules {
+        grid-template-columns: 1fr !important;
+        grid-template-areas: 
+          "text"
+          "sources"
+          "evidence"
+          "path"
+          "graph" !important;
+      }
+      
+      .bimei-kb-query-bar {
+        flex-direction: column !important;
+      }
+      
+      .bimei-kb-input, .bimei-kb-submit {
+        width: 100% !important;
+      }
+    }
+
+    /* Module Base Styles */
+    .bimei-kb-module {
+      background: white !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      padding: 20px !important;
+      min-height: 200px !important;
+      position: relative !important;
+    }
+
+    .bimei-kb-module-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 16px !important;
+      padding-bottom: 8px !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+    .bimei-kb-module-title {
+      font-size: 18px !important;
+      font-weight: 600 !important;
+      color: #2d3748 !important;
+      margin: 0 !important;
+    }
+
+    .bimei-kb-module-status {
+      font-size: 12px !important;
+      padding: 4px 8px !important;
+      border-radius: 4px !important;
+      font-weight: 500 !important;
+    }
+
+    .bimei-kb-status-loading {
+      background: #fef5e7 !important;
+      color: #d69e2e !important;
+    }
+
+    .bimei-kb-status-success {
+      background: #f0fff4 !important;
+      color: #38a169 !important;
+    }
+
+    .bimei-kb-status-error {
+      background: #fed7d7 !important;
+      color: #e53e3e !important;
+    }
+
+    .bimei-kb-status-idle {
+      background: #edf2f7 !important;
+      color: #718096 !important;
+    }
+
+    .bimei-kb-module-content {
+      min-height: 120px !important;
+    }
+
+    .bimei-kb-loading-spinner {
+      width: 24px !important;
+      height: 24px !important;
+      border: 2px solid #e2e8f0 !important;
+      border-top: 2px solid #3182ce !important;
+      border-radius: 50% !important;
+      animation: bimei-kb-spin 1s linear infinite !important;
+      margin: 0 auto !important;
+    }
+
+    @keyframes bimei-kb-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .bimei-kb-module-graph {
+      min-height: 400px !important;
+    }
+
+    .bimei-kb-error-message {
+      color: #e53e3e !important;
+      font-size: 14px !important;
+      text-align: center !important;
+    }
+
+    .bimei-kb-mock-banner {
+      background: #fef5e7 !important;
+      border: 1px solid #f6e05e !important;
+      border-radius: 8px !important;
+      padding: 12px 16px !important;
+      margin-bottom: 20px !important;
+      text-align: center !important;
+      color: #744210 !important;
+      font-weight: 600 !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="bimei-kb-dashboard" id="bimei-kb-dashboard">
+    <!-- Mock Banner -->
+    <div class="bimei-kb-mock-banner">
+      🧪 MOCK VERSION - Testing UI and Layout (No Real API Calls)
+    </div>
+
+    <!-- Header -->
+    <div class="bimei-kb-header">
+      <h1 class="bimei-kb-title">BIMei Knowledge Dashboard</h1>
+      <div style="font-size: 14px; color: #718096;">v1.0.0-mock</div>
+    </div>
+
+    <!-- Query Bar -->
+    <div class="bimei-kb-query-bar">
+      <input 
+        type="text" 
+        class="bimei-kb-input" 
+        id="bimei-kb-query-input"
+        placeholder="Try: 'What is BIM?' or 'connection between LOD and model uses'"
+        autocomplete="off"
+      >
+      <button class="bimei-kb-submit" id="bimei-kb-submit-btn">
+        Search
+      </button>
+    </div>
+
+    <!-- Modules Grid -->
+    <div class="bimei-kb-modules">
+      <!-- Text Response Module -->
+      <div class="bimei-kb-module bimei-kb-module-text" id="module-text">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Response</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-text">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-text">
+          Enter a query to see AI response with markdown formatting
+        </div>
+      </div>
+
+      <!-- Sources Module -->
+      <div class="bimei-kb-module bimei-kb-module-sources" id="module-sources">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Sources</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-sources">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-sources">
+          Data store sources will appear here
+        </div>
+      </div>
+
+      <!-- SEW Evidence Module -->
+      <div class="bimei-kb-module bimei-kb-module-evidence" id="module-evidence">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Evidence</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-evidence">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-evidence">
+          Semantic evidence weights will appear here
+        </div>
+      </div>
+
+      <!-- Path Visualization Module -->
+      <div class="bimei-kb-module bimei-kb-module-path" id="module-path">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Knowledge Path</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-path">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-path">
+          Knowledge graph path will appear here
+        </div>
+      </div>
+
+      <!-- Interactive Graph Module -->
+      <div class="bimei-kb-module bimei-kb-module-graph" id="module-graph">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Interactive Graph</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-graph">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-graph">
+          Interactive graph visualization will appear here
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Mock Dashboard for Testing UI/UX
+    class MockDashboard {
+      constructor() {
+        this.setupEventListeners();
+        console.log('Mock Dashboard initialized - UI testing mode');
+      }
+
+      setupEventListeners() {
+        const input = document.getElementById('bimei-kb-query-input');
+        const submitBtn = document.getElementById('bimei-kb-submit-btn');
+
+        submitBtn.addEventListener('click', () => this.handleMockQuery());
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') this.handleMockQuery();
+        });
+      }
+
+      async handleMockQuery() {
+        const input = document.getElementById('bimei-kb-query-input');
+        const query = input.value.trim();
+        
+        if (!query) return;
+
+        console.log('Mock query:', query);
+        
+        // Show loading states
+        this.setAllModulesLoading();
+        
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        // Show mock results
+        this.showMockResults(query);
+      }
+
+      setAllModulesLoading() {
+        const modules = ['text', 'sources', 'evidence', 'path', 'graph'];
+        
+        modules.forEach(module => {
+          const statusEl = document.getElementById(`status-${module}`);
+          const contentEl = document.getElementById(`content-${module}`);
+          
+          statusEl.className = 'bimei-kb-module-status bimei-kb-status-loading';
+          statusEl.textContent = 'Loading';
+          
+          contentEl.innerHTML = '<div class="bimei-kb-loading-spinner"></div>';
+        });
+      }
+
+      showMockResults(query) {
+        // Mock Text Response
+        this.updateModule('text', 'success', `
+          <div style="line-height: 1.6; color: #2d3748;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #718096;">
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <span><strong>Source:</strong> BIMei Knowledge Base</span>
+                <span><strong>Mode:</strong> expert</span>
+                <span><strong>Words:</strong> 45</span>
+              </div>
+              <button onclick="navigator.clipboard.writeText('Mock response content')" style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 4px; cursor: pointer;">📋 Copy</button>
+            </div>
+            <div>
+              <p><strong>Building Information Modeling (BIM)</strong> is a digital representation of physical and functional characteristics of a facility. It serves as a <em>shared knowledge resource</em> for information about a facility forming a reliable basis for decisions during its life-cycle.</p>
+            </div>
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 11px; color: #a0aec0;">
+              Query: "${query}"
+            </div>
+          </div>
+        `);
+
+        // Mock Sources
+        this.updateModule('sources', 'success', `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; color: #718096;">
+              <span>3 sources found</span>
+              <button style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 4px; cursor: pointer;">Export List</button>
+            </div>
+            <div style="margin-bottom: 12px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 14px;">📚</span>
+                <span style="font-size: 11px; color: #718096; text-transform: uppercase; font-weight: 600; flex: 1;">DICTIONARY</span>
+                <span style="font-size: 10px; color: #a0aec0;">#1</span>
+              </div>
+              <a href="#" style="color: #3182ce; text-decoration: none; font-size: 14px; line-height: 1.4; display: block; margin-bottom: 4px;">Building Information Modeling</a>
+              <div style="font-size: 11px; color: #a0aec0;">bimdictionary.com</div>
+            </div>
+            <div style="margin-bottom: 12px; padding: 12px; border: 1px solid #e2e8f0; border-radius: 8px; background: #ffffff;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                <span style="font-size: 14px;">🌐</span>
+                <span style="font-size: 11px; color: #718096; text-transform: uppercase; font-weight: 600; flex: 1;">PAGE</span>
+                <span style="font-size: 10px; color: #a0aec0;">#2</span>
+              </div>
+              <a href="#" style="color: #3182ce; text-decoration: none; font-size: 14px; line-height: 1.4; display: block; margin-bottom: 4px;">BIM Fundamentals</a>
+              <div style="font-size: 11px; color: #a0aec0;">bimexcellence.org</div>
+            </div>
+          </div>
+        `);
+
+        // Mock Evidence
+        this.updateModule('evidence', 'success', `
+          <div style="text-align: center;">
+            <div style="font-size: 36px; font-weight: 700; color: #38a169; margin-bottom: 8px;">
+              8.7
+            </div>
+            <div style="font-size: 14px; color: #38a169; font-weight: 600; margin-bottom: 16px;">
+              High Confidence
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">2</div>
+                <div style="color: #718096;">Hops</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">0.95</div>
+                <div style="color: #718096;">Normalised</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">1.85</div>
+                <div style="color: #718096;">Raw Score</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">0.85</div>
+                <div style="color: #718096;">Decay</div>
+              </div>
+            </div>
+          </div>
+        `);
+
+        // Mock Path
+        this.updateModule('path', 'success', `
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; color: #718096;">
+              <span>3 nodes, 2 hops</span>
+              <button style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 4px; cursor: pointer;">🔍 Expand</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center;">
+              <div style="background: #3182ce; color: white; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 500; text-align: center; max-width: 250px;">
+                <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">Construct</div>
+                <div>Building Information Modeling</div>
+              </div>
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px;">
+                <div style="font-size: 10px; color: #718096; background: white; padding: 3px 8px; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600;">CONTAINS</div>
+                <div style="color: #cbd5e0; font-size: 16px;">↓</div>
+              </div>
+              <div style="background: #e53e3e; color: white; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 500; text-align: center; max-width: 250px;">
+                <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">InformationUse</div>
+                <div>Model Uses</div>
+              </div>
+            </div>
+          </div>
+        `);
+
+        // Mock Graph
+        this.updateModule('graph', 'success', `
+          <div>
+            <div style="margin-bottom: 16px; padding: 14px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 10px; border: 1px solid #e2e8f0;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div style="font-size: 14px; font-weight: 600; color: #2d3748;">Graph Answer</div>
+                <button style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: white; border-radius: 4px; cursor: pointer;">🔍 Expand</button>
+              </div>
+              <div style="font-size: 13px; line-height: 1.5; color: #4a5568;">BIM is a digital process that involves creating and managing information throughout a building's lifecycle. It connects various model uses and information requirements.</div>
+            </div>
+            <div style="margin-bottom: 16px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <div style="font-size: 12px; font-weight: 600; color: #718096;">Graph Visualization</div>
+                <div style="font-size: 11px; color: #a0aec0;">5 nodes • 4 relationships</div>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px;">
+                <div style="background: #3182ce; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; font-weight: 500;">
+                  <div style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">Construct</div>
+                  <div>BIM Process</div>
+                </div>
+                <div style="background: #e53e3e; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; font-weight: 500;">
+                  <div style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">InformationUse</div>
+                  <div>Model Uses</div>
+                </div>
+                <div style="background: #38a169; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; font-weight: 500;">
+                  <div style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">ActionStatement</div>
+                  <div>Create Model</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        `);
+      }
+
+      updateModule(moduleName, status, content) {
+        const statusEl = document.getElementById(`status-${moduleName}`);
+        const contentEl = document.getElementById(`content-${moduleName}`);
+        
+        statusEl.className = `bimei-kb-module-status bimei-kb-status-${status}`;
+        statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        
+        contentEl.innerHTML = content;
+      }
+    }
+
+    // Initialize mock dashboard
+    document.addEventListener('DOMContentLoaded', () => {
+      new MockDashboard();
+    });
+  </script>
+</body>
+</html>

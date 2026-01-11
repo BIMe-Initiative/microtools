@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BIMei Knowledge Dashboard</title>
+  <style>
+    /* WordPress-safe CSS with bimei-kb- prefixes and !important declarations */
+    .bimei-kb-dashboard {
+      max-width: 1200px !important;
+      margin: 0 auto !important;
+      padding: 20px !important;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif !important;
+      background: #f8fafc !important;
+      border-radius: 12px !important;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+    }
+
+    .bimei-kb-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 24px !important;
+      padding-bottom: 16px !important;
+      border-bottom: 2px solid #e2e8f0 !important;
+    }
+
+    .bimei-kb-title {
+      font-size: 24px !important;
+      font-weight: 700 !important;
+      color: #1a202c !important;
+      margin: 0 !important;
+    }
+
+    .bimei-kb-query-bar {
+      display: flex !important;
+      gap: 12px !important;
+      margin-bottom: 24px !important;
+      align-items: center !important;
+    }
+
+    .bimei-kb-input {
+      flex: 1 !important;
+      padding: 12px 16px !important;
+      border: 2px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      outline: none !important;
+      transition: border-color 0.2s !important;
+    }
+
+    .bimei-kb-input:focus {
+      border-color: #3182ce !important;
+    }
+
+    .bimei-kb-submit {
+      padding: 12px 24px !important;
+      background: #3182ce !important;
+      color: white !important;
+      border: none !important;
+      border-radius: 8px !important;
+      font-size: 16px !important;
+      cursor: pointer !important;
+      transition: background-color 0.2s !important;
+    }
+
+    .bimei-kb-submit:hover {
+      background: #2c5aa0 !important;
+    }
+
+    .bimei-kb-submit:disabled {
+      background: #a0aec0 !important;
+      cursor: not-allowed !important;
+    }
+
+    /* Responsive Grid Layout */
+    .bimei-kb-modules {
+      display: grid !important;
+      gap: 20px !important;
+      grid-template-columns: 2fr 1fr !important;
+      grid-template-rows: auto auto !important;
+    }
+
+    /* Desktop Layout */
+    @media (min-width: 1024px) {
+      .bimei-kb-modules {
+        grid-template-columns: 2fr 1fr 1fr !important;
+        grid-template-areas: 
+          "text sources evidence"
+          "path graph graph" !important;
+      }
+      .bimei-kb-module-text { grid-area: text !important; }
+      .bimei-kb-module-sources { grid-area: sources !important; }
+      .bimei-kb-module-evidence { grid-area: evidence !important; }
+      .bimei-kb-module-path { grid-area: path !important; }
+      .bimei-kb-module-graph { grid-area: graph !important; }
+    }
+
+    /* Tablet Layout */
+    @media (max-width: 1023px) and (min-width: 768px) {
+      .bimei-kb-modules {
+        grid-template-columns: 1fr 1fr !important;
+        grid-template-areas: 
+          "text text"
+          "sources evidence"
+          "path path"
+          "graph graph" !important;
+      }
+    }
+
+    /* Mobile Layout */
+    @media (max-width: 767px) {
+      .bimei-kb-modules {
+        grid-template-columns: 1fr !important;
+        grid-template-areas: 
+          "text"
+          "sources"
+          "evidence"
+          "path"
+          "graph" !important;
+      }
+      
+      .bimei-kb-query-bar {
+        flex-direction: column !important;
+      }
+      
+      .bimei-kb-input, .bimei-kb-submit {
+        width: 100% !important;
+      }
+    }
+
+    /* Module Base Styles */
+    .bimei-kb-module {
+      background: white !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 8px !important;
+      padding: 20px !important;
+      min-height: 200px !important;
+      position: relative !important;
+    }
+
+    .bimei-kb-module-header {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      margin-bottom: 16px !important;
+      padding-bottom: 8px !important;
+      border-bottom: 1px solid #f1f5f9 !important;
+    }
+
+    .bimei-kb-module-title {
+      font-size: 18px !important;
+      font-weight: 600 !important;
+      color: #2d3748 !important;
+      margin: 0 !important;
+    }
+
+    .bimei-kb-module-status {
+      font-size: 12px !important;
+      padding: 4px 8px !important;
+      border-radius: 4px !important;
+      font-weight: 500 !important;
+    }
+
+    .bimei-kb-status-loading {
+      background: #fef5e7 !important;
+      color: #d69e2e !important;
+    }
+
+    .bimei-kb-status-success {
+      background: #f0fff4 !important;
+      color: #38a169 !important;
+    }
+
+    .bimei-kb-status-error {
+      background: #fed7d7 !important;
+      color: #e53e3e !important;
+    }
+
+    .bimei-kb-status-idle {
+      background: #edf2f7 !important;
+      color: #718096 !important;
+    }
+
+    .bimei-kb-module-content {
+      min-height: 120px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      color: #718096 !important;
+      font-style: italic !important;
+    }
+
+    .bimei-kb-loading-spinner {
+      width: 24px !important;
+      height: 24px !important;
+      border: 2px solid #e2e8f0 !important;
+      border-top: 2px solid #3182ce !important;
+      border-radius: 50% !important;
+      animation: bimei-kb-spin 1s linear infinite !important;
+    }
+
+    @keyframes bimei-kb-spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Module-specific styles */
+    .bimei-kb-module-graph {
+      min-height: 400px !important;
+    }
+
+    .bimei-kb-error-message {
+      color: #e53e3e !important;
+      font-size: 14px !important;
+      text-align: center !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="bimei-kb-dashboard" id="bimei-kb-dashboard">
+    <!-- Header -->
+    <div class="bimei-kb-header">
+      <h1 class="bimei-kb-title">BIMei Knowledge Dashboard</h1>
+      <div style="font-size: 14px; color: #718096;">v1.0.0</div>
+    </div>
+
+    <!-- Query Bar -->
+    <div class="bimei-kb-query-bar">
+      <input 
+        type="text" 
+        class="bimei-kb-input" 
+        id="bimei-kb-query-input"
+        placeholder="Ask about BIMei knowledge..."
+        autocomplete="off"
+      >
+      <button class="bimei-kb-submit" id="bimei-kb-submit-btn">
+        Search
+      </button>
+    </div>
+
+    <!-- Modules Grid -->
+    <div class="bimei-kb-modules">
+      <!-- Text Response Module -->
+      <div class="bimei-kb-module bimei-kb-module-text" id="module-text">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Response</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-text">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-text">
+          Enter a query to get started
+        </div>
+      </div>
+
+      <!-- Sources Module -->
+      <div class="bimei-kb-module bimei-kb-module-sources" id="module-sources">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Sources</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-sources">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-sources">
+          Sources will appear here
+        </div>
+      </div>
+
+      <!-- SEW Evidence Module -->
+      <div class="bimei-kb-module bimei-kb-module-evidence" id="module-evidence">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Evidence</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-evidence">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-evidence">
+          Evidence metrics will appear here
+        </div>
+      </div>
+
+      <!-- Path Visualization Module -->
+      <div class="bimei-kb-module bimei-kb-module-path" id="module-path">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Knowledge Path</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-path">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-path">
+          Knowledge path will appear here
+        </div>
+      </div>
+
+      <!-- Interactive Graph Module -->
+      <div class="bimei-kb-module bimei-kb-module-graph" id="module-graph">
+        <div class="bimei-kb-module-header">
+          <h3 class="bimei-kb-module-title">Interactive Graph</h3>
+          <span class="bimei-kb-module-status bimei-kb-status-idle" id="status-graph">Ready</span>
+        </div>
+        <div class="bimei-kb-module-content" id="content-graph">
+          Interactive graph will appear here
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // BIMei KB Dashboard - Module System
+    class BIMeiDashboard {
+      constructor() {
+        this.modules = new Map();
+        this.eventBus = new EventTarget();
+        this.sessionId = this.generateSessionId();
+        this.config = {
+          apiEndpoint: 'https://australia-southeast1-bimei-ai.cloudfunctions.net/dashboardApi'
+        };
+        this.state = {
+          query: '',
+          loading: false,
+          results: {}
+        };
+        
+        this.init();
+      }
+
+      generateSessionId() {
+        return 'dash_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+      }
+
+      init() {
+        // Register core modules
+        this.registerModule('text', new TextResponseModule());
+        this.registerModule('sources', new SourcesModule());
+        this.registerModule('evidence', new EvidenceModule());
+        this.registerModule('path', new PathVisualizationModule());
+        this.registerModule('graph', new InteractiveGraphModule());
+
+        // Setup event listeners
+        this.setupEventListeners();
+        
+        console.log('BIMei KB Dashboard initialized');
+      }
+
+      registerModule(name, moduleInstance) {
+        this.modules.set(name, moduleInstance);
+        moduleInstance.dashboard = this;
+        moduleInstance.init();
+      }
+
+      setupEventListeners() {
+        const input = document.getElementById('bimei-kb-query-input');
+        const submitBtn = document.getElementById('bimei-kb-submit-btn');
+
+        submitBtn.addEventListener('click', () => this.handleQuery());
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') this.handleQuery();
+        });
+      }
+
+      async handleQuery() {
+        console.log('Dashboard: Starting query...');
+        const input = document.getElementById('bimei-kb-query-input');
+        const query = input.value.trim();
+        
+        if (!query) {
+          console.log('Dashboard: Empty query, aborting');
+          return;
+        }
+
+        console.log('Dashboard: Query:', query);
+        this.state.query = query;
+        this.state.loading = true;
+        
+        // Update UI
+        document.getElementById('bimei-kb-submit-btn').disabled = true;
+        
+        // Notify all modules
+        console.log('Dashboard: Notifying modules of query start');
+        this.eventBus.dispatchEvent(new CustomEvent('query-start', { 
+          detail: { query } 
+        }));
+
+        try {
+          console.log('Dashboard: Making API call to:', this.config.apiEndpoint);
+          // Real API call to unified endpoint
+          const response = await fetch(this.config.apiEndpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              query,
+              modules: ['text', 'sources', 'evidence', 'path', 'graph'],
+              sessionId: this.sessionId
+            })
+          });
+
+          console.log('Dashboard: API response status:', response.status);
+          if (!response.ok) {
+            throw new Error(`API call failed: ${response.status} ${response.statusText}`);
+          }
+
+          const data = await response.json();
+          console.log('Dashboard: Full API response structure:', JSON.stringify(data, null, 2));
+          console.log('Dashboard: Results object:', data.results);
+          
+          // Check if we actually have real data or if API failed
+          if (!data.results || Object.keys(data.results).length === 0) {
+            throw new Error('API returned empty results');
+          }
+          
+          this.state.results = data.results;
+          
+          console.log('Dashboard: Notifying modules of query complete');
+          this.eventBus.dispatchEvent(new CustomEvent('query-complete', { 
+            detail: { query, results: data.results } 
+          }));
+          
+        } catch (error) {
+          console.error('Dashboard: Query failed:', error);
+          this.eventBus.dispatchEvent(new CustomEvent('query-error', { 
+            detail: { query, error } 
+          }));
+        } finally {
+          this.state.loading = false;
+          document.getElementById('bimei-kb-submit-btn').disabled = false;
+          console.log('Dashboard: Query processing complete');
+        }
+      }
+
+      updateModuleStatus(moduleName, status) {
+        const statusEl = document.getElementById(`status-${moduleName}`);
+        if (statusEl) {
+          statusEl.className = `bimei-kb-module-status bimei-kb-status-${status}`;
+          statusEl.textContent = status.charAt(0).toUpperCase() + status.slice(1);
+        }
+      }
+
+      updateModuleContent(moduleName, content) {
+        const contentEl = document.getElementById(`content-${moduleName}`);
+        if (contentEl) {
+          if (typeof content === 'string') {
+            contentEl.innerHTML = content;
+          } else {
+            contentEl.appendChild(content);
+          }
+        }
+      }
+    }
+
+    // Base Module Class
+    class BaseModule {
+      constructor() {
+        this.dashboard = null;
+        this.state = { loading: false, data: null, error: null };
+      }
+
+      init() {
+        this.dashboard.eventBus.addEventListener('query-start', (e) => this.onQueryStart(e.detail));
+        this.dashboard.eventBus.addEventListener('query-complete', (e) => this.onQueryComplete(e.detail));
+        this.dashboard.eventBus.addEventListener('query-error', (e) => this.onQueryError(e.detail));
+      }
+
+      onQueryStart(detail) {
+        this.state.loading = true;
+        this.state.error = null;
+        this.updateStatus('loading');
+        this.showLoading();
+      }
+
+      onQueryComplete(detail) {
+        this.state.loading = false;
+        // Override in subclasses
+      }
+
+      onQueryError(detail) {
+        this.state.loading = false;
+        this.state.error = detail.error;
+        this.updateStatus('error');
+        this.showError(detail.error);
+      }
+
+      updateStatus(status) {
+        this.dashboard.updateModuleStatus(this.getModuleName(), status);
+      }
+
+      updateContent(content) {
+        this.dashboard.updateModuleContent(this.getModuleName(), content);
+      }
+
+      showLoading() {
+        const spinner = document.createElement('div');
+        spinner.className = 'bimei-kb-loading-spinner';
+        this.updateContent(spinner);
+      }
+
+      showError(error) {
+        this.updateContent(`<div class="bimei-kb-error-message">Error: ${error.message || error}</div>`);
+      }
+
+      getModuleName() {
+        // Override in subclasses
+        return 'base';
+      }
+    }
+
+    // Module Implementations (Enhanced for Phase 3)
+    class TextResponseModule extends BaseModule {
+      getModuleName() { return 'text'; }
+      
+      onQueryComplete(detail) {
+        console.log('TextModule: Received query complete:', detail);
+        super.onQueryComplete(detail);
+        const textData = detail.results?.text;
+        console.log('TextModule: Text data:', textData);
+        
+        if (textData && !textData.error) {
+          this.updateStatus('success');
+          const content = this.formatTextResponse(textData, detail.query);
+          this.updateContent(content);
+        } else {
+          this.updateStatus('error');
+          this.updateContent(`<div class="bimei-kb-error-message">${textData?.error || 'No response available'}</div>`);
+        }
+      }
+      
+      formatTextResponse(data, query) {
+        const content = data.content || 'No content available';
+        const source = data.source || 'BIMei AI';
+        const mode = data.mode || 'default';
+        const wordCount = content.split(/\s+/).length;
+        
+        return `
+          <div style="line-height: 1.6; color: #2d3748;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #718096;">
+              <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                <span><strong>Source:</strong> ${this.escapeHtml(source)}</span>
+                <span><strong>Mode:</strong> ${mode}</span>
+                <span><strong>Words:</strong> ${wordCount}</span>
+              </div>
+              <button onclick="navigator.clipboard.writeText('${this.escapeForJs(content)}')" style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 4px; cursor: pointer;">📋 Copy</button>
+            </div>
+            <div>${this.parseMarkdown(content)}</div>
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 11px; color: #a0aec0;">
+              Query: "${this.escapeHtml(query)}"
+            </div>
+          </div>
+        `;
+      }
+      
+      parseMarkdown(text) {
+        return text
+          .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.*?)\*/g, '<em>$1</em>')
+          .replace(/`([^`]+)`/g, '<code style="background: #f1f5f9; padding: 2px 4px; border-radius: 3px; font-size: 0.9em;">$1</code>')
+          .replace(/\n\n/g, '</p><p>')
+          .replace(/\n/g, '<br>')
+          .replace(/^/, '<p>')
+          .replace(/$/, '</p>');
+      }
+      
+      escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+      
+      escapeForJs(text) {
+        return String(text).replace(/'/g, "\\''").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      }
+    }
+
+    class SourcesModule extends BaseModule {
+      getModuleName() { return 'sources'; }
+      
+      onQueryComplete(detail) {
+        console.log('SourcesModule: Received query complete:', detail);
+        super.onQueryComplete(detail);
+        const sourcesData = detail.results?.sources;
+        console.log('SourcesModule: Sources data:', sourcesData);
+        
+        if (sourcesData && !sourcesData.error && sourcesData.links?.length > 0) {
+          this.updateStatus('success');
+          const content = this.formatSources(sourcesData.links);
+          this.updateContent(content);
+        } else if (sourcesData?.error) {
+          this.updateStatus('error');
+          this.updateContent(`<div class="bimei-kb-error-message">${sourcesData.error}</div>`);
+        } else {
+          this.updateStatus('success');
+          this.updateContent('<div style="color: #718096; font-style: italic; text-align: center;">No sources available</div>');
+        }
+      }
+      
+      formatSources(links) {
+        const sourcesList = links.map(link => {
+          const typeIcon = this.getTypeIcon(link.type);
+          const title = link.title || link.url;
+          
+          return `
+            <div style="margin-bottom: 12px; padding: 8px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc;">
+              <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                <span style="font-size: 12px;">${typeIcon}</span>
+                <span style="font-size: 12px; color: #718096; text-transform: uppercase; font-weight: 600;">${link.type}</span>
+              </div>
+              <a href="${link.url}" target="_blank" style="color: #3182ce; text-decoration: none; font-size: 14px; line-height: 1.4;">
+                ${title}
+              </a>
+            </div>
+          `;
+        }).join('');
+        
+        return `<div>${sourcesList}</div>`;
+      }
+      
+      getTypeIcon(type) {
+        const icons = {
+          'dictionary': '📚',
+          'pdf': '📄',
+          'page': '🌐',
+          'external': '🔗'
+        };
+        return icons[type] || '📄';
+      }
+    }
+
+    class EvidenceModule extends BaseModule {
+      getModuleName() { return 'evidence'; }
+      
+      onQueryComplete(detail) {
+        console.log('EvidenceModule: Received query complete:', detail);
+        super.onQueryComplete(detail);
+        const evidenceData = detail.results?.evidence;
+        console.log('EvidenceModule: Evidence data:', evidenceData);
+        
+        if (evidenceData && !evidenceData.error) {
+          this.updateStatus('success');
+          const content = this.formatEvidence(evidenceData);
+          this.updateContent(content);
+        } else if (evidenceData?.error) {
+          this.updateStatus('error');
+          this.updateContent(`<div class="bimei-kb-error-message">${evidenceData.error}</div>`);
+        } else {
+          this.updateStatus('success');
+          this.updateContent('<div style="color: #718096; font-style: italic; text-align: center;">No evidence available</div>');
+        }
+      }
+      
+      formatEvidence(data) {
+        const score = data.score || 0;
+        const confidence = data.confidence || 'Unknown';
+        const tier = data.tier || 'minimal';
+        const metrics = data.metrics || {};
+        
+        const tierColor = this.getTierColor(tier);
+        
+        return `
+          <div style="text-align: center;">
+            <div style="font-size: 36px; font-weight: 700; color: #2d3748; margin-bottom: 8px;">
+              ${score.toFixed(1)}
+            </div>
+            <div style="font-size: 14px; color: ${tierColor}; font-weight: 600; margin-bottom: 16px;">
+              ${confidence} Confidence
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">${metrics.hops || 0}</div>
+                <div style="color: #718096;">Hops</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">${(metrics.normalised || 0).toFixed(2)}</div>
+                <div style="color: #718096;">Normalised</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">${(metrics.raw || 0).toFixed(2)}</div>
+                <div style="color: #718096;">Raw Score</div>
+              </div>
+              <div>
+                <div style="font-weight: 600; color: #4a5568;">${(metrics.decay || 0).toFixed(2)}</div>
+                <div style="color: #718096;">Decay</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+      
+      getTierColor(tier) {
+        const colors = {
+          'high': '#38a169',
+          'medium': '#d69e2e',
+          'low': '#e53e3e',
+          'minimal': '#718096'
+        };
+        return colors[tier] || '#718096';
+      }
+    }
+
+    class PathVisualizationModule extends BaseModule {
+      getModuleName() { return 'path'; }
+      
+      onQueryComplete(detail) {
+        console.log('PathModule: Received query complete:', detail);
+        super.onQueryComplete(detail);
+        const pathData = detail.results?.path;
+        console.log('PathModule: Path data:', pathData);
+        
+        if (pathData && !pathData.error && pathData.nodes?.length > 0) {
+          this.updateStatus('success');
+          const content = this.formatPath(pathData);
+          this.updateContent(content);
+        } else if (pathData?.error) {
+          this.updateStatus('error');
+          this.updateContent(`<div class="bimei-kb-error-message">${pathData.error}</div>`);
+        } else {
+          this.updateStatus('success');
+          this.updateContent('<div style="color: #718096; font-style: italic; text-align: center;">No path available</div>');
+        }
+      }
+      
+      formatPath(data) {
+        const nodes = data.nodes || [];
+        const edges = data.edges || [];
+        const hops = data.hops || 0;
+        
+        let pathHtml = `
+          <div style="margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 12px; color: #718096;">
+              <span>${nodes.length} nodes, ${hops} hops</span>
+              <button onclick="console.log('Path expand clicked')" style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: #f8fafc; border-radius: 4px; cursor: pointer;">🔍 Expand</button>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 8px; align-items: center; max-height: 300px; overflow-y: auto; padding: 8px;">
+        `;
+        
+        nodes.forEach((node, i) => {
+          const nodeType = node.type || 'Unknown';
+          const nodeColor = this.getNodeColor(nodeType);
+          
+          pathHtml += `
+            <div style="background: ${nodeColor}; color: white; border-radius: 8px; padding: 10px 14px; font-size: 13px; font-weight: 500; text-align: center; max-width: 250px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); position: relative;" title="Type: ${nodeType}\nID: ${node.id || 'N/A'}">
+              <div style="font-size: 10px; opacity: 0.8; margin-bottom: 2px;">${nodeType}</div>
+              <div>${this.escapeHtml(node.label || node.id)}</div>
+            </div>
+          `;
+          
+          if (i < edges.length) {
+            const edge = edges[i];
+            const relation = edge.relation || edge.type || 'CONNECTS';
+            pathHtml += `
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 4px; margin: 4px 0;">
+                <div style="font-size: 10px; color: #718096; background: white; padding: 3px 8px; border-radius: 12px; border: 1px solid #e2e8f0; font-weight: 600;">
+                  ${relation}
+                </div>
+                <div style="color: #cbd5e0; font-size: 16px; line-height: 1;">↓</div>
+              </div>
+            `;
+          }
+        });
+        
+        pathHtml += `
+            </div>
+            <div style="margin-top: 12px; padding-top: 8px; border-top: 1px solid #f1f5f9; font-size: 11px; color: #a0aec0; text-align: center;">
+              Knowledge path visualization
+            </div>
+          </div>
+        `;
+        
+        return pathHtml;
+      }
+      
+      getNodeColor(type) {
+        const colors = {
+          'Construct': '#3182ce',
+          'InformationUse': '#e53e3e',
+          'ActionStatement': '#38a169',
+          'DictionaryItem': '#d69e2e',
+          'Content': '#805ad5',
+          'Deliverable': '#dd6b20',
+          'Resource': '#319795'
+        };
+        return colors[type] || '#718096';
+      }
+      
+      escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+    }
+
+    class InteractiveGraphModule extends BaseModule {
+      getModuleName() { return 'graph'; }
+      
+      onQueryComplete(detail) {
+        console.log('GraphModule: Received query complete:', detail);
+        super.onQueryComplete(detail);
+        const graphData = detail.results?.graph;
+        console.log('GraphModule: Graph data:', graphData);
+        
+        if (graphData && !graphData.error) {
+          this.updateStatus('success');
+          const content = this.formatGraph(graphData);
+          this.updateContent(content);
+        } else if (graphData?.error) {
+          this.updateStatus('error');
+          this.updateContent(`<div class="bimei-kb-error-message">${graphData.error}</div>`);
+        } else {
+          this.updateStatus('success');
+          this.updateContent('<div style="color: #718096; font-style: italic; text-align: center;">No graph data available</div>');
+        }
+      }
+      
+      formatGraph(data) {
+        const answer = data.answer || 'No answer available';
+        const cypher = data.cypher || '';
+        const visual = data.visual || { nodes: [], edges: [] };
+        const isAggregation = data.isAggregation || false;
+        
+        return `
+          <div>
+            <div style="margin-bottom: 16px; padding: 14px; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); border-radius: 10px; border: 1px solid #e2e8f0;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
+                <div style="font-size: 14px; font-weight: 600; color: #2d3748;">Graph Answer</div>
+                <div style="display: flex; gap: 6px;">
+                  ${isAggregation ? '<span style="font-size: 10px; padding: 2px 6px; background: #fef5e7; color: #d69e2e; border-radius: 4px; font-weight: 600;">AGGREGATION</span>' : ''}
+                  <button onclick="console.log('Graph expand clicked')" style="font-size: 11px; padding: 4px 8px; border: 1px solid #e2e8f0; background: white; border-radius: 4px; cursor: pointer;">🔍 Expand</button>
+                </div>
+              </div>
+              <div style="font-size: 13px; line-height: 1.5; color: #4a5568;">${this.escapeHtml(answer)}</div>
+            </div>
+            
+            ${visual.nodes.length > 0 ? `
+              <div style="margin-bottom: 16px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                  <div style="font-size: 12px; font-weight: 600; color: #718096;">Graph Visualization</div>
+                  <div style="font-size: 11px; color: #a0aec0;">
+                    ${visual.nodes.length} nodes • ${visual.edges.length} relationships
+                  </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 8px; max-height: 200px; overflow-y: auto; padding: 8px; background: #f8fafc; border-radius: 6px;">
+                  ${visual.nodes.slice(0, 12).map(node => `
+                    <div style="background: ${this.getNodeColor(node.group)}; color: white; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; font-weight: 500;" title="${this.escapeHtml(node.title || '')}">
+                      <div style="font-size: 9px; opacity: 0.8; margin-bottom: 2px;">${node.group || 'Node'}</div>
+                      <div>${this.escapeHtml(node.label || 'Unknown')}</div>
+                    </div>
+                  `).join('')}
+                  ${visual.nodes.length > 12 ? `<div style="background: #e2e8f0; color: #718096; padding: 6px 8px; border-radius: 6px; font-size: 11px; text-align: center; display: flex; align-items: center; justify-content: center;">+${visual.nodes.length - 12} more</div>` : ''}
+                </div>
+              </div>
+            ` : ''}
+            
+            ${cypher ? `
+              <details style="margin-top: 12px;">
+                <summary style="font-size: 12px; color: #718096; cursor: pointer; padding: 8px; background: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0;">🔍 Generated Cypher Query</summary>
+                <div style="margin-top: 8px; position: relative;">
+                  <button onclick="navigator.clipboard.writeText('${this.escapeForJs(cypher)}')" style="position: absolute; top: 8px; right: 8px; font-size: 10px; padding: 4px 6px; border: 1px solid #4a5568; background: #2d3748; color: white; border-radius: 3px; cursor: pointer;">📋 Copy</button>
+                  <pre style="font-size: 10px; background: #1a202c; color: #e2e8f0; padding: 12px; border-radius: 6px; overflow-x: auto; margin: 0; line-height: 1.4;">${this.escapeHtml(cypher)}</pre>
+                </div>
+              </details>
+            ` : ''}
+          </div>
+        `;
+      }
+      
+      getNodeColor(group) {
+        const colors = {
+          'Construct': '#3182ce',
+          'InformationUse': '#e53e3e',
+          'ActionStatement': '#38a169',
+          'DictionaryItem': '#d69e2e',
+          'Content': '#805ad5',
+          'Deliverable': '#dd6b20',
+          'Resource': '#319795',
+          'Generic': '#718096'
+        };
+        return colors[group] || '#718096';
+      }
+      
+      escapeHtml(text) {
+        return String(text).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+      }
+      
+      escapeForJs(text) {
+        return String(text).replace(/'/g, "\\''").replace(/"/g, '\\"').replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+      }
+    }
+
+    // Global Dashboard Instance
+    window.BIMeiDashboard = null;
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', () => {
+      window.BIMeiDashboard = new BIMeiDashboard();
+    });
+
+    // Export for future module registration
+    window.BIMeiKB = {
+      registerModule: (name, moduleInstance) => {
+        if (window.BIMeiDashboard) {
+          window.BIMeiDashboard.registerModule(name, moduleInstance);
+        }
+      }
+    };
+  </script>
+</body>
+</html>
