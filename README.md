@@ -81,17 +81,12 @@ Each tool is designed to be modular, deployable independently, and focused on a 
 
 ---
 
-### Utility & Shared Resources
+### Widget & Embedding Tools
 
-#### [amx](amx/)
-**Purpose**: AMX (Adaptive Maturity eXplorer) embedding and parent page utilities
-**Stack**: HTML/JavaScript
-**Status**: Utility
-
-#### [common](common/)
-**Purpose**: Shared resources, brand assets, and configuration files
-**Stack**: Mixed (CSS, HTML, JSON)
-**Status**: Shared resources
+#### [adaptive-maturity-matrix](adaptive-maturity-matrix/)
+**Purpose**: Embeddable Adaptive Maturity Matrix widget for external websites
+**Stack**: HTML/JavaScript/CSS
+**Status**: Active
 
 ---
 
@@ -217,14 +212,14 @@ Each tool follows a similar setup pattern:
 ## Development
 
 ### Repository Structure
-```
+
+```text
 microtools/
 ├── adaptive-maturity-assessment-amis/  # React assessment tool
 ├── adaptive-maturity-map/             # React visualization tool
-├── amx/                               # AMX utilities
+├── adaptive-maturity-matrix/          # Embeddable widget
 ├── bimei-kb-dashboard/                # Production dashboard
 ├── bimei-vertex-cx-chatbot/           # Vertex chatbot v1
-├── common/                            # Shared resources
 ├── knowledge_graph_streamlit_viewer/  # Streamlit graph viewer
 ├── neodash-viewer/                    # Neo4j dashboard embed
 ├── vertex-graph-builder/              # Graph construction tool

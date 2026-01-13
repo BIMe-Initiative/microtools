@@ -89,7 +89,7 @@ See [Adaptive Maturity Assessment README](../adaptive-maturity-assessment-amis/R
 ## Related Tools
 
 - [adaptive-maturity-assessment-amis](../adaptive-maturity-assessment-amis/) - Main assessment tool
-- [amx](../amx/) - AMX widget embedding utilities
+- [adaptive-maturity-matrix](../adaptive-maturity-matrix/) - Embeddable widget
 - [BIM Thinkspace Episode 28](https://BIMexcellence.org/measuring-adaptive-maturity) - Background on adaptive maturity
 
 ---

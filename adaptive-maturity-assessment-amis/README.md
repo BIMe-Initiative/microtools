@@ -418,7 +418,7 @@ src/
 
 ### Related Tools
 - [adaptive-maturity-map](../adaptive-maturity-map/) - Companion visualization tool
-- [amx](../amx/) - AMX widget embedding utilities
+- [adaptive-maturity-matrix](../adaptive-maturity-matrix/) - Embeddable widget
 
 ---
 

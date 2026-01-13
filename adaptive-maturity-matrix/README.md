@@ -322,7 +322,6 @@ For faster loading, host on a CDN:
 
 - [adaptive-maturity-assessment-amis](../adaptive-maturity-assessment-amis/) - Full assessment tool
 - [adaptive-maturity-map](../adaptive-maturity-map/) - Visualization companion
-- [common](../common/) - Shared brand resources
 
 ---
 
