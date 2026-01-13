@@ -1,0 +1,4459 @@
+{
+  "nodes": [
+    {
+      "id": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "label": "Macro BIM Adoption- Comparative Market Analysis",
+      "type": "Source",
+      "desc": "This paper is the second part of an ongoing Macro BIM Adoption study which clari\ufb01es how these models are validated through capturing the input of 99 experts from 21 countries using a survey tool; highlights the commonalities and di\ufb00erences between sample countries with respect to BIM adoption; and introduces sample tools and templates for either developing or calibrating BIM adoption policies.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "The Five Components of BIM Performance Measurement.pdf",
+      "label": "The Five Components of BIM Performance Measurement",
+      "type": "Source",
+      "desc": "This paper identifies five complementary components specifically developed to enable such assessment : [1] BIM Capability Stages representing transformational milestones along the implementation continuum [2] BIM Maturity Levels representing the quality, predictability and variability within BIM Stages, [3] BIM Competencies representing incremental progressions towards and improvements within BIM Stages, [4] Organisational Scales representing the diversity of markets, disciplines and company sizes and [5] Granularity Levels enabling highly-targeted yet flexible performance analyses ranging from informal self-assessment to high-detail, formal organisational audits.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Lifecycle information transformation and exchange for delivering and managing digital and physical assets.pdf",
+      "label": "LITE Framework",
+      "type": "Source",
+      "desc": "A positioning paper introducing the Lifecycle Information Transformation and Exchange (LITE) framework, a conceptual structure for asset and project lifecycle information exchange and management.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Macro-BIM Adoption, Conceptual Structures.pdf",
+      "label": "Macro-BIM Adoption, Conceptual Structures",
+      "type": "Source",
+      "desc": "This paper introduces a number of macro-adoption models, matrices and charts to systematically assess BIM adoption across markets, and inform the structured development of country-speci\ufb01c BIM adoption policies.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "A competency knowledge-base for BIM learning.pdf",
+      "label": "A Competency knowledge-base for BIM learning",
+      "type": "Source",
+      "desc": "This paper introduces a conceptual workflow to identify, classify, and aggregate BIM competency items, acting as a knowledge-base for BIM learners and learning providers. It facilitates a common understanding of BIM deliverables and their requirements and supports national efforts to promote BIM learning.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "label": "BIM Competency Assessment",
+      "type": "Source",
+      "desc": "Discusses an integrated approach to BIM competency assessment, acquisition, and application, focusing on individual BIM competencies and their role in organizational capability.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Building Information Modelling Maturity Matrix.pdf",
+      "label": "BIM Maturity Matrix",
+      "type": "Source",
+      "desc": "A document detailing a BIM maturity matrix for assessing BIM capability, maturity, and performance improvement.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "label": "Model Uses: Foundations for a Modular Requirements Clarification Language",
+      "type": "Source",
+      "desc": "This paper introduces the Model Uses concept, comprising a Model Uses Taxonomy and a Model Uses List, explores the conceptual foundations of Model Uses and then provides practical examples \u2013 an implementation task list and an assessment module - of how this modular language assists in identifying BIM project requirements and facilitating project delivery.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "label": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "type": "Source",
+      "desc": "This document is a PhD thesis by Bilal Succar focusing on conceptual constructs and performance improvement tools in BIM.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "label": "Building Information Modelling: Point of Adoption",
+      "type": "Source",
+      "desc": "This paper introduces the Point of Adoption (PoA) model which integrates concepts of BIM readiness, implementation, and diffusion into a single visual model to assess organizational abilities and clarify a step-wise approach to BIM adoption and continuous performance improvement.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "BIM Education, BIM in Practice.pdf",
+      "label": "BIM Education, BIM in Practice",
+      "type": "Source",
+      "desc": "A collection of three documents from the BIM Education Working Group (EWG) of the Australian Institute of Architects and Consult Australia.  It covers BIM Education, BIM Learners, BIM Learning Providers, and the BIM Learning Spectrum.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "label": "Towards a taxonomy of built asset lifecycle information coupling",
+      "type": "Source",
+      "desc": "This paper proposes a taxonomy of Built Asset Lifecycle Information Couples which provides the core elements, definitions and characteristics framing the physical-digital coupling of assets and resources in the built asset industry.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "label": "A proposed approach to comparing the BIM maturity of countries",
+      "type": "Source",
+      "desc": "This paper proposes three metrics to augment survey data and help establish the overall BIM maturity of countries. These metrics apply to noteworthy BIM publications (NBP)s and assess their BIM knowledge content (BKC).",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "label": "BIM Framework Paper",
+      "type": "Source",
+      "desc": "A research paper introducing the BIM Framework, a foundation for industry stakeholders, exploring concepts, stages, steps, and lenses, and employing visual knowledge models and a specialized ontology.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Measuring BIM Performance- Five Metrics.pdf",
+      "label": "Measuring BIM Performance",
+      "type": "Source",
+      "desc": "This article identifies five complementary components developed to enable BIM performance assessment: (i) BIM capability stages; (ii) BIM maturity levels; (iii) BIM competencies; (iv) Organizational Scales; and (v) Granularity Levels.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "label": "BIM Analyzing Publications",
+      "type": "Source",
+      "desc": "Analysis of noteworthy BIM publications from eight countries using a knowledge content taxonomy.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    },
+    {
+      "id": "A Proposed Framework To Investigate Building Information Modelling Through Knowledge Elicitation And Visual Models.pdf",
+      "label": "BIM Framework Paper",
+      "type": "Source",
+      "desc": "This paper introduces a research framework for identifying BIM concepts and a methodology for capturing and representing BIM interactions. It also proposes visual models to elicit expert knowledge and identifies further research requirements.",
+      "shape": "square",
+      "color": "#bfef45",
+      "size": 25
+    }
+  ],
+  "edges": [
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP16.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP27",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP28",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP29",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP30",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP31",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP32",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP33",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP34",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP35",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP36",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP37",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "TP38",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A2.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A4.26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A7.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A7.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A8.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A8.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A8.3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "B9",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "C",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "C1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "C2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "C3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D3.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "D3.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "E7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F50",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F60",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F70",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "X",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "Core Tier",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "M06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "A09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "F05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "O09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "T01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro BIM Adoption- Comparative Market Analysis.pdf",
+      "target": "T02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "BIMei",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "TP01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "TP02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "TP03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "Process",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "Policy",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "The Five Components of BIM Performance Measurement.pdf",
+      "target": "Technology",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Lifecycle information transformation and exchange for delivering and managing digital and physical assets.pdf",
+      "target": "BIMei",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Lifecycle information transformation and exchange for delivering and managing digital and physical assets.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Lifecycle information transformation and exchange for delivering and managing digital and physical assets.pdf",
+      "target": "Data",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Lifecycle information transformation and exchange for delivering and managing digital and physical assets.pdf",
+      "target": "Documents",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro-BIM Adoption, Conceptual Structures.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Macro-BIM Adoption, Conceptual Structures.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "A",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "B",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "C",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "D",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "E",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "F",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A competency knowledge-base for BIM learning.pdf",
+      "target": "Core Tier",
+      "label": "DEFINES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP16.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP27",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP28",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP29",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP30",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP31",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP32",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP33",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP34",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP35",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP36",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP37",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "TP38",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A2.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A4.26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A7.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A7.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A8.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A8.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A8.3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "B9",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "C",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "C1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "C2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "C3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D3.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "D3.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "E7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F50",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F60",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F70",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "X",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "Core Tier",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "M06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "A09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "F05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "O09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "T01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "An integrated approach to BIM competency assessment, acquisition and application.pdf",
+      "target": "T02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP07",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP08",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP09",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP10",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP11",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP12",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP13",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP14",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP15",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP16",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP16.1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP17",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP18",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP19",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP20",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP21",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP22",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP23",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP24",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP25",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP26",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP27",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP28",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP29",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP30",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP31",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP32",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP33",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP34",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP35",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP36",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP37",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "TP38",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A2.16",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.07",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.08",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.09",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.10",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.11",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.12",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.13",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.14",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.15",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.16",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.17",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.18",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.19",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.20",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.21",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.22",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.23",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.24",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.25",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A4.26",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A5",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A7",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A7.1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A7.2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A8",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A8.1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A8.2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A8.3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B4",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B5",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B6",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B7",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B8",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "B9",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "C",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "C1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "C2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "C3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D3.1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "D3.2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E4",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E5",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E6",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "E7",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F2",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F3",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F10",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F50",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F60",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F70",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "X",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "Core Tier",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "M06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A07",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A08",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "A09",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "F05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O07",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O08",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "O09",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "T01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Maturity Matrix.pdf",
+      "target": "T02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "BIMei",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "Model Uses",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP16.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP27",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP28",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP29",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP30",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP31",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP32",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP33",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP34",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP35",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP36",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP37",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "TP38",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A2.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A4.26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Model-Uses_Foundations-for-a-Modular-Requirements-Clarification-Language.pdf",
+      "target": "A5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "BIMei",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP16.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP27",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP28",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP29",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP30",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP31",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP32",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP33",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP34",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP35",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP36",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP37",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "TP38",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A2.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling- conceptual constructs and performance improvement tools.pdf",
+      "target": "A4.19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM Implementation",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM Diffusion",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM readiness",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM capability",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "BIM maturity",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building-Information-Modelling_Point-of-Adoption.pdf",
+      "target": "Point of Adoption",
+      "label": "DEFINES"
+    },
+    {
+      "source": "BIM Education, BIM in Practice.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "BIM Education, BIM in Practice.pdf",
+      "target": "E1",
+      "label": "INCLUDES"
+    },
+    {
+      "source": "BIM Education, BIM in Practice.pdf",
+      "target": "E2",
+      "label": "INCLUDES"
+    },
+    {
+      "source": "BIM Education, BIM in Practice.pdf",
+      "target": "E3",
+      "label": "INCLUDES"
+    },
+    {
+      "source": "BIM Education, BIM in Practice.pdf",
+      "target": "BIM Education",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "BIMei",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Digital Twins",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Lifecycle Management",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Succar & Poirier (2020)",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Akanmu & Anumba (2015)",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "BIM Dictionary (2021)",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Coupling Level",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Towards a taxonomy of built asset lifecycle information coupling.pdf",
+      "target": "Asset Scale",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "BIMe",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP01",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP02",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP03",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP04",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP05",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP06",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP07",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP08",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP09",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP10",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP11",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP12",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP13",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP14",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP15",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP16",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP16.1",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP17",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP18",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP19",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP20",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP21",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP22",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP23",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP24",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP25",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP26",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP27",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP28",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP29",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP30",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP31",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP32",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP33",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP34",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP35",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP36",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP37",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A proposed approach to comparing the BIM maturity of countries.pdf",
+      "target": "TP38",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Maturity stages",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Implementation steps",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Technology",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Process",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "Policy",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modelling Framework- a Research and Delivery Foundation for Industry Stakeholders.pdf",
+      "target": "O01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "Organizational Scales",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "BIM Maturity Levels",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "BIM Competency Sets",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "Granularity Levels",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "B",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "C",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "D",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "B1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "B2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "C1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "C2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "D1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Measuring BIM Performance- Five Metrics.pdf",
+      "target": "D2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP16.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP27",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP28",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP29",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP30",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP31",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP32",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP33",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP34",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP35",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP36",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP37",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "TP38",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A2.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.11",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.12",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.13",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.14",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.15",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.16",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.17",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.18",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.19",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.20",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.21",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.22",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.23",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.24",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.25",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A4.26",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A7.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A7.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A8.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A8.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A8.3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B8",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "B9",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "C",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "C1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "C2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "C3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D3.1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "D3.2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E4",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E5",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E6",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "E7",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F1",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F2",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F3",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F10",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F50",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F60",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F70",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "X",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "Models",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "Core Tier",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "M06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "A09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "F05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O03",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O04",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O05",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O06",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O07",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O08",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "O09",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "T01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "T02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "BIM Knowledge Content Taxonomy",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "Guides",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "Protocols",
+      "label": "DEFINES"
+    },
+    {
+      "source": "Building Information Modeling Analyzing Noteworthy Publications of Eight Countries Using a Knowledge Content Taxonomy.pdf",
+      "target": "Mandates",
+      "label": "DEFINES"
+    },
+    {
+      "source": "A Proposed Framework To Investigate Building Information Modelling Through Knowledge Elicitation And Visual Models.pdf",
+      "target": "BIM",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A Proposed Framework To Investigate Building Information Modelling Through Knowledge Elicitation And Visual Models.pdf",
+      "target": "TP01",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A Proposed Framework To Investigate Building Information Modelling Through Knowledge Elicitation And Visual Models.pdf",
+      "target": "TP02",
+      "label": "DISCUSSES"
+    },
+    {
+      "source": "A Proposed Framework To Investigate Building Information Modelling Through Knowledge Elicitation And Visual Models.pdf",
+      "target": "TP03",
+      "label": "DISCUSSES"
+    }
+  ]
+}

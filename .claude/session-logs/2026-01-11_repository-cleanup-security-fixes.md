@@ -265,7 +265,7 @@ After initial cleanup, found that `vertex-graph-builder/.env` with **real produc
 **Exposed Credentials Found:**
 - Neo4j Database URI: `neo4j+s://4441767a.databases.neo4j.io`
 - Neo4j Username: `neo4j`
-- Neo4j Password: `***REMOVED***` (OLD - now invalid)
+- Neo4j Password: `3t_sgYzOFqEqkcMM3siq3kY8YqAyob9zv14IvtlQ77U` (OLD - now invalid)
 - Google Project: `bimei-ai`
 
 ### Immediate Response
@@ -279,7 +279,7 @@ cypher-shell -a "neo4j+s://4441767a.databases.neo4j.io" -u neo4j \
   "ALTER CURRENT USER SET PASSWORD FROM 'OLD_PASSWORD' TO 'NEW_PASSWORD';"
 ```
 
-**New Password**: `***REMOVED***` (generated via `openssl rand -base64 32`)
+**New Password**: `fvXrZEt+sGuJQrmdq2dwSV9/LAMOmH21l7t+1gfMp94=` (generated via `openssl rand -base64 32`)
 **Result**: ✅ Password successfully rotated - old password now invalid
 **File Updated**: `vertex-graph-builder/.env` (already gitignored, not tracked)
 

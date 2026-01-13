@@ -17,10 +17,10 @@ Complete deployment instructions for the BIMei Knowledge Dashboard.
 gcloud auth login
 
 # Set project
-gcloud config set project bimei-ai
+gcloud config set project YOUR_GCP_PROJECT_ID
 
 # Verify access
-gcloud projects describe bimei-ai
+gcloud projects describe YOUR_GCP_PROJECT_ID
 ```
 
 ---
@@ -32,13 +32,13 @@ gcloud projects describe bimei-ai
 Create a `.env.yaml` file in the `bimei-kb-dashboard` directory with the following variables:
 
 ```yaml
-NEO4J_URI: "neo4j+s://4441767a.databases.neo4j.io"
+NEO4J_URI: "neo4j+s://your-instance-id.databases.neo4j.io"
 NEO4J_USER: "neo4j"
-NEO4J_PASSWORD: "***REMOVED***"
-GOOGLE_API_KEY: "***REMOVED***"
-GOOGLE_GENAI_API_KEY: "***REMOVED***"
-VERTEX_PROXY_URL: "https://bimei-chatbot-jilezw5qqq-ts.a.run.app"
-GRAPH_QUERY_URL: "https://graphquery-jilezw5qqq-uc.a.run.app"
+NEO4J_PASSWORD: "your-neo4j-password-here"
+GOOGLE_API_KEY: "your-google-api-key-here"
+GOOGLE_GENAI_API_KEY: "your-google-genai-api-key-here"
+VERTEX_PROXY_URL: "https://your-vertex-proxy-url.run.app"
+GRAPH_QUERY_URL: "https://your-graph-query-url.run.app"
 ```
 
 **Important**: Never commit `.env.yaml` to git. It's already in `.gitignore`.
@@ -56,12 +56,12 @@ cd /Users/bilalsuccar/Documents/microtools/bimei-kb-dashboard
 gcloud functions deploy dashboardApi \
   --gen2 \
   --runtime=nodejs20 \
-  --region=australia-southeast1 \
+  --region=YOUR_REGION \
   --source=. \
   --entry-point=dashboardApi \
   --trigger-http \
   --allow-unauthenticated \
-  --set-env-vars NEO4J_URI="neo4j+s://4441767a.databases.neo4j.io",NEO4J_USER="neo4j",NEO4J_PASSWORD="***REMOVED***",GOOGLE_API_KEY="***REMOVED***",GOOGLE_GENAI_API_KEY="***REMOVED***"
+  --set-env-vars NEO4J_URI="${NEO4J_URI}",NEO4J_USER="${NEO4J_USER}",NEO4J_PASSWORD="${NEO4J_PASSWORD}",GOOGLE_API_KEY="${GOOGLE_API_KEY}",GOOGLE_GENAI_API_KEY="${GOOGLE_GENAI_API_KEY}"
 ```
 
 **Deployment Time**: ~2-3 minutes
@@ -71,11 +71,11 @@ gcloud functions deploy dashboardApi \
 # Get function URL
 gcloud functions describe dashboardApi \
   --gen2 \
-  --region=australia-southeast1 \
+  --region=YOUR_REGION \
   --format="value(serviceConfig.uri)"
 
 # Test function
-curl -X POST https://dashboardapi-jilezw5qqq-ts.a.run.app \
+curl -X POST https://your-dashboard-api-url.run.app \
   -H "Content-Type: application/json" \
   -d '{"query":"What is BIM?"}'
 ```
@@ -212,17 +212,17 @@ gcloud functions logs read dashboardApi \
 
 ```bash
 # Test text module
-curl -X POST https://dashboardapi-jilezw5qqq-ts.a.run.app \
+curl -X POST https://your-dashboard-api-url.run.app \
   -H "Content-Type: application/json" \
   -d '{"query":"What is BIM?","modules":["text","sources"]}'
 
 # Test graph module
-curl -X POST https://dashboardapi-jilezw5qqq-ts.a.run.app \
+curl -X POST https://your-dashboard-api-url.run.app \
   -H "Content-Type: application/json" \
   -d '{"query":"What is the relationship between BIM and COBie?"}'
 
 # Test all modules
-curl -X POST https://dashboardapi-jilezw5qqq-ts.a.run.app \
+curl -X POST https://your-dashboard-api-url.run.app \
   -H "Content-Type: application/json" \
   -d '{"query":"How does process maturity relate to adaptive capacity?","modules":["text","sources","evidence","path","graph"]}'
 ```

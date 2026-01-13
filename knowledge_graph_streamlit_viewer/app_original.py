@@ -3,6 +3,7 @@ from streamlit_agraph import agraph, Node, Edge, Config
 from neo4j import GraphDatabase
 import random
 import json
+import os
 
 st.set_page_config(layout="wide", page_title="BIMei Knowledge Browser")
 
@@ -112,12 +113,16 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Neo4j connection and weights loading (same as before)
+# Neo4j connection and weights loading
 @st.cache_resource
 def get_driver():
-    uri = "neo4j+s://4441767a.databases.neo4j.io"
-    user = "neo4j"
-    password = "***REMOVED***"
+    uri = os.getenv("NEO4J_URI", "neo4j+s://your-instance.databases.neo4j.io")
+    user = os.getenv("NEO4J_USER", "neo4j")
+    password = os.getenv("NEO4J_PASSWORD")
+
+    if not password:
+        raise ValueError("NEO4J_PASSWORD environment variable is required")
+
     return GraphDatabase.driver(uri, auth=(user, password))
 
 driver = get_driver()
