@@ -457,6 +457,46 @@ function buildEvidenceHtml(paths, hopLimitUsed, maxPathsToShow, weightsMeta) {
   return `<div class="bimei-evidence-block"><span class="bimei-evidence-title">Evidence</span>${html}<span class="bimei-tiny">BIMei Knowledge Graph (v0.260106 JSON)</span></div>`;
 }
 
+// ---- Definitions Fetcher -------------------------------------------------
+
+async function fetchDefinitions(termX, termY) {
+  // Return dictionary definition links for the resolved terms
+  // This provides sources for relationship queries in the dashboard
+  const links = [];
+
+  const baseUrl = 'https://bimdictionary.com/en';
+
+  // Helper to create URL slug from term
+  function slugify(term) {
+    return term
+      .toLowerCase()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+  }
+
+  if (termX) {
+    const slug = slugify(termX);
+    links.push({
+      url: `${baseUrl}/${slug}/1`,
+      title: `[Dictionary] ${termX}`,
+      type: 'dictionary'
+    });
+  }
+
+  if (termY && termY !== termX) {
+    const slug = slugify(termY);
+    links.push({
+      url: `${baseUrl}/${slug}/1`,
+      title: `[Dictionary] ${termY}`,
+      type: 'dictionary'
+    });
+  }
+
+  return { links };
+}
+
 // ---- Function ------------------------------------------------------------
 
 exports.graphQuery = async (req, res) => {
@@ -686,6 +726,70 @@ LIMIT 2
       searchHops++;
     }
 
+    // Find shared parent nodes (NEW - Phase 2)
+    try {
+      const sharedParentCypher = `
+MATCH (a) WHERE id(a) = toInteger($idA)
+MATCH (b) WHERE id(b) = toInteger($idB)
+MATCH (parent)-[r1]->(a)
+MATCH (parent)-[r2]->(b)
+WHERE type(r1) IN $canonical AND type(r2) IN $canonical
+  AND id(parent) <> id(a) AND id(parent) <> id(b)
+RETURN
+  {
+    id: toString(id(parent)),
+    type: head(labels(parent)),
+    label: coalesce(parent.name, parent.title, parent.label, '(unnamed)')
+  } AS parent,
+  type(r1) AS rel_to_a,
+  type(r2) AS rel_to_b
+LIMIT 5
+`;
+
+      const parentRows = await graph.query(sharedParentCypher, {
+        idA: xBest.id,
+        idB: yBest.id,
+        canonical: canonicalRels
+      });
+
+      // Convert parent nodes into path-like structures
+      const parentPaths = (parentRows || []).map(r => {
+        const parent = r.parent || {};
+        const nodes = [
+          parent,
+          { id: xBest.id, type: xBest.type, label: xBest.label },
+          { id: yBest.id, type: yBest.type, label: yBest.label }
+        ];
+        const rels = [r.rel_to_a, r.rel_to_b];
+        const hopCount = 2; // Parent to A (1 hop) + Parent to B (1 hop)
+
+        const chain = buildChain(nodes, rels);
+        const score = scorePath(nodes, rels, hopCount, weights);
+
+        return {
+          hop_count: hopCount,
+          nodes,
+          rels,
+          chain,
+          score_raw: score.score_raw,
+          score_norm: 0,
+          score_components: score.score_components,
+          is_shared_parent: true  // Flag to distinguish these paths
+        };
+      });
+
+      // Merge parent paths with direct paths
+      paths = [...paths, ...parentPaths];
+
+      out.debug.message = (out.debug.message ? out.debug.message + ' | ' : '') +
+        `Found ${parentPaths.length} shared parent(s)`;
+
+    } catch (parentError) {
+      console.error('Shared parent query failed:', parentError);
+      out.debug.message = (out.debug.message ? out.debug.message + ' | ' : '') +
+        `Shared parent query failed: ${parentError.message}`;
+    }
+
     // If no canonical paths found, return error message
     if (paths.length === 0) {
       out.status = 'NO_PATH';
@@ -797,7 +901,11 @@ LIMIT 2
 
       const labelX = (out.resolved_candidates?.x?.[0]?.label) || 'X';
       const labelY = (out.resolved_candidates?.y?.[0]?.label) || 'Y';
-      
+
+      // Fetch definitions for resolved terms to populate Sources module
+      const definitions = await fetchDefinitions(labelX, labelY);
+      out.links = definitions.links;
+
       out.answer_clean = `Found ${out.paths.length} path(s) between "${labelX}" and "${labelY}".`;
 
       out.status = 'PATH_FOUND';

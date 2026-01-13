@@ -1,9 +1,25 @@
 const functions = require('@google-cloud/functions-framework');
 const axios = require('axios');
+const NeoDashAdapter = require('./F_NeoDash_Adapter.js');
 
-// Environment variables
-const VERTEX_PROXY_URL = process.env.VERTEX_PROXY_URL || 'https://australia-southeast1-bimei-ai.cloudfunctions.net/bimei-chatbot';
-const GRAPH_QUERY_URL = process.env.GRAPH_QUERY_URL || 'https://australia-southeast1-bimei-ai.cloudfunctions.net/graphQuery';
+// Environment variables - Use Cloud Run URLs from .env.yaml
+const VERTEX_PROXY_URL = process.env.VERTEX_PROXY_URL || 'https://bimei-chatbot-jilezw5qqq-ts.a.run.app';
+const GRAPH_QUERY_URL = process.env.GRAPH_QUERY_URL || 'https://graphquery-jilezw5qqq-uc.a.run.app';
+
+// Initialize NeoDash adapter (singleton)
+let neoDashAdapter = null;
+
+async function getNeoDashAdapter() {
+  if (!neoDashAdapter) {
+    neoDashAdapter = new NeoDashAdapter({
+      neo4jUri: process.env.NEO4J_URI,
+      neo4jUser: process.env.NEO4J_USER || 'neo4j',
+      neo4jPassword: process.env.NEO4J_PASSWORD,
+      model: 'gemini-2.5-flash'
+    });
+  }
+  return neoDashAdapter;
+}
 
 /**
  * Unified Dashboard API Handler
@@ -59,7 +75,13 @@ functions.http('dashboardApi', async (req, res) => {
               results.text = extractTextResponse(data);
             }
             if (modules.includes('sources')) {
-              results.sources = extractSources(data);
+              const vertexSources = extractSources(data);
+              // Merge with existing sources from graphQuery (if any)
+              if (results.sources && results.sources.links && vertexSources.links) {
+                results.sources.links = [...vertexSources.links, ...results.sources.links];
+              } else {
+                results.sources = vertexSources;
+              }
             }
           })
           .catch(error => {
@@ -69,8 +91,8 @@ functions.http('dashboardApi', async (req, res) => {
       );
     }
 
-    // Evidence & Path (from Graph Query)
-    if (modules.includes('evidence') || modules.includes('path')) {
+    // Evidence & Path & Sources (from Graph Query)
+    if (modules.includes('evidence') || modules.includes('path') || modules.includes('sources')) {
       apiCalls.push(
         callGraphQuery(query)
           .then(data => {
@@ -80,6 +102,21 @@ functions.http('dashboardApi', async (req, res) => {
             if (modules.includes('path')) {
               results.path = extractPath(data);
             }
+            // Merge graphQuery sources with Vertex Proxy sources
+            if (modules.includes('sources') && data.links && Array.isArray(data.links)) {
+              const graphSources = data.links.slice(0, 5).map(link => ({
+                url: link.url,
+                title: link.title,
+                type: link.type || getSourceType(link.url)
+              }));
+
+              // Merge with existing sources from Vertex Proxy
+              if (results.sources && results.sources.links) {
+                results.sources.links = [...results.sources.links, ...graphSources];
+              } else {
+                results.sources = { links: graphSources };
+              }
+            }
           })
           .catch(error => {
             if (modules.includes('evidence')) results.evidence = { error: error.message };
@@ -88,9 +125,17 @@ functions.http('dashboardApi', async (req, res) => {
       );
     }
 
-    // Interactive Graph (Mock for now)
+    // Interactive Graph (NeoDash integration)
     if (modules.includes('graph')) {
-      results.graph = { error: 'Graph module not yet implemented' };
+      apiCalls.push(
+        callNeoDashGraph(query)
+          .then(data => {
+            results.graph = extractGraph(data);
+          })
+          .catch(error => {
+            results.graph = { error: error.message };
+          })
+      );
     }
 
     // Wait for all API calls to complete
@@ -111,6 +156,15 @@ functions.http('dashboardApi', async (req, res) => {
     });
   }
 });
+
+/**
+ * Call NeoDash Graph Adapter
+ */
+async function callNeoDashGraph(query) {
+  const adapter = await getNeoDashAdapter();
+  const result = await adapter.ask(query);
+  return result;
+}
 
 /**
  * Call Vertex AI Proxy
@@ -206,8 +260,28 @@ function extractPath(data) {
       hops: data.graph_data.nodes.length - 1
     };
   }
-  
+
   return { nodes: [], edges: [], hops: 0 };
+}
+
+/**
+ * Extract Interactive Graph data from NeoDash
+ */
+function extractGraph(data) {
+  if (!data) {
+    return { error: 'No graph data available' };
+  }
+
+  return {
+    answer: data.answer || 'No answer generated',
+    cypher: data.cypher || '',
+    visual: {
+      nodes: data.visual?.nodes || [],
+      edges: data.visual?.edges || []
+    },
+    isAggregation: data.isAggregation || false,
+    timestamp: data.timestamp || new Date().toISOString()
+  };
 }
 
 /**
