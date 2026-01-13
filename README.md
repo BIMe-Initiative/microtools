@@ -224,7 +224,6 @@ microtools/
 ├── neodash-viewer/                    # Neo4j dashboard embed
 ├── vertex-graph-builder/              # Graph construction tool
 ├── vertex_cx_chatbot/                 # Vertex chatbot v2
-├── _archived/                         # Archived experiments
 ├── SECURITY.md                        # Security policy
 └── README.md                          # This file
 ```
