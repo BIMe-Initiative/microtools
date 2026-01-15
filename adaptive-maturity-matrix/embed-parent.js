@@ -4,6 +4,7 @@
   var ALLOWED_ORIGIN = "https://bime-initiative.github.io";
 
   var iframe = document.getElementById("amx-iframe");
+  if (!iframe) return;
 
   function setSrcFromHash() {
     var base = encodeURIComponent(location.origin + location.pathname);

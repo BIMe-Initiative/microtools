@@ -252,27 +252,63 @@
 
       /* ---------- Search (full text) ---------- */
       const searchInput=$("#amx-search"), resultsBox=$("#amx-results"), cmpToggle=$("#amx-compare-toggle");
+      function buildHighlightedText(text, rx){
+        const frag = document.createDocumentFragment();
+        let lastIndex = 0;
+        text.replace(rx, (match, offset) => {
+          if (offset > lastIndex) {
+            frag.append(document.createTextNode(text.slice(lastIndex, offset)));
+          }
+          const mark = document.createElement("mark");
+          mark.textContent = match;
+          frag.append(mark);
+          lastIndex = offset + match.length;
+          return match;
+        });
+        if (lastIndex < text.length) {
+          frag.append(document.createTextNode(text.slice(lastIndex)));
+        }
+        return frag;
+      }
       function searchAll(q){
-        q=q.trim(); if(q.length<2){ resultsBox.style.display="none"; resultsBox.innerHTML=""; return; }
+        q=q.trim(); if(q.length<2){ resultsBox.style.display="none"; resultsBox.textContent=""; return; }
         const safe=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const rx=new RegExp(safe,"gi"); const items=[];
         ROWS.forEach(r=>COLS.forEach(c=>{
           const title=cellTitle(r,c), text=CELLS[r][c];
-          if(rx.test(title)||rx.test(text)){ rx.lastIndex=0; const full=text.replace(rx,'<mark>$&</mark>'); items.push({code:cellCode(r,c),title,meta:`${ROW_META[r].desc} · ${COL_META[c].code}`,full}); }
+          if(rx.test(title)||rx.test(text)){ rx.lastIndex=0; items.push({code:cellCode(r,c),title,meta:`${ROW_META[r].desc} · ${COL_META[c].code}`,text}); }
         }));
         items.sort((a,b)=>a.code.localeCompare(b.code));
-        resultsBox.innerHTML = [`<h4>${items.length} result${items.length===1?"":"s"}</h4>`, ...items.map(it=>`
-          <button class="resitem" data-code="${it.code}">
-            <div class="r-title">${it.title} [${it.code}]</div>
-            <div class="r-meta">${it.meta}</div>
-            <div class="r-snippet">${it.full}</div>
-          </button>
-        `)].join("");
+        resultsBox.textContent = "";
+        const header = document.createElement("h4");
+        header.textContent = `${items.length} result${items.length===1?"":"s"}`;
+        resultsBox.appendChild(header);
+        items.forEach(it => {
+          const btn = document.createElement("button");
+          btn.className = "resitem";
+          btn.type = "button";
+          btn.dataset.code = it.code;
+
+          const titleEl = document.createElement("div");
+          titleEl.className = "r-title";
+          titleEl.textContent = `${it.title} [${it.code}]`;
+
+          const metaEl = document.createElement("div");
+          metaEl.className = "r-meta";
+          metaEl.textContent = it.meta;
+
+          const snippetEl = document.createElement("div");
+          snippetEl.className = "r-snippet";
+          snippetEl.appendChild(buildHighlightedText(it.text, new RegExp(safe, "gi")));
+
+          btn.append(titleEl, metaEl, snippetEl);
+          btn.addEventListener("click", () => {
+            const code = btn.getAttribute("data-code");
+            if(cmpToggle.checked){ cmpToggle.checked=false; toggleCompare(false); }
+            openSingleByCode(code,true); resultsBox.style.display="none";
+          });
+          resultsBox.appendChild(btn);
+        });
         resultsBox.style.display="block";
-        $$(".resitem").forEach(btn=>btn.addEventListener("click",()=>{
-          const code=btn.getAttribute("data-code");
-          if(cmpToggle.checked){ cmpToggle.checked=false; toggleCompare(false); }
-          openSingleByCode(code,true); resultsBox.style.display="none";
-        }));
       }
       searchInput.addEventListener("input",()=>searchAll(searchInput.value));
 
@@ -385,9 +421,6 @@
     })();
   </script>
 </div>
-
- 
-  </div>
 
   <!-- auto-resizer at the end -->
   <script src="../common/embed.js"></script>
