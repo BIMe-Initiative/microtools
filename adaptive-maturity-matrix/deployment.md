@@ -37,6 +37,30 @@ Example:
 
 The widget uses locally hosted Raleway fonts stored in `assets/fonts/`. If you move the widget, ensure the font files remain at the same relative path.
 
+### Responsive iframe (auto-height)
+
+Use this in a WordPress Custom HTML block to auto-resize the iframe:
+
+```html
+<iframe
+  id="amx-iframe"
+  src="https://bime-initiative.github.io/microtools/adaptive-maturity-matrix/"
+  width="100%"
+  height="800"
+  style="border:0"
+  title="Adaptive Maturity Matrix"
+  loading="lazy">
+</iframe>
+<script>
+  window.addEventListener("message", function (e) {
+    if (!e.data || e.data.type !== "amx-height") return;
+    var iframe = document.getElementById("amx-iframe");
+    if (!iframe) return;
+    iframe.style.height = Math.max(600, Math.ceil(e.data.height)) + "px";
+  });
+</script>
+```
+
 ## 3) WordPress native table (shortcode)
 
 Add the following shortcode to a child theme `functions.php` or a small custom plugin. It fetches the JSON, caches it (transient), and renders a native HTML table.
