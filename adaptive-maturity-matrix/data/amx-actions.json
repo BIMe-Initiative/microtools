@@ -1,0 +1,408 @@
+{
+  "source": "BIM ThinkSpace Episode 28 (Measuring and Improving Adaptive Maturity)",
+  "version": "1.0",
+  "components": {
+    "Agility": [
+      {
+        "id": 1,
+        "question_no": "1",
+        "qlevel": "QL1",
+        "question": "Does your organisation reallocate resources during disruptions?",
+        "action": "Reallocate resources promptly to sustain operations during disruptions"
+      },
+      {
+        "id": 2,
+        "question_no": "1",
+        "qlevel": "QL2",
+        "question": "Are reallocations guided by documented prioritisation rules?",
+        "action": "Establish and apply prioritisation rules for reallocating resources"
+      },
+      {
+        "id": 3,
+        "question_no": "2",
+        "qlevel": "QL1",
+        "question": "Do workflows adapt when market or regulatory requirements shift?",
+        "action": "Review and update workflows regularly to reflect new requirements"
+      },
+      {
+        "id": 4,
+        "question_no": "2",
+        "qlevel": "QL2",
+        "question": "Are workflow updates coordinated across business units?",
+        "action": "Coordinate workflow updates across all relevant business units"
+      },
+      {
+        "id": 5,
+        "question_no": "3",
+        "qlevel": "QL1",
+        "question": "Can operational decisions be taken without escalation?",
+        "action": "Delegate authority to managers to accelerate operational decisions"
+      },
+      {
+        "id": 6,
+        "question_no": "3",
+        "qlevel": "QL2",
+        "question": "Are delegated rights formally reviewed?",
+        "action": "Review and adjust delegated authority regularly"
+      },
+      {
+        "id": 7,
+        "question_no": "4",
+        "qlevel": "QL1",
+        "question": "Does leadership encourage experimentation with new ideas?",
+        "action": "Conduct pilot projects to test and refine new ideas"
+      },
+      {
+        "id": 8,
+        "question_no": "5",
+        "qlevel": "QL1",
+        "question": "Does the organisation adopt digital tools quickly?",
+        "action": "Implement digital tools within six months of identification"
+      },
+      {
+        "id": 9,
+        "question_no": "6",
+        "qlevel": "QL1",
+        "question": "Do teams redesign practices after disruptions?",
+        "action": "Empower teams to redesign practices in response to disruptions"
+      },
+      {
+        "id": 10,
+        "question_no": "7",
+        "qlevel": "QL1",
+        "question": "Are risks reviewed before pivoting to new approaches?",
+        "action": "Conduct structured risk\u2013opportunity reviews before pivots"
+      },
+      {
+        "id": 11,
+        "question_no": "8",
+        "qlevel": "QL1",
+        "question": "Do cross-functional teams coordinate rapid responses?",
+        "action": "Form cross-functional teams to coordinate rapid responses to disruptions"
+      },
+      {
+        "id": 12,
+        "question_no": "9",
+        "qlevel": "QL1",
+        "question": "Is agility monitored as part of performance management?",
+        "action": "Monitor agility indicators within the performance management system"
+      }
+    ],
+    "Resilience": [
+      {
+        "id": 13,
+        "question_no": "1",
+        "qlevel": "QL1",
+        "question": "Does your organisation have continuity plans?",
+        "action": "Develop continuity plans to respond to performance disruptions"
+      },
+      {
+        "id": 14,
+        "question_no": "1",
+        "qlevel": "QL2",
+        "question": "Are continuity plans tested regularly?",
+        "action": "Test continuity plans through annual simulations"
+      },
+      {
+        "id": 15,
+        "question_no": "1",
+        "qlevel": "QL3",
+        "question": "Are continuity plans updated after each disruption or test?",
+        "action": "Update continuity plans systematically after disruptions or tests"
+      },
+      {
+        "id": 16,
+        "question_no": "2",
+        "qlevel": "QL1",
+        "question": "Does your organisation maintain reserves of critical resources?",
+        "action": "Maintain a three-month reserve of critical resources to accommodate unforeseen disruptions"
+      },
+      {
+        "id": 17,
+        "question_no": "3",
+        "qlevel": "QL1",
+        "question": "Are suppliers diversified to mitigate risks?",
+        "action": "Source key inputs from at least three independent suppliers"
+      },
+      {
+        "id": 18,
+        "question_no": "4",
+        "qlevel": "QL1",
+        "question": "Does your organisation maintain redundancy in digital systems?",
+        "action": "Maintain mirrored cloud environments across two regions"
+      },
+      {
+        "id": 19,
+        "question_no": "5",
+        "qlevel": "QL1",
+        "question": "Do you measure recovery times from major disruptions?",
+        "action": "Achieve operational recovery within 48 hours of critical system failure"
+      },
+      {
+        "id": 20,
+        "question_no": "6",
+        "qlevel": "QL1",
+        "question": "Are risk assessments integrated into planning processes?",
+        "action": "Integrate structured risk assessments into strategic and operational planning"
+      },
+      {
+        "id": 21,
+        "question_no": "7",
+        "qlevel": "QL1",
+        "question": "Are staff trained in emergency protocols?",
+        "action": "Train staff annually in emergency response protocols"
+      },
+      {
+        "id": 22,
+        "question_no": "8",
+        "qlevel": "QL1",
+        "question": "Are resilience metrics tracked at the executive level?",
+        "action": "Track resilience metrics at executive level reporting dashboards"
+      },
+      {
+        "id": 23,
+        "question_no": "9",
+        "qlevel": "QL1",
+        "question": "Do business units share lessons from past disruptions?",
+        "action": "Share lessons from disruptions across business units through structured reports"
+      }
+    ],
+    "Vitality": [
+      {
+        "id": 24,
+        "question_no": "1",
+        "qlevel": "QL1",
+        "question": "Do you measure staff morale regularly?",
+        "action": "Conduct quarterly staff morale surveys with participation exceeding 70%"
+      },
+      {
+        "id": 25,
+        "question_no": "2",
+        "qlevel": "QL1",
+        "question": "Are wellbeing initiatives available for employees?",
+        "action": "Provide weekly wellbeing activities accessible to all staff"
+      },
+      {
+        "id": 26,
+        "question_no": "3",
+        "qlevel": "QL1",
+        "question": "Does your organisation channel staff creativity into innovation?",
+        "action": "Conduct structured workshops to encourage innovation at regular periods"
+      },
+      {
+        "id": 27,
+        "question_no": "3",
+        "qlevel": "QL2",
+        "question": "Are innovation outcomes captured and shared organisation-wide?",
+        "action": "Document and disseminate innovation outcomes across the organisation"
+      },
+      {
+        "id": 28,
+        "question_no": "4",
+        "qlevel": "QL1",
+        "question": "Do you monitor burnout indicators?",
+        "action": "Track absence and sick leave rates annually to identify vitality risks"
+      },
+      {
+        "id": 29,
+        "question_no": "5",
+        "qlevel": "QL1",
+        "question": "Are employees motivated to join adaptive initiatives?",
+        "action": "Maintain volunteer pools for rapid-response initiatives"
+      },
+      {
+        "id": 30,
+        "question_no": "6",
+        "qlevel": "QL1",
+        "question": "Do you recognise adaptive energy among teams?",
+        "action": "Incentivise teams that demonstrate adaptive energy through recognition schemes"
+      },
+      {
+        "id": 31,
+        "question_no": "7",
+        "qlevel": "QL1",
+        "question": "Do leaders promote vitality programmes?",
+        "action": "Promote vitality programmes consistently at leadership level"
+      },
+      {
+        "id": 32,
+        "question_no": "8",
+        "qlevel": "QL1",
+        "question": "Are vitality initiatives aligned with organisational goals?",
+        "action": "Align vitality programmes with organisational strategic objectives"
+      },
+      {
+        "id": 33,
+        "question_no": "9",
+        "qlevel": "QL1",
+        "question": "Do staff have access to professional development?",
+        "action": "Provide continuous professional development to sustain adaptive vitality"
+      }
+    ],
+    "Culture": [
+      {
+        "id": 34,
+        "question_no": "1",
+        "qlevel": "QL1",
+        "question": "Are adaptability and learning part of organisational values?",
+        "action": "Embed adaptability and learning into organisational value statements"
+      },
+      {
+        "id": 35,
+        "question_no": "2",
+        "qlevel": "QL1",
+        "question": "Is knowledge sharing actively encouraged?",
+        "action": "Provide open-access repositories and encourage staff to contribute knowledge"
+      },
+      {
+        "id": 36,
+        "question_no": "3",
+        "qlevel": "QL1",
+        "question": "Is cross-departmental collaboration supported?",
+        "action": "Incentivise cross-departmental collaboration through rewards and recognition"
+      },
+      {
+        "id": 37,
+        "question_no": "4",
+        "qlevel": "QL1",
+        "question": "Does your organisation treat failure as a learning opportunity?",
+        "action": "Publish lessons-learned briefs after each project or disruption"
+      },
+      {
+        "id": 38,
+        "question_no": "5",
+        "qlevel": "QL1",
+        "question": "Are cultural barriers to change actively removed?",
+        "action": "Update organisational policies annually to eliminate outdated practices"
+      },
+      {
+        "id": 39,
+        "question_no": "6",
+        "qlevel": "QL1",
+        "question": "Do leaders role-model adaptive culture?",
+        "action": "Demonstrate adaptive behaviours consistently at leadership level"
+      },
+      {
+        "id": 40,
+        "question_no": "7",
+        "qlevel": "QL1",
+        "question": "Does your organisation recognise champions of change?",
+        "action": "Incentivise individual champions who promote adaptive change"
+      },
+      {
+        "id": 41,
+        "question_no": "8",
+        "qlevel": "QL1",
+        "question": "Are shared norms reinforced through rituals or routines?",
+        "action": "Reinforce adaptive norms through organisational rituals and routines"
+      },
+      {
+        "id": 42,
+        "question_no": "9",
+        "qlevel": "QL1",
+        "question": "Is diversity considered a strength in adaptive practices?",
+        "action": "Integrate diversity principles into adaptive practices"
+      },
+      {
+        "id": 43,
+        "question_no": "10",
+        "qlevel": "QL1",
+        "question": "Do teams celebrate successful adaptations?",
+        "action": "Celebrate adaptive successes through public recognition events"
+      },
+      {
+        "id": 44,
+        "question_no": "11",
+        "qlevel": "QL1",
+        "question": "Is learning from disruptions embedded culturally?",
+        "action": "Embed post-disruption learning into organisational culture statements"
+      }
+    ],
+    "Maturity": [
+      {
+        "id": 45,
+        "question_no": "1",
+        "qlevel": "QL1",
+        "question": "Are core processes documented?",
+        "action": "Document all core processes in a central repository"
+      },
+      {
+        "id": 46,
+        "question_no": "1",
+        "qlevel": "QL2",
+        "question": "Are documented processes updated regularly?",
+        "action": "Update process documentation annually or after major changes"
+      },
+      {
+        "id": 47,
+        "question_no": "2",
+        "qlevel": "QL1",
+        "question": "Are responsibilities and accountabilities clearly defined?",
+        "action": "Define role descriptions with clear accountabilities"
+      },
+      {
+        "id": 48,
+        "question_no": "3",
+        "qlevel": "QL1",
+        "question": "Is performance monitored systematically?",
+        "action": "Implement performance indicators reviewed monthly"
+      },
+      {
+        "id": 49,
+        "question_no": "4",
+        "qlevel": "QL1",
+        "question": "Are workflows integrated across departments?",
+        "action": "Align at least 80% of workflows across business units"
+      },
+      {
+        "id": 50,
+        "question_no": "5",
+        "qlevel": "QL1",
+        "question": "Does your organisation conduct regular audits of processes?",
+        "action": "Conduct structured process audits at least twice annually"
+      },
+      {
+        "id": 51,
+        "question_no": "6",
+        "qlevel": "QL1",
+        "question": "Are improvements systematically identified?",
+        "action": "Identify opportunities for continuous improvement through audits and reviews"
+      },
+      {
+        "id": 52,
+        "question_no": "7",
+        "qlevel": "QL1",
+        "question": "Do processes incorporate risk\u2013opportunity analysis?",
+        "action": "Integrate risk\u2013opportunity reviews into process improvement cycles"
+      },
+      {
+        "id": 53,
+        "question_no": "8",
+        "qlevel": "QL1",
+        "question": "Are process changes communicated effectively?",
+        "action": "Communicate process changes promptly to all relevant stakeholders"
+      },
+      {
+        "id": 54,
+        "question_no": "9",
+        "qlevel": "QL1",
+        "question": "Are maturity levels benchmarked against standards?",
+        "action": "Benchmark organisational maturity against relevant standards and peers"
+      },
+      {
+        "id": 55,
+        "question_no": "10",
+        "qlevel": "QL1",
+        "question": "Do improvement initiatives extend across the organisation?",
+        "action": "Implement improvement initiatives across multiple organisational units"
+      },
+      {
+        "id": 56,
+        "question_no": "11",
+        "qlevel": "QL1",
+        "question": "Is maturity progress tracked over time?",
+        "action": "Track and report maturity improvements on an annual basis"
+      }
+    ]
+  }
+}

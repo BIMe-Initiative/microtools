@@ -1,0 +1,157 @@
+# AMX Content Separation and WordPress Deployment
+
+This document explains how the Adaptive Maturity Matrix content is shared from GitHub and used by both the AMX app and WordPress.
+
+## 1) Shared content source (GitHub)
+
+- Source file: `data/amx-content.json`
+- Raw URL (example):
+  `https://raw.githubusercontent.com/BIMe-Initiative/microtools/main/adaptive-maturity-matrix/data/amx-content.json`
+- Update cadence: edit JSON in GitHub when needed (every few months).
+
+Notes:
+- JSON supports line breaks using `\n`.
+- Keep content plain text for safety. The renderers apply their own formatting.
+
+## 1b) Shared action statements (GitHub)
+
+- Source file: `data/amx-actions.json`
+- Raw URL (example):
+  `https://raw.githubusercontent.com/BIMe-Initiative/microtools/main/adaptive-maturity-matrix/data/amx-actions.json`
+- Derived from: BIM ThinkSpace Episode 28 action statements table.
+
+## 2) AMX app usage
+
+The app now loads content from the JSON file at runtime:
+- Default path: `data/amx-content.json`
+- Optional override: append `?data=<url>` to the app URL to load a different JSON source.
+
+The Plan tab loads action statements from:
+- Default path: `data/amx-actions.json`
+- Optional override: append `?actions=<url>` to the app URL.
+
+Example:
+`https://bime-initiative.github.io/microtools/amx/index.html?data=https://raw.githubusercontent.com/BIMe-Initiative/microtools/main/adaptive-maturity-matrix/data/amx-content.json&actions=https://raw.githubusercontent.com/BIMe-Initiative/microtools/main/adaptive-maturity-matrix/data/amx-actions.json`
+
+### Local fonts
+
+The widget uses locally hosted Raleway fonts stored in `assets/fonts/`. If you move the widget, ensure the font files remain at the same relative path.
+
+## 3) WordPress native table (shortcode)
+
+Add the following shortcode to a child theme `functions.php` or a small custom plugin. It fetches the JSON, caches it (transient), and renders a native HTML table.
+
+```php
+function amx_fetch_matrix_data($url) {
+  $cache_key = 'amx_matrix_json';
+  $cached = get_transient($cache_key);
+  if ($cached) {
+    return $cached;
+  }
+
+  $response = wp_remote_get($url, array('timeout' => 10));
+  if (is_wp_error($response)) {
+    return null;
+  }
+
+  $body = wp_remote_retrieve_body($response);
+  $data = json_decode($body, true);
+  if (!is_array($data)) {
+    return null;
+  }
+
+  set_transient($cache_key, $data, 12 * HOUR_IN_SECONDS);
+  return $data;
+}
+
+function amx_render_matrix_table($atts) {
+  $atts = shortcode_atts(array(
+    'src' => 'https://raw.githubusercontent.com/BIMe-Initiative/microtools/main/adaptive-maturity-matrix/data/amx-content.json'
+  ), $atts);
+
+  $data = amx_fetch_matrix_data($atts['src']);
+  if (!$data) {
+    return '<p>Matrix data is unavailable.</p>';
+  }
+
+  $rows = $data['rows'];
+  $cols = $data['cols'];
+  $cells = $data['cells'];
+
+  $grid = array();
+  foreach ($cells as $cell) {
+    if (!isset($grid[$cell['row']])) {
+      $grid[$cell['row']] = array();
+    }
+    $grid[$cell['row']][$cell['col']] = $cell;
+  }
+
+  ob_start();
+  ?>
+  <table class="amx-table">
+    <thead>
+      <tr>
+        <th>ACI \\ PMI</th>
+        <?php foreach ($cols as $col) : ?>
+          <th><?php echo esc_html($col['table_label']); ?></th>
+        <?php endforeach; ?>
+      </tr>
+    </thead>
+    <tbody>
+      <?php foreach ($rows as $row) : ?>
+        <tr>
+          <th><?php echo esc_html($row['table_label']); ?></th>
+          <?php foreach ($cols as $col) : ?>
+            <?php
+              $cell = isset($grid[$row['id']][$col['id']]) ? $grid[$row['id']][$col['id']] : null;
+              $text = $cell ? $cell['current'] : '';
+            ?>
+            <td><?php echo nl2br(esc_html($text)); ?></td>
+          <?php endforeach; ?>
+        </tr>
+      <?php endforeach; ?>
+    </tbody>
+  </table>
+  <?php
+  return ob_get_clean();
+}
+add_shortcode('amx_table', 'amx_render_matrix_table');
+```
+
+Use in WordPress:
+```
+[amx_table]
+```
+
+## 4) WordPress CSS (match the app look)
+
+Add this to your theme or Cornerstone custom CSS:
+
+```css
+.amx-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+}
+.amx-table th,
+.amx-table td {
+  border: 1px solid #e5e7eb;
+  padding: 10px;
+  vertical-align: top;
+}
+.amx-table thead th {
+  background: #f37f73;
+  color: #fff;
+  font-weight: 700;
+}
+.amx-table tbody th {
+  background: #f8fafc;
+  font-weight: 600;
+}
+```
+
+## 5) Backups
+
+Backup created before content split:
+- `backup/index.html.pre-content-split.html`

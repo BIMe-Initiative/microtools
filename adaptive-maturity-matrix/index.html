@@ -6,8 +6,39 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="robots" content="noindex" />
   <style>
+    @font-face {
+      font-family: "Raleway";
+      src: url("assets/fonts/raleway-400.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Raleway";
+      src: url("assets/fonts/raleway-500.ttf") format("truetype");
+      font-weight: 500;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Raleway";
+      src: url("assets/fonts/raleway-600.ttf") format("truetype");
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
+    }
+    @font-face {
+      font-family: "Raleway";
+      src: url("assets/fonts/raleway-700.ttf") format("truetype");
+      font-weight: 700;
+      font-style: normal;
+      font-display: swap;
+    }
+  </style>
+  <style>
     :root {
-      --amx-brand:#f73f37;
+      --amx-brand:#f37f73;
+      --amx-secondary:#4bacc6;
       --amx-text:#111827;
       --amx-muted:#6b7280;
       --amx-border:#e5e7eb;
@@ -16,58 +47,108 @@
     }
     html, body { margin:0; padding:0; }
     body {
-      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-      background: #fff;
+      font-family: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      background: #f8fafc;
       color: var(--amx-text);
     }
     a { color: var(--amx-brand); }
   </style>
 </head>
 <body>
-<!-- Adaptive Maturity Matrix – single-card + compare, Typepad-ready -->
+<!-- Adaptive Maturity Matrix – Investigate + Plan, Typepad-ready -->
 <div id="amx-widget" lang="en" role="region" aria-label="Adaptive Maturity Matrix">
   <style>
     /* ===== Theme ===== */
     #amx-widget{
-      --amx-brand:#f73f37;--amx-text:#111827;--amx-muted:#6b7280;--amx-border:#e5e7eb;
-      --amx-bg:#ffffff;--amx-soft:#fafafa;--amx-badge-bg:#fde8e7;--amx-badge-br:#f8c6c3;
-      font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-width:650px;margin:0 auto;color:var(--amx-text)
+      --amx-brand:#f37f73;--amx-secondary:#4bacc6;--amx-text:#111827;--amx-muted:#6b7280;--amx-border:#e5e7eb;
+      --amx-bg:#ffffff;--amx-soft:#f8fafc;--amx-badge-bg:#fde8e7;--amx-badge-br:#f8c6c3;
+      font-family:"Raleway",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;max-width:1200px;margin:0 auto;color:var(--amx-text);padding:16px
     }
     #amx-widget *{box-sizing:border-box}
     #amx-widget .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,1px,1px);white-space:nowrap;border:0}
 
-    /* ===== Top bar ===== */
-    #amx-widget .topbar{display:grid;gap:10px;margin:8px 0 12px}
-    #amx-widget .searchbox{display:flex;gap:8px;width:100%}
-    #amx-widget input[type="search"]{flex:1;padding:12px;border:1px solid var(--amx-border);border-radius:0;font-size:14px;background:#fff}
+    /* ===== Header ===== */
+    #amx-widget .amx-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin:0 0 16px;padding:10px 20px;border-bottom:1px solid var(--amx-border);background:#fff;position:sticky;top:0;z-index:10}
+    #amx-widget .brand{display:flex;align-items:center;gap:10px}
+    #amx-widget .brand img{height:28px;width:auto;display:block}
+    #amx-widget .brand .logo-mark{display:none}
+    @media (max-width:720px){
+      #amx-widget .brand .logo-full{display:none}
+      #amx-widget .brand .logo-mark{display:block;height:32px}
+    }
+    #amx-widget .brand-title{font-size:25px;font-weight:600;color:#1f2937}
+    #amx-widget .topbar{display:grid;gap:10px;margin:0 0 12px}
+    #amx-widget .searchbox{display:flex;gap:8px;width:100%;min-width:220px;flex:1}
+    #amx-widget input[type="search"]{flex:1;padding:10px 12px;border:1px solid var(--amx-border);border-radius:0px;font-size:14px;font-weight:600;background:#f8fafc;font-family:"Raleway",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
     #amx-widget input[type="search"]:focus{outline:2px solid var(--amx-brand);outline-offset:2px}
-    #amx-widget .switch{display:flex;align-items:center;gap:8px}
-    #amx-widget .chk{width:18px;height:18px}
+    @media (max-width:720px){
+      #amx-widget .amx-header{align-items:flex-start}
+      #amx-widget .mode-tabs{order:3;width:100%}
+      #amx-widget .searchbox{order:2;width:100%}
+    }
 
     /* Flat buttons & links */
-    #amx-widget .btn{appearance:none;background:var(--amx-brand);color:#fff;border:0;border-radius:0;padding:10px 12px;font-size:13px;cursor:pointer}
+    #amx-widget .btn{appearance:none;background:var(--amx-brand);color:#fff;border:0;border-radius:10px;padding:10px 14px;font-size:13px;font-weight:600;cursor:pointer;box-shadow:0 8px 20px rgba(243,127,115,0.2)}
     #amx-widget .btn:hover{filter:brightness(0.95)}
     #amx-widget .btn:active{filter:brightness(0.9)}
     #amx-widget .btn:focus-visible{outline:2px solid var(--amx-brand);outline-offset:2px}
     #amx-widget .linkish{background:transparent;border:0;color:var(--amx-brand);text-decoration:underline;cursor:pointer;font-size:13px;padding:0}
 
     /* Search results (full text, left-aligned) */
-    #amx-widget .results{border:1px solid var(--amx-border);border-radius:12px;padding:8px;background:var(--amx-bg);display:none;text-align:left}
-    #amx-widget .results h4{font-size:12px;font-weight:700;color:#374151;margin:6px 6px 8px}
-    #amx-widget .resitem{display:block;border:1px dashed var(--amx-border);border-radius:0;padding:10px;margin:0 0 6px;background:var(--amx-soft);cursor:pointer;text-align:left}
+    #amx-widget .results{border:1px solid var(--amx-border);border-radius:12px;padding:10px;background:var(--amx-bg);display:none;text-align:left;box-shadow:0 6px 18px rgba(15,23,42,0.08);font-family:"Raleway",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    #amx-widget .results *{font-family:"Raleway",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+    #amx-widget .results h4{font-size:14px;font-weight:700;color:#374151;margin:6px 6px 10px}
+    #amx-widget .resitem{display:block;border:1px dashed var(--amx-border);border-radius:0;padding:12px;margin:0 0 8px;background:var(--amx-soft);cursor:pointer;text-align:left}
     #amx-widget .resitem:hover{background:#fff}
-    #amx-widget .r-title{font-size:13px;font-weight:700;margin:0 0 4px}
-    #amx-widget .r-meta{font-size:11px;color:var(--amx-muted);margin:0 0 4px}
-    #amx-widget .r-snippet{font-size:12px;color:var(--amx-text);white-space:pre-line}
+    #amx-widget .r-title{font-size:14px;font-weight:700;margin:0 0 6px}
+    #amx-widget .r-meta{font-size:12px;color:var(--amx-muted);margin:0 0 6px}
+    #amx-widget .r-snippet{font-size:13px;color:var(--amx-text);white-space:pre-line}
     #amx-widget mark{background:#fff3c4}
+    #amx-widget .status{display:none;border:1px solid var(--amx-border);border-radius:10px;padding:8px;font-size:12px;background:#fff7ed;color:#9a3412}
+
+    /* Mode tabs */
+    #amx-widget .mode-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-left:auto}
+    #amx-widget .mode-tab{border:1px solid var(--amx-border);padding:8px 12px;background:#fff;border-radius:0;font-size:12px;color:#374151;cursor:pointer;transition:transform 120ms ease}
+    #amx-widget .mode-tab:hover{transform:scale(1.03)}
+    #amx-widget .mode-tab[aria-selected="true"]{background:#f1f5f9;border-color:transparent;color:#6b7280;font-weight:700;pointer-events:none}
+    #amx-widget .mode-tab[aria-selected="false"]{background:var(--amx-brand);border-color:var(--amx-brand);color:#fff;font-weight:700;box-shadow:0 8px 20px rgba(243,127,115,0.2)}
+    #amx-widget .mode-tab.is-pulse{animation:pulse-scale 2s ease-in-out infinite}
+    @keyframes pulse-scale{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
+
+    /* Section head */
+    #amx-widget .section-head{margin-bottom:12px}
+    #amx-widget .section-head h2{margin:0 0 4px;font-size:20px}
+    #amx-widget .section-head p{margin:0;font-size:13px;color:var(--amx-muted)}
+
+    /* Layout */
+    #amx-widget .amx-layout{display:flex;flex-direction:column;gap:20px}
+    #amx-widget .amx-main{flex:1;min-width:0}
+    #amx-widget .amx-aside{width:100%}
+    @media (min-width:980px){
+      #amx-widget .amx-layout{flex-direction:row;align-items:flex-start}
+      #amx-widget .amx-aside{width:360px;position:sticky;top:96px}
+    }
+    #amx-widget .panel{background:#fff;border:1px solid #e2e8f0;border-radius:16px;box-shadow:0 4px 18px rgba(15,23,42,0.06)}
+    #amx-widget .panel-head{padding:18px 18px 0}
+    #amx-widget .panel-body{padding:18px}
+    #amx-widget .panel-foot{padding:16px 18px;border-top:1px solid #f1f5f9;background:#f8fafc;border-radius:0 0 16px 16px}
+    #amx-widget .panel-foot .actions{margin-top:0}
+    #amx-widget .pill{display:inline-flex;align-items:center;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:700;background:#fee2e2;color:#b91c1c}
+    #amx-widget .pill-target{background:rgba(75,172,198,0.2);color:#1f7f97}
+    #amx-widget .summary-grid{display:grid;gap:12px;margin-top:16px}
+    @media (min-width:720px){#amx-widget .summary-grid{grid-template-columns:repeat(3,1fr)}}
+    #amx-widget .summary-card{border:1px solid #e2e8f0;border-radius:14px;background:#f8fafc;padding:14px}
+    #amx-widget .summary-card.is-primary{background:#fff7ed;border-color:#fed7aa}
+    #amx-widget .summary-label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:0.16em;font-weight:700;color:var(--amx-muted);margin-bottom:6px}
+    #amx-widget .summary-value{font-size:14px;font-weight:700;color:#0f172a}
 
     /* Badges */
-    #amx-widget .mini{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+    #amx-widget .mini{display:none}
     #amx-widget .badge{display:inline-block;padding:3px 10px;font-size:11px;border-radius:999px;background:var(--amx-badge-bg);color:var(--amx-text);border:1px solid var(--amx-badge-br)}
 
     /* ===== Single-card mode ===== */
-    #amx-widget #amx-single{border:1px solid var(--amx-border);border-radius:12px;background:var(--amx-bg);padding:12px}
-    #amx-widget .rowbar{display:grid;gap:10px;margin-bottom:8px}
+    #amx-widget #amx-single{border:0;background:transparent;padding:0}
+    #amx-widget .rowbar{display:none}
     #amx-widget label{display:block;font-size:12px;color:#374151;margin-bottom:4px}
     /* Dropdown styling (square, white, faint dividers) */
     #amx-widget select{width:100%;padding:10px 12px;border:1px solid var(--amx-border);border-radius:0;font-size:14px;background:#fff;appearance:none;-webkit-appearance:none}
@@ -75,7 +156,7 @@
     #amx-widget select option{border-bottom:1px solid #f0f0f0}
 
     /* PMI tabs (flat; active: white + bold brand text; others: dim bg + normal text) */
-    #amx-widget .tablist{display:flex;gap:6px;margin:6px 0 6px;border-bottom:1px solid #f1f5f9}
+    #amx-widget .tablist{display:none}
     #amx-widget .tab{border:1px solid var(--amx-border);padding:8px 10px;cursor:pointer;font-weight:400;font-size:12px;color:#374151;background:var(--amx-soft)}
     #amx-widget .tab[aria-selected="true"]{background:#fff;color:var(--amx-brand);font-weight:700}
     #amx-widget .tab:hover{background:#fff}
@@ -83,120 +164,243 @@
     #amx-widget .tab:focus-visible{outline:2px solid var(--amx-brand);outline-offset:2px}
 
     /* Card body */
-    #amx-widget .card{padding:10px}
-    #amx-widget .title{font-weight:700;margin:8px 0 4px;font-size:16px;line-height:1.25}
-    #amx-widget .meta{font-size:12px;color:var(--amx-muted);margin-bottom:8px;display:flex;gap:10px;flex-wrap:wrap}
-    #amx-widget .body{font-size:14px;line-height:1.5;color:var(--amx-text);white-space:pre-line}
+    #amx-widget .card{padding:0}
+    #amx-widget .title{font-weight:800;margin:6px 0 6px;font-size:22px;line-height:1.2}
+    #amx-widget .meta{font-size:12px;color:var(--amx-muted);margin-bottom:10px;display:block}
+    #amx-widget .body{font-size:14px;line-height:1.6;color:#475569;white-space:pre-line}
     #amx-widget .actions{margin-top:10px;display:flex;gap:12px;flex-wrap:wrap}
+    #amx-widget .subtabs{display:flex;gap:6px;margin:8px 0}
+    #amx-widget .subtab{border:1px solid var(--amx-border);padding:6px 10px;cursor:pointer;font-weight:600;font-size:11px;color:#374151;background:#fff;border-radius:8px}
+    #amx-widget .subtab[aria-selected="true"]{background:#fff;color:var(--amx-brand);font-weight:700}
+    #amx-widget .graphic{margin:10px 0;display:none}
+    #amx-widget .graphic img{max-width:100%;height:auto;border:1px solid var(--amx-border);background:#fff}
 
-    /* ===== Compare mode ===== */
-    #amx-widget #amx-compare{display:none;border:1px solid var(--amx-border);border-radius:12px;background:var(--amx-bg);padding:12px}
-    #amx-widget .cmp-grid{display:grid;gap:12px}
-    @media (min-width:560px){#amx-widget .cmp-grid{grid-template-columns:1fr 1fr}}
-    #amx-widget .cmp-card{border:1px solid var(--amx-border);border-radius:12px;background:#fff;display:flex;flex-direction:column}
-    #amx-widget .cmp-controls{padding:12px;border-bottom:1px solid var(--amx-border);display:grid;gap:8px;background:var(--amx-soft)}
-    @media (min-width:380px){#amx-widget .cmp-controls{grid-template-columns:1fr 1fr}}
+    /* Mini map */
+    #amx-widget .mini-map{margin:10px 0;border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc;padding:12px;overflow-x:auto}
+    #amx-widget .mini-grid{display:grid;gap:8px;grid-template-columns:minmax(120px,1.3fr) repeat(5,1fr);min-width:640px}
+    #amx-widget .mini-cell{min-height:44px;border:1px solid #e2e8f0;background:#fff;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#1f2937;transition:transform 120ms ease, box-shadow 120ms ease, background 120ms ease, color 120ms ease}
+    #amx-widget .mini-cell:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(15,23,42,0.12);border-color:#fca5a5}
+    #amx-widget .mini-cell.is-active{background:var(--amx-brand);border-color:var(--amx-brand);color:#fff}
+    #amx-widget .mini-cell.is-current{background:var(--amx-brand);border-color:var(--amx-brand);color:#fff}
+    #amx-widget .mini-cell.is-target{background:var(--amx-secondary);border-color:var(--amx-secondary);color:#fff}
+    #amx-widget .mini-cell.is-disabled{opacity:0.35;cursor:not-allowed}
+    #amx-widget .mini-label{font-size:10px;color:var(--amx-muted);padding:6px 8px;display:flex;align-items:center;background:#f8fafc;border:1px solid #f1f5f9;border-radius:10px}
+
+    /* Plan */
+    #amx-widget .plan-panel{display:none}
+    #amx-widget .plan-header{display:grid;gap:6px;margin-bottom:16px}
+    #amx-widget .plan-step{font-size:12px;color:var(--amx-muted);text-transform:uppercase;letter-spacing:0.2em;font-weight:700}
+    #amx-widget .plan-instruction{font-size:14px;font-weight:600;color:#0f172a}
+    #amx-widget .plan-grid{border:1px solid #e2e8f0;border-radius:16px;background:#f8fafc;padding:12px;overflow-x:auto}
+    #amx-widget .plan-grid .mini-grid{margin:0}
+    #amx-widget .plan-actions{margin-top:10px;display:flex;gap:10px;flex-wrap:wrap}
+    #amx-widget .plan-cards{display:grid;gap:12px;margin-top:10px}
+    @media (min-width:680px){#amx-widget .plan-cards{grid-template-columns:1fr 1fr}}
+    #amx-widget .plan-card{border:1px solid #e2e8f0;border-radius:14px;background:#fff;padding:14px}
+    #amx-widget .plan-card h4{margin:0 0 6px;font-size:13px}
+    #amx-widget .plan-card .body{font-size:13px}
+    #amx-widget .plan-recs{margin-top:0;border-top:0;padding-top:0;display:none}
+    #amx-widget .plan-recs ul{margin:6px 0 0 18px;padding:0}
+    #amx-widget .plan-recs li{margin:4px 0}
+
+    #amx-widget .summary-card .body{font-size:12px;color:#64748b;margin-top:6px}
+    #amx-widget .attr-block{margin-top:16px}
+    #amx-widget .attr-block ul{margin:8px 0 0 18px;padding:0}
+    #amx-widget .attr-block li{margin:6px 0;font-size:13px;color:#475569}
+    #amx-widget #plan-recs-list{margin:8px 0 0 18px;padding:0}
+    #amx-widget #plan-recs-list li{margin:6px 0;font-size:13px;color:#475569}
+    @media (max-width:640px){
+      #amx-widget .mini-grid{min-width:520px}
+      #amx-widget .mini-label{white-space:normal;text-align:center;line-height:1.2}
+      #amx-widget .mini-cell{min-height:40px;min-width:40px;border-radius:999px}
+    }
 
     /* Footer */
-    #amx-widget .foot{margin-top:10px;font-size:11px;color:#6b7280}
+    #amx-widget .foot{margin-top:24px;padding-top:16px;border-top:1px solid #e2e8f0;font-size:11px;color:#6b7280;text-align:center;display:flex;flex-direction:column;gap:8px;align-items:center}
+    @media (min-width:720px){#amx-widget .foot{flex-direction:row;justify-content:space-between;text-align:left}}
     #amx-widget .foot a{color:var(--amx-brand)}
   </style>
 
-  <!-- Top controls -->
-  <div class="topbar">
+  <!-- Header -->
+  <div class="amx-header">
+    <div class="brand">
+      <img class="logo-full" src="assets/BIMei-Logo-Long.svg" alt="BIMei">
+      <img class="logo-mark" src="assets/BIMei-Symbol-Circle.svg" alt="BIMei">
+      <div class="brand-title">Adaptive Maturity Matrix</div>
+    </div>
     <div class="searchbox">
       <label class="sr-only" for="amx-search">Search text across matrix</label>
-      <input id="amx-search" type="search" placeholder="Search text across matrix" aria-label="Search text across matrix">
+      <input id="amx-search" type="search" placeholder="Search text across matrix..." aria-label="Search text across matrix">
     </div>
-    <div class="switch">
-      <input id="amx-compare-toggle" class="chk" type="checkbox" aria-controls="amx-compare" aria-expanded="false">
-      <label for="amx-compare-toggle"><strong>Compare mode</strong></label>
+    <div class="mode-tabs" role="tablist" aria-label="App mode">
+      <button type="button" class="mode-tab" data-mode="investigate" aria-selected="true">Investigate</button>
+      <button type="button" class="mode-tab is-pulse" data-mode="plan" aria-selected="false">Plan</button>
     </div>
+  </div>
+  <div class="topbar">
     <div id="amx-results" class="results" aria-live="polite"></div>
   </div>
+  <div id="amx-status" class="status" role="status" aria-live="polite"></div>
 
-  <!-- SINGLE CARD -->
-  <div id="amx-single" role="region" aria-label="Single cell view">
-    <div class="rowbar">
-      <div>
-        <label for="single-row">Adaptive Capacity</label>
-        <select id="single-row" aria-label="Select Adaptive Capacity"></select>
+  <!-- INVESTIGATE -->
+  <div id="amx-investigate" role="region" aria-label="Investigate adaptive maturity">
+    <div class="amx-layout">
+      <div class="amx-main">
+        <div id="amx-single">
+          <div class="panel">
+            <div class="panel-head">
+              <div class="section-head">
+                <h2>Investigate Adaptive Maturity Matrix</h2>
+                <p>Select a microstate to view its characteristics and assess your current adaptive behavior.</p>
+              </div>
+            </div>
+            <div class="panel-body">
+              <div class="mini-map" role="img" aria-label="Matrix mini map with current cell highlighted">
+                <div class="mini-grid" id="mini-grid"></div>
+              </div>
+              <div class="summary-grid">
+                <div class="summary-card is-primary">
+                  <span class="summary-label">Selected State</span>
+                  <div class="summary-value" id="summary-state"></div>
+                </div>
+                <div class="summary-card">
+                  <span class="summary-label">Adaptive Capacity</span>
+                  <div class="summary-value" id="summary-aci"></div>
+                </div>
+                <div class="summary-card">
+                  <span class="summary-label">Process Maturity</span>
+                  <div class="summary-value" id="summary-pmi"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="rowbar">
+            <div>
+              <label for="single-row">Adaptive Capacity</label>
+              <select id="single-row" aria-label="Select Adaptive Capacity"></select>
+            </div>
+          </div>
+
+          <div class="tablist" role="tablist" aria-label="Process Maturity"></div>
+        </div>
       </div>
-    </div>
-
-    <div class="tablist" role="tablist" aria-label="Process Maturity"></div>
-
-    <div class="mini">
-      <span class="badge" id="single-ac-badge"></span>
-      <span class="badge" id="single-pm-badge"></span>
-      <span class="badge" id="single-code-badge"></span>
-    </div>
-
-    <div class="card">
-      <h3 class="title" id="single-title"></h3>
-      <div class="meta" id="single-meta"></div>
-      <div class="body" id="single-body"></div>
-      <div class="actions">
-        <button type="button" class="btn" id="single-copy">Copy text</button>
-        <button type="button" class="linkish" id="single-link">Permalink</button>
-      </div>
+      <aside class="amx-aside">
+        <div class="panel">
+          <div class="panel-head">
+            <span class="pill" id="single-code-badge"></span>
+          </div>
+          <div class="panel-body">
+            <div class="subtabs" role="tablist" aria-label="Current and suggested behaviors">
+              <button type="button" class="subtab" data-view="current" aria-selected="true">Current</button>
+              <button type="button" class="subtab" data-view="suggested" aria-selected="false">Suggested</button>
+            </div>
+            <h3 class="title" id="single-title"></h3>
+            <div class="meta" id="single-meta"></div>
+            <div class="graphic" id="single-graphic"><img id="single-graphic-img" alt=""></div>
+            <div class="body" id="single-body"></div>
+            <div class="attr-block">
+              <h4 class="summary-label">Key Attributes</h4>
+              <ul id="single-attrs"></ul>
+            </div>
+          </div>
+          <div class="panel-foot">
+            <div class="actions">
+              <button type="button" class="linkish" id="single-copy">Copy text</button>
+            </div>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
-  <!-- COMPARE -->
-  <div id="amx-compare" role="region" aria-label="Compare two cells">
-    <div class="cmp-grid">
-      <!-- Left column -->
-      <div class="cmp-card" id="cmp-left">
-        <div class="cmp-controls">
-          <div>
-            <label for="cmp-left-row">Adaptive Capacity</label>
-            <select id="cmp-left-row"></select>
+  <!-- PLAN -->
+  <div id="amx-plan" class="plan-panel" role="region" aria-label="Plan adaptive maturity transition">
+    <div class="plan-header">
+      <div class="plan-step" id="plan-step">Step 1</div>
+      <div class="plan-instruction" id="plan-instruction">Identify the current Adaptive Maturity microstate that best describes your organisation, then press Next.</div>
+    </div>
+    <div class="amx-layout">
+      <div class="amx-main">
+        <div class="panel">
+          <div class="panel-head">
+            <div class="section-head">
+              <h2>Adaptive Maturity Matrix</h2>
+              <p>Select a cell to define your current and target microstates.</p>
+            </div>
           </div>
-          <div>
-            <label for="cmp-left-col">Process Maturity</label>
-            <select id="cmp-left-col"></select>
-          </div>
-        </div>
-        <div class="card">
-          <h3 class="title"></h3>
-          <div class="meta"></div>
-          <div class="body"></div>
-          <div class="actions">
-            <button type="button" class="btn" data-copy-left>Copy text</button>
-            <button type="button" class="linkish" data-link-left>Permalink</button>
-          </div>
-        </div>
-      </div>
-      <!-- Right column -->
-      <div class="cmp-card" id="cmp-right">
-        <div class="cmp-controls">
-          <div>
-            <label for="cmp-right-row">Adaptive Capacity</label>
-            <select id="cmp-right-row"></select>
-          </div>
-          <div>
-            <label for="cmp-right-col">Process Maturity</label>
-            <select id="cmp-right-col"></select>
-          </div>
-        </div>
-        <div class="card">
-          <h3 class="title"></h3>
-          <div class="meta"></div>
-          <div class="body"></div>
-          <div class="actions">
-            <button type="button" class="btn" data-copy-right>Copy text</button>
-            <button type="button" class="linkish" data-link-right>Permalink</button>
+          <div class="panel-body">
+            <div class="plan-grid">
+              <div class="mini-grid" id="plan-grid"></div>
+            </div>
+            <div class="summary-grid">
+              <div class="summary-card is-primary" id="plan-current-card">
+                <span class="summary-label">Current Position</span>
+                <div class="summary-value" id="plan-current-meta"></div>
+                <div class="body" id="plan-current-body"></div>
+              </div>
+              <div class="summary-card" id="plan-target-card">
+                <span class="summary-label">Target Objective</span>
+                <div class="summary-value" id="plan-target-meta"></div>
+                <div class="body" id="plan-target-body"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+      <aside class="amx-aside">
+        <div class="panel" id="plan-side-current">
+          <div class="panel-head">
+            <span class="pill">Current State</span>
+          </div>
+          <div class="panel-body">
+            <div class="meta" id="plan-side-current-meta"></div>
+            <div class="body" id="plan-side-current-body"></div>
+          </div>
+          <div class="panel-foot">
+            <button type="button" class="btn" id="plan-next" style="display:none">Confirm current state</button>
+            <button type="button" class="linkish" id="plan-reset" style="display:none">Reset</button>
+          </div>
+        </div>
+        <div class="panel" id="plan-side-target" style="display:none">
+          <div class="panel-head">
+            <span class="pill pill-target">Target State</span>
+          </div>
+          <div class="panel-body">
+            <div class="meta" id="plan-side-target-meta"></div>
+            <div class="body" id="plan-side-target-body"></div>
+          </div>
+          <div class="panel-foot">
+            <button type="button" class="btn" id="plan-finish" style="display:none">Show recommendations</button>
+            <button type="button" class="linkish" id="plan-reset-2">Reset</button>
+          </div>
+        </div>
+        <div class="panel" id="plan-side-recs" style="display:none">
+          <div class="panel-head">
+            <span class="pill" style="background:#e0f2fe;color:#0369a1">Recommendations</span>
+          </div>
+          <div class="panel-body">
+            <div id="plan-path" class="meta"></div>
+            <ul id="plan-recs-list"></ul>
+          </div>
+          <div class="panel-foot">
+            <button type="button" class="linkish" id="plan-copy">Copy text</button>
+            <button type="button" class="linkish" id="plan-reset-3">Reset</button>
+          </div>
+        </div>
+      </aside>
     </div>
   </div>
 
   <!-- Footer -->
   <div class="foot">
-    Adaptive Maturity Matrix | Microstate Comparison Tool v1.0 (250820) | Content by Succar (2025) | Developed by ChangeAgents AEC for the BIMe Initiative - Project D | Available as is under a
-    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> license.
+    <div>
+      Adaptive Maturity Matrix | Planning and Roadmap Tool v1.0 (250820)<br>
+      Content by Succar (2025) | Developed by <a href="https://changeagents.com.au/" target="_blank" rel="noopener">ChangeAgents AEC</a> for the <a href="https://bimexcellence.org/projects/performance-improvement/" target="_blank" rel="noopener">BIMe Initiative - Project D</a>
+    </div>
+    <div>
+      Available <em>as is</em> under a <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.en" target="_blank" rel="noopener">CC BY-NC-SA 4.0</a> license
+    </div>
   </div>
 
   <script>
@@ -204,42 +408,103 @@
       /* === Set this when the post is published === */
       const qs = new URLSearchParams(location.search);
       const AMX_PERMALINK_BASE = qs.get("base") || "";
+      const DATA_URL = qs.get("data") || "data/amx-content.json";
+      const ACTIONS_URL = qs.get("actions") || "data/amx-actions.json";
 
+      const DEFAULT_COL_CODES = ["a","b","c","d","e"];
+      let ROWS = [];
+      let COLS = [];
+      let ROW_META = {};
+      let COL_META = {};
+      let CELLS = {};
+      let ACTIONS = {};
 
-      const ROWS = ["Resistant","Receptive","Responsive","Reformative","Regenerative"];
-      const COLS = ["Ad-hoc","Defined","Managed","Integrated","Optimised"];
+      function showStatus(message){
+        const el = document.getElementById("amx-status");
+        if(!el) return;
+        if(!message){ el.style.display="none"; el.textContent=""; return; }
+        el.textContent = message;
+        el.style.display = "block";
+      }
 
-      const ROW_META = {
-        "Resistant":   { code:"AC: Low",      desc:"Low Adaptive Capacity" },
-        "Receptive":   { code:"AC: Med-Low",  desc:"Medium–Low Adaptive Capacity" },
-        "Responsive":  { code:"AC: Medium",   desc:"Medium Adaptive Capacity" },
-        "Reformative": { code:"AC: Med-High", desc:"Medium–High Adaptive Capacity" },
-        "Regenerative":{ code:"AC: High",     desc:"High Adaptive Capacity" }
-      };
-      const COL_META = {
-        "Ad-hoc":    { code:"PM: Low" },
-        "Defined":   { code:"PM: Med–Low" },
-        "Managed":   { code:"PM: Medium" },
-        "Integrated":{ code:"PM: Med–High" },
-        "Optimised": { code:"PM: High" }
-      };
+      async function loadData(){
+        try{
+          const res = await fetch(DATA_URL, { cache: "force-cache" });
+          if(!res.ok) throw new Error("Bad response");
+          const data = await res.json();
+          showStatus("");
+          return data;
+        }catch(e){
+          showStatus("Matrix data could not be loaded. Please try again later.");
+          return null;
+        }
+      }
+      async function loadActions(){
+        try{
+          const res = await fetch(ACTIONS_URL, { cache: "force-cache" });
+          if(!res.ok) throw new Error("Bad response");
+          const data = await res.json();
+          return data;
+        }catch(e){
+          showStatus("Action statements could not be loaded. Please try again later.");
+          return null;
+        }
+      }
 
-      const CELLS = {
-        "Resistant":{"Ad-hoc":"Frequent improvisation while retaining inefficient legacy routines; no responses to disruption and no learning from mistakes; practices replicated without reflection; risks are largely unseen, and requests for change is unheard; innovation champions and incentives are absent","Defined":"Procedures are documented then treated as scripture; no responses or learning from disruption; practices locked into rigid templates; risk remains largely unseen while unyielding gatekeepers block change; deviations from legacy workflows are summarily rejected; new ideas dismissed; absence of incentives prevents champions from emerging","Managed":"Management enforces strict conformity to legacy methods; no responses or learning beyond memorising directives; risks are unseen or dismissed as noise; change efforts are non-existent or indefinitely stalled; management activity preserves order and without generating improvement","Integrated":"End-to-end workflows are welded together by prescriptive procedures and integrated dashboards; managers monitor for any variance only to keep everything as is; no learning except within the system and practices are frozen; risks go unrecognised and requests for change are frowned-upon or die in wait of multi-layer sign-off loops","Optimised":"Well-honed machine-like organisation yields consistent performance; optimisations are incremental due to fossilised practices; no willingness to learn or pivot to new solutions; efficiency masks fragility with risk signals ignored and change forcibly blocked; a highly optimised yet brittle machine that might stop or irrecoverably collapse with any disruption"},
-        "Receptive":{"Ad-hoc":"Disruptions are acknowledged but responses are slow, non-systemic and nonadaptive; learning is imitative; blindness to operational and environmental risks persists; cultural complacency dampens attempts to change; fixes are forgotten once the immediate crisis passes; occasional champions surface yet lack organisational support","Defined":"Documented processes provide a stable frame yet permit only timid alterations; disruptions prompt incremental tweaks not full pivots; learning is imitative with brief exploratory bursts whose lessons are seldom learned; risk is partially acknowledged but thinly analysed; change only accepted if nestled within existing procedures; scattered champions pilot improvements, but momentum fades for lack of mandate or resources","Managed":"Management tracks disruptions and issues cautious instructions; responses activated only on command; learning copies prior fixes, and practices only receive minor tweaks; risk is acknowledged but mitigation favours the least-impact option; every change requires supervisory sign-off; improvement momentum follows managerial directives yet lacks the vitality to grow","Integrated":"Control rooms (e.g. boards, committees) centrally monitor disruptions and respond through rigid scripts; agility is muted, and most responses are nonadaptive; learning copies prior fixes with only minor, low-impact tweaks allowed; risks are logged but thinly analysed, and every change must thread a narrow hole or cross a long bureaucratic corridor","Optimised":"Controlled improvements reflect a flicker of agility and vitality; disruptions are acknowledged through established norms; responses follow tested paths only; learning optimises prior fixes, and new knowledge percolate; risk is noted yet under-analysed; minor change within silos is welcomed and system-wide transformations discussed yet seldom implemented"},
-        "Responsive":{"Ad-hoc":"Disruptions trigger organised yet limited adaptive responses; experience steers reactive actions; fleeting patches of agility appear; learning is based on repetition and calibration; disrupted practices are restored rather than re-designed (“only first aid is provided”); risk is no longer ignored, and change is tolerated; adaptive responses are accepted provided they mimic past responses; attempts at long-term improvements stall due to lack of strategic intent","Defined":"Process guides are tweaked after each disruption; agility flares briefly, and resilience inches upward; learning remains iterative and anchored to precedents; risk is acknowledged and given cursory analysis; change is nudged rather than re-engineered and only approved when it reinforces existing templates; lacking stewardship, improvements are disjoined and short-lived","Managed":"Management reacts with agility to most disruptions; learning is iterative and cumulative (feedback loops close); practices are steadily enhanced through controlled pilots that scale when evidence is favourable; reviews that balance risk-opportunity precede decisions, and change is implemented with clear action plans; confidence and momentum grow, silo walls start to crumble; and improvements become rhythmic","Integrated":"Cross-functional teams operate under a common roadmap; responsiveness to disruption is mostly adaptive; pivoting to new solutions is fast yet coordinated; learning is iterative; practices are synchronised across teams/ units; structured risk-opportunity reviews guide adjustments; change is implemented through shared action plans; the momentum builds, yet improvements still require passing hard approval gates","Optimised":"Closed-loop controls optimise operations in near-real time in response to any disruption, thus keeping performance on target; learning is iterative, and practices are synchronised across functions; risk and opportunities are well-balanced during process optimisation reviews; preparedness for disruptive change is factored into the evolving system; new rules and standards are adopted but only after whole-system testing"},
-        "Reformative":{"Ad-hoc":"Disruption sends the energetic organisation into unknown new directions; learning is exploratory across diverse domains; practices are reinvented with or without need; risk-taking with or without clear rewards is tolerated; change is chased with haste; team cohesion grows around ad-hoc wins yet fails to crystallise into durable culture; operational successes and failures oscillate yielding erratic breakthroughs and backslides","Defined":"Process manuals are re-written following disruptions; agility turns proactive, and learning becomes exploratory; risk-taking is tolerated inside loosely defined guardrails; and change is championed; lacking permanent mechanisms, momentum evaporates once champions leave or teams disband","Managed":"Management is proactive, agile and responds adaptively to most disruptions; learning is exploratory, and lessons are shared broadly; practices are re-engineered to meet moving targets; calculated risk is welcomed within governance gates; transformations are guided by roadmaps; momentum accelerates, although progress still relies on discrete projects rather than a unifying platform","Integrated":"Interconnected teams coordinate swift responses to disruption; learning is exploratory and collaborative, and practices are iteratively redesigned through rapid-feedback loops; calculated risks are welcomed, and change initiatives energise the network; lean guiding structures steer progress without dictating it","Optimised":"Integrated teams use rapid-feedback cycles to redesign practices on the fly; proactive and adaptive responses are the norm; learning is exploratory, and lessons are immediately implemented; calculated risk-taking is encouraged; change initiatives energise the network, and improvements spread quickly without needing internal or external mandates"},
-        "Regenerative":{"Ad-hoc":"Continuous trialling without capturing lessons; extensive learning and experimentation without application; continuous recombination of knowledge and resources into impermanent structures; risk-taking is encouraged even without guardrails; incessant change is expected; progress hinges on isolated initiatives rather than orchestrated programmes","Defined":"Process maps evolve almost continuously; high agility allows rapid pivoting in response to disruptions; learning embraces disciplined experimentation and lessons are captured; risk is weighed and hedged; change flows seamlessly but – lacking structure – implementation is hampered; progress is reliant on champions and informal networks that are unable to scale","Managed":"Management sustains a portfolio of linked renewal programmes; responsiveness is adaptive and habitual; learning is experimental yet swiftly codified; risk is countered through predictive processes and capabilities, and a rolling cadence of change keeps the organisation ahead of innovation curves; improvements accelerate and are self-reinforcing, yet – due to lack of integration - may overlap or generate avoidable waste","Integrated":"Organisation operates as a fluid network for joint learning and co-creation; pivots are anticipatory, enabled by real-time recombination of resources; learning is experimental and swiftly codified, and a confident risk appetite plus seamless change cycles turn disruption into advantage; high energy and integrated - but lightweight - systems sustain continuous improvement","Optimised":"An antifragile organisation that senses, learns and elevates itself autonomously within its ecosystem; agility is habitual, learning experimental and instantly codified, and resilience reinforced through real-time recombination of resources; minimal rules, a strong shared purpose and flexible connections sustain perpetual renewal, while a confident risk appetite turns every stressor into fresh advantage"}
-      };
+      function applyData(data){
+        ROWS = data.rows.map(r=>r.id);
+        COLS = data.cols.map(c=>c.id);
+        ROW_META = {};
+        COL_META = {};
+        data.rows.forEach(r=>{
+          ROW_META[r.id] = { code: r.code, desc: r.desc, label: r.label || r.id, table_label: r.table_label || r.label || r.id };
+        });
+        data.cols.forEach(c=>{
+          COL_META[c.id] = { code: c.code, label: c.label || c.id, short: c.short, table_label: c.table_label || c.label || c.id };
+        });
+        CELLS = {};
+        data.cells.forEach(cell=>{
+          if(!CELLS[cell.row]) CELLS[cell.row] = {};
+          CELLS[cell.row][cell.col] = cell;
+        });
+      }
+      function applyActions(data){
+        ACTIONS = (data && data.components) ? data.components : {};
+      }
 
       /* ---------- Utilities ---------- */
       const $  = sel => document.querySelector(sel);
       const $$ = sel => Array.from(document.querySelectorAll(sel));
       const baseUrl = () => AMX_PERMALINK_BASE || (location.origin + location.pathname);
-      function cellCode(row,col){ return ["a","b","c","d","e"][COLS.indexOf(col)] + (ROWS.indexOf(row)+1); }
-      function cellTitle(row,col){ return `${col} ${row}`; }
-      function decodeCode(code){ const m=/^([a-e])([1-5])$/.exec(code||""); if(!m) return [ROWS[0],COLS[0]]; return [ROWS[+m[2]-1], COLS[["a","b","c","d","e"].indexOf(m[1])]]; }
-      function parseHashCompare(){ const raw=(location.hash||"").replace("#",""); if(!raw) return [null,null]; const parts=raw.split("~"); return [parts[0]||null, parts[1]||null]; }
+      function cellCode(row,col){
+        const idx = COLS.indexOf(col);
+        const colShort = (COL_META[col] && COL_META[col].short) ? COL_META[col].short : (DEFAULT_COL_CODES[idx] || "a");
+        return colShort + (ROWS.indexOf(row)+1);
+      }
+      function cellTitle(row,col){
+        const rowLabel = ROW_META[row] ? ROW_META[row].label : row;
+        const colLabel = COL_META[col] ? COL_META[col].label : col;
+        return `${colLabel} ${rowLabel}`;
+      }
+      function decodeCode(code){
+        const m=/^([a-e])([1-5])$/.exec(code||"");
+        if(!m) return [ROWS[0],COLS[0]];
+        const colKey = m[1];
+        const colId = COLS.find(c => (COL_META[c] && COL_META[c].short) === colKey) || COLS[DEFAULT_COL_CODES.indexOf(colKey)];
+        return [ROWS[+m[2]-1], colId || COLS[0]];
+      }
+      function getCell(row,col){
+        return (CELLS[row] && CELLS[row][col]) ? CELLS[row][col] : null;
+      }
+      function getCellText(cell, view){
+        if(!cell) return "";
+        if(view === "suggested") return cell.suggested || "";
+        return cell.current || "";
+      }
+      function getSearchText(cell){
+        if(!cell) return "";
+        return [cell.current, cell.suggested].filter(Boolean).join("\n");
+      }
 
       /* Robust clipboard copy (with fallback) */
       async function copyToClipboard(text){
@@ -251,7 +516,7 @@
       }
 
       /* ---------- Search (full text) ---------- */
-      const searchInput=$("#amx-search"), resultsBox=$("#amx-results"), cmpToggle=$("#amx-compare-toggle");
+      const searchInput=$("#amx-search"), resultsBox=$("#amx-results");
       function buildHighlightedText(text, rx){
         const frag = document.createDocumentFragment();
         let lastIndex = 0;
@@ -274,7 +539,9 @@
         q=q.trim(); if(q.length<2){ resultsBox.style.display="none"; resultsBox.textContent=""; return; }
         const safe=q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); const rx=new RegExp(safe,"gi"); const items=[];
         ROWS.forEach(r=>COLS.forEach(c=>{
-          const title=cellTitle(r,c), text=CELLS[r][c];
+          const cell = getCell(r,c);
+          if(!cell) return;
+          const title=cellTitle(r,c), text=getSearchText(cell);
           if(rx.test(title)||rx.test(text)){ rx.lastIndex=0; items.push({code:cellCode(r,c),title,meta:`${ROW_META[r].desc} · ${COL_META[c].code}`,text}); }
         }));
         items.sort((a,b)=>a.code.localeCompare(b.code));
@@ -303,7 +570,6 @@
           btn.append(titleEl, metaEl, snippetEl);
           btn.addEventListener("click", () => {
             const code = btn.getAttribute("data-code");
-            if(cmpToggle.checked){ cmpToggle.checked=false; toggleCompare(false); }
             openSingleByCode(code,true); resultsBox.style.display="none";
           });
           resultsBox.appendChild(btn);
@@ -314,16 +580,47 @@
 
       /* ---------- SINGLE CARD ---------- */
       const single=$("#amx-single");
-      const rowSel=$("#single-row"), acBadge=$("#single-ac-badge"), pmBadge=$("#single-pm-badge"), codeBadge=$("#single-code-badge");
+      const rowSel=$("#single-row"), codeBadge=$("#single-code-badge");
       const titleEl=$("#single-title"), metaEl=$("#single-meta"), bodyEl=$("#single-body"), copyBtn=$("#single-copy"), linkBtn=$("#single-link");
       const tablist=$(".tablist");
+      const miniGrid=$("#mini-grid");
+      const graphicWrap=$("#single-graphic");
+      const graphicImg=$("#single-graphic-img");
+      const viewTabs=$$(".subtab");
+      const summaryState=$("#summary-state");
+      const summaryACI=$("#summary-aci");
+      const summaryPMI=$("#summary-pmi");
+      const attrList=$("#single-attrs");
+      let currentView="current";
+      const modeTabs=$$(".mode-tab");
+      const investigatePanel=$("#amx-investigate");
+      const planPanel=$("#amx-plan");
+      const searchBox=searchInput.closest(".searchbox");
+      let currentMode="investigate";
+
+      function setMode(mode){
+        currentMode = mode;
+        modeTabs.forEach(t=>t.setAttribute("aria-selected", t.dataset.mode===mode ? "true":"false"));
+        modeTabs.forEach(t=>{
+          if(t.dataset.mode === "plan"){
+            t.classList.toggle("is-pulse", mode !== "plan");
+          }
+        });
+        investigatePanel.style.display = mode==="investigate" ? "block" : "none";
+        planPanel.style.display = mode==="plan" ? "block" : "none";
+        if(searchBox) searchBox.style.display = mode==="investigate" ? "flex" : "none";
+        resultsBox.style.display = "none";
+        resultsBox.textContent = "";
+      }
 
       function initSingle(){
-        ROWS.forEach(r=>rowSel.add(new Option(r,r)));
+        rowSel.textContent = "";
+        tablist.textContent = "";
+        ROWS.forEach(r=>rowSel.add(new Option(ROW_META[r].label,r)));
         COLS.forEach((c,i)=>{
           const b=document.createElement("button");
           b.className="tab"; b.setAttribute("role","tab"); b.setAttribute("aria-selected", i===0 ? "true":"false");
-          b.textContent=c; b.dataset.col=c;
+          b.textContent=COL_META[c].label; b.dataset.col=c;
           b.addEventListener("click",()=>selectPM(c));
           b.addEventListener("keydown",(e)=>{
             if(e.key==="ArrowRight"||e.key==="ArrowLeft"){
@@ -337,21 +634,125 @@
           tablist.appendChild(b);
         });
         rowSel.addEventListener("change",()=>updateSingle(rowSel.value, currentPM()));
+        viewTabs.forEach(btn=>{
+          btn.addEventListener("click",()=>{
+            if(btn.getAttribute("aria-selected")==="true") return;
+            currentView = btn.dataset.view;
+            viewTabs.forEach(t=>t.setAttribute("aria-selected", t.dataset.view===currentView ? "true":"false"));
+            updateSingle(rowSel.value, currentPM());
+          });
+        });
       }
       function currentPM(){ const t=tablist.querySelector('.tab[aria-selected="true"]'); return t ? t.dataset.col : COLS[0]; }
       function selectPM(col){
         tablist.querySelectorAll(".tab").forEach(t=>t.setAttribute("aria-selected", t.dataset.col===col ? "true":"false"));
         updateSingle(rowSel.value,col);
       }
+      function buildMiniGrid(){
+        if(!miniGrid) return;
+        miniGrid.textContent = "";
+        miniGrid.style.gridTemplateColumns = `minmax(120px,1.3fr) repeat(${COLS.length},1fr)`;
+
+        const corner = document.createElement("div");
+        corner.className = "mini-label";
+        corner.textContent = "ACI \\ PMI";
+        miniGrid.appendChild(corner);
+
+        COLS.forEach(c=>{
+          const label = document.createElement("div");
+          label.className = "mini-label";
+          const short = COL_META[c].short || "";
+          label.textContent = short ? `(${short}) ${COL_META[c].label}` : COL_META[c].label;
+          miniGrid.appendChild(label);
+        });
+
+        ROWS.forEach((r, rowIndex)=>{
+          const rowLabel = document.createElement("div");
+          rowLabel.className = "mini-label";
+          rowLabel.textContent = `(${rowIndex + 1}) ${ROW_META[r].label}`;
+          miniGrid.appendChild(rowLabel);
+          COLS.forEach(c=>{
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "mini-cell";
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.textContent = cellCode(r,c);
+            cell.addEventListener("click",()=>{
+              rowSel.value = r;
+              selectPM(c);
+            });
+            miniGrid.appendChild(cell);
+          });
+        });
+      }
+      function updateMiniGrid(row,col){
+        if(!miniGrid) return;
+        miniGrid.querySelectorAll(".mini-cell").forEach(cell=>{
+          const isActive = cell.dataset.row===row && cell.dataset.col===col;
+          cell.classList.toggle("is-active", isActive);
+        });
+      }
+      function syncViewTabs(cell){
+        const suggestedTab = viewTabs.find(t=>t.dataset.view==="suggested");
+        const hasSuggested = !!(cell && cell.suggested && cell.suggested.trim());
+        if(suggestedTab){
+          suggestedTab.style.display = hasSuggested ? "inline-flex" : "none";
+        }
+        if(!hasSuggested && currentView==="suggested") currentView="current";
+        viewTabs.forEach(t=>t.setAttribute("aria-selected", t.dataset.view===currentView ? "true":"false"));
+      }
+      function updateGraphic(cell, title){
+        if(!graphicWrap || !graphicImg) return;
+        if(cell && cell.graphic){
+          graphicImg.src = cell.graphic;
+          graphicImg.alt = `${title} graphic`;
+          graphicWrap.style.display = "block";
+        }else{
+          graphicImg.removeAttribute("src");
+          graphicImg.alt = "";
+          graphicWrap.style.display = "none";
+        }
+      }
+      function updateAttributes(text){
+        if(!attrList) return;
+        attrList.textContent = "";
+        if(!text) return;
+        let parts = text.split(";").map(t=>t.trim()).filter(Boolean);
+        if(parts.length < 2){
+          parts = text.split(".").map(t=>t.trim()).filter(Boolean);
+        }
+        parts.slice(0,3).forEach(item=>{
+          const li = document.createElement("li");
+          li.textContent = item;
+          attrList.appendChild(li);
+        });
+      }
+      function summarizeText(text){
+        if(!text) return "";
+        const firstSentence = text.split(".").map(t=>t.trim()).filter(Boolean)[0];
+        const base = firstSentence || text;
+        if(base.length <= 160) return base;
+        return base.slice(0,157).trim() + "...";
+      }
       function updateSingle(row,col){
-        const txt=CELLS[row][col], code=cellCode(row,col);
-        acBadge.textContent=ROW_META[row].code;
-        pmBadge.textContent=COL_META[col].code;
-        codeBadge.textContent=`Cell: ${code}`;
-        titleEl.textContent=cellTitle(row,col);
+        const cell = getCell(row,col);
+        if(!cell) return;
+        const code=cellCode(row,col);
+        if(codeBadge) codeBadge.textContent=`Microstate ${code}`;
+        const title = cell.title || cellTitle(row,col);
+        titleEl.textContent=title;
         metaEl.textContent=`${ROW_META[row].desc} · ${COL_META[col].code}`;
-        bodyEl.textContent=txt;
-        if(!cmpToggle.checked){ history.replaceState(null,"","#"+code); }
+        syncViewTabs(cell);
+        const bodyText = getCellText(cell, currentView);
+        bodyEl.textContent=bodyText;
+        updateAttributes(bodyText);
+        updateGraphic(cell, title);
+        updateMiniGrid(row,col);
+        if(summaryState) summaryState.textContent = `${code} | ${title}`;
+        if(summaryACI) summaryACI.textContent = ROW_META[row].desc;
+        if(summaryPMI) summaryPMI.textContent = `${COL_META[col].label} (${COL_META[col].code})`;
+        if(currentMode === "investigate"){ history.replaceState(null,"","#"+code); }
       }
       function openSingleByCode(code,scroll){
         const [r,c]=decodeCode(code);
@@ -361,68 +762,337 @@
       }
       copyBtn.addEventListener("click",async ()=>{
         const code=cellCode(rowSel.value,currentPM());
-        const text=`${cellTitle(rowSel.value,currentPM())} [${code}]\n${ROW_META[rowSel.value].desc} · ${COL_META[currentPM()].code}\n\n${CELLS[rowSel.value][currentPM()]}`;
+        const cell = getCell(rowSel.value,currentPM());
+        if(!cell) return;
+        const parts = [
+          `${cellTitle(rowSel.value,currentPM())} [${code}]`,
+          `${ROW_META[rowSel.value].desc} · ${COL_META[currentPM()].code}`,
+          "",
+          "Current:",
+          cell.current || ""
+        ];
+        if(cell.suggested){
+          parts.push("", "Suggested:", cell.suggested);
+        }
+        const text = parts.join("\n");
         await copyToClipboard(text); copyBtn.textContent="Copied"; setTimeout(()=>copyBtn.textContent="Copy text",1200);
       });
-      linkBtn.addEventListener("click",async ()=>{
-        const code=cellCode(rowSel.value,currentPM());
-        const url=baseUrl()+"#"+code;
-        await copyToClipboard(url);
-        const el=linkBtn; const prev=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=prev,1200);
+      if(linkBtn){
+        linkBtn.addEventListener("click",async ()=>{
+          const code=cellCode(rowSel.value,currentPM());
+          const url=baseUrl()+"#"+code;
+          await copyToClipboard(url);
+          const el=linkBtn; const prev=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=prev,1200);
+        });
+      }
+
+      /* ---------- PLAN ---------- */
+      const planGrid=$("#plan-grid");
+      const planStepEl=$("#plan-step");
+      const planInstruction=$("#plan-instruction");
+      const planNext=$("#plan-next");
+      const planFinish=$("#plan-finish");
+      const planReset=$("#plan-reset");
+      const planReset2=$("#plan-reset-2");
+      const planReset3=$("#plan-reset-3");
+      const planCurrentMeta=$("#plan-current-meta");
+      const planCurrentBody=$("#plan-current-body");
+      const planTargetMeta=$("#plan-target-meta");
+      const planTargetBody=$("#plan-target-body");
+      const planSideCurrent=$("#plan-side-current");
+      const planSideTarget=$("#plan-side-target");
+      const planSideRecs=$("#plan-side-recs");
+      const planSideCurrentMeta=$("#plan-side-current-meta");
+      const planSideCurrentBody=$("#plan-side-current-body");
+      const planSideTargetMeta=$("#plan-side-target-meta");
+      const planSideTargetBody=$("#plan-side-target-body");
+      const planRecsList=$("#plan-recs-list");
+      const planPath=$("#plan-path");
+      const planCopy=$("#plan-copy");
+      const planCurrentCard=$("#plan-current-card");
+      const planTargetCard=$("#plan-target-card");
+      let planStep=1;
+      let planCurrentCode=null;
+      let planTargetCode=null;
+
+      function buildPlanGrid(){
+        if(!planGrid) return;
+        planGrid.textContent = "";
+        planGrid.style.gridTemplateColumns = `minmax(120px,1.3fr) repeat(${COLS.length},1fr)`;
+
+        const corner = document.createElement("div");
+        corner.className = "mini-label";
+        corner.textContent = "ACI \\ PMI";
+        planGrid.appendChild(corner);
+
+        COLS.forEach(c=>{
+          const label = document.createElement("div");
+          label.className = "mini-label";
+          const short = COL_META[c].short || "";
+          label.textContent = short ? `(${short}) ${COL_META[c].label}` : COL_META[c].label;
+          planGrid.appendChild(label);
+        });
+
+        ROWS.forEach((r, rowIndex)=>{
+          const rowLabel = document.createElement("div");
+          rowLabel.className = "mini-label";
+          rowLabel.textContent = `(${rowIndex + 1}) ${ROW_META[r].label}`;
+          planGrid.appendChild(rowLabel);
+          COLS.forEach(c=>{
+            const cell = document.createElement("button");
+            cell.type = "button";
+            cell.className = "mini-cell";
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+            cell.textContent = cellCode(r,c);
+            cell.addEventListener("click",()=>{
+              if(planStep === 1){
+                planCurrentCode = cellCode(r,c);
+                updatePlanSelection();
+              }else if(planStep === 2){
+                const code = cellCode(r,c);
+                if(code === planCurrentCode) return;
+                planTargetCode = code;
+                updatePlanSelection();
+              }
+            });
+            planGrid.appendChild(cell);
+          });
+        });
+      }
+
+      function updatePlanSelection(){
+        if(!planGrid) return;
+        planGrid.querySelectorAll(".mini-cell").forEach(cell=>{
+          const code = cellCode(cell.dataset.row, cell.dataset.col);
+          cell.classList.toggle("is-current", code === planCurrentCode);
+          cell.classList.toggle("is-target", code === planTargetCode);
+          cell.classList.toggle("is-disabled", planStep === 2 && code === planCurrentCode);
+        });
+        renderPlanCards();
+      }
+
+      function renderPlanCards(){
+        if(planCurrentCode){
+          const [r,c] = decodeCode(planCurrentCode);
+          const cell = getCell(r,c);
+          const title = cell ? (cell.title || cellTitle(r,c)) : "";
+          const meta = `${title} [${planCurrentCode}] · ${ROW_META[r].desc} · ${COL_META[c].code}`;
+          const body = cell ? getCellText(cell, "current") : "";
+          planCurrentMeta.textContent = meta;
+          planCurrentBody.textContent = summarizeText(body);
+          if(planSideCurrentMeta) planSideCurrentMeta.textContent = meta;
+          if(planSideCurrentBody) planSideCurrentBody.textContent = body;
+          if(planNext) planNext.style.display = "inline-flex";
+          if(planReset) planReset.style.display = "inline-flex";
+        }else{
+          planCurrentMeta.textContent = "Select a current state to view details.";
+          planCurrentBody.textContent = "";
+          if(planSideCurrentMeta) planSideCurrentMeta.textContent = "Select a current state to view details.";
+          if(planSideCurrentBody) planSideCurrentBody.textContent = "";
+          if(planNext) planNext.style.display = "none";
+          if(planReset) planReset.style.display = "none";
+        }
+        if(planTargetCode){
+          const [r,c] = decodeCode(planTargetCode);
+          const cell = getCell(r,c);
+          const title = cell ? (cell.title || cellTitle(r,c)) : "";
+          const meta = `${title} [${planTargetCode}] · ${ROW_META[r].desc} · ${COL_META[c].code}`;
+          const body = cell ? getCellText(cell, "current") : "";
+          planTargetMeta.textContent = meta;
+          planTargetBody.textContent = summarizeText(body);
+          if(planSideTargetMeta) planSideTargetMeta.textContent = meta;
+          if(planSideTargetBody) planSideTargetBody.textContent = body;
+          if(planFinish) planFinish.style.display = "inline-flex";
+        }else{
+          planTargetMeta.textContent = "Select a target state to view details.";
+          planTargetBody.textContent = "";
+          if(planSideTargetMeta) planSideTargetMeta.textContent = "Select a target state to view details.";
+          if(planSideTargetBody) planSideTargetBody.textContent = "";
+          if(planFinish) planFinish.style.display = "none";
+        }
+      }
+
+      function setPlanStep(step){
+        planStep = step;
+        planStepEl.textContent = `Step ${step}`;
+        if(step === 1){
+          planInstruction.textContent = "Identify the current Adaptive Maturity microstate that best describes your organisation, then press Next.";
+          if(planSideCurrent) planSideCurrent.style.display = "block";
+          if(planSideTarget) planSideTarget.style.display = "none";
+          if(planSideRecs) planSideRecs.style.display = "none";
+          if(planCurrentCard) planCurrentCard.style.display = "block";
+          if(planTargetCard) planTargetCard.style.display = "none";
+        }else if(step === 2){
+          planInstruction.textContent = "Select the target Adaptive Maturity microstate that your organisation aims to achieve as soon as possible, then press Finish.";
+          if(planSideCurrent) planSideCurrent.style.display = "none";
+          if(planSideTarget) planSideTarget.style.display = "block";
+          if(planSideRecs) planSideRecs.style.display = "none";
+          if(planCurrentCard) planCurrentCard.style.display = "block";
+          if(planTargetCard) planTargetCard.style.display = "block";
+        }else{
+          planInstruction.textContent = "Review the recommended actions for moving from current to target state.";
+          if(planSideCurrent) planSideCurrent.style.display = "none";
+          if(planSideTarget) planSideTarget.style.display = "none";
+          if(planSideRecs) planSideRecs.style.display = "block";
+          if(planCurrentCard) planCurrentCard.style.display = "block";
+          if(planTargetCard) planTargetCard.style.display = "block";
+        }
+        updatePlanSelection();
+      }
+
+      function buildPath(currentCode, targetCode){
+        const [cr,cc] = decodeCode(currentCode);
+        const [tr,tc] = decodeCode(targetCode);
+        let rIdx = ROWS.indexOf(cr);
+        let cIdx = COLS.indexOf(cc);
+        const tR = ROWS.indexOf(tr);
+        const tC = COLS.indexOf(tc);
+        const path = [currentCode];
+        while(rIdx < tR){ rIdx += 1; path.push(cellCode(ROWS[rIdx], COLS[cIdx])); }
+        while(cIdx < tC){ cIdx += 1; path.push(cellCode(ROWS[rIdx], COLS[cIdx])); }
+        return path;
+      }
+
+      function pickActions(list, count, seed){
+        const picked = [];
+        if(!list || !list.length) return picked;
+        for(let i=0;i<count;i++){
+          const idx = (seed + i) % list.length;
+          picked.push(list[idx].action);
+        }
+        return picked;
+      }
+
+      function buildRecommendations(currentCode, targetCode){
+        const [cr,cc] = decodeCode(currentCode);
+        const [tr,tc] = decodeCode(targetCode);
+        const rowDiff = ROWS.indexOf(tr) - ROWS.indexOf(cr);
+        const colDiff = COLS.indexOf(tc) - COLS.indexOf(cc);
+        const path = buildPath(currentCode, targetCode);
+        const notes = [];
+        if(rowDiff < 0 || colDiff < 0){
+          notes.push("Target state is lower than current in one or more dimensions; recommendations focus on sustaining capability and process discipline.");
+        }
+        if(rowDiff === 0 && colDiff === 0){
+          return { path, actions: ["Current and target states are identical. Select a higher target to generate a plan."], notes };
+        }
+        const seed = (currentCode + targetCode).split("").reduce((a,c)=>a+c.charCodeAt(0),0);
+        const actions = [];
+        const adaptiveComponents = ["Agility","Resilience","Vitality","Culture"];
+        const maturityActions = ACTIONS["Maturity"] || [];
+        const adaptiveCount = Math.max(0,rowDiff);
+        const maturityCount = Math.max(0,colDiff);
+        let offset = 0;
+        for(let s=0;s<adaptiveCount;s++){
+          adaptiveComponents.forEach(comp=>{
+            const list = ACTIONS[comp] || [];
+            if(list.length){
+              actions.push(list[(seed + offset) % list.length].action);
+              offset += 1;
+            }
+          });
+        }
+        if(maturityCount){
+          const picks = pickActions(maturityActions, maturityCount * 2, seed + offset);
+          actions.push(...picks);
+        }
+        if(!actions.length){
+          actions.push("No specific actions found; start by strengthening adaptive capacity and process maturity in small, measurable steps.");
+        }
+        return { path, actions, notes };
+      }
+
+      function updatePlanRecommendations(){
+        if(!planCurrentCode || !planTargetCode) return;
+        const recs = buildRecommendations(planCurrentCode, planTargetCode);
+        planPath.textContent = `Path: ${recs.path.join(" -> ")}`;
+        planRecsList.textContent = "";
+        recs.actions.forEach(action=>{
+          const li = document.createElement("li");
+          li.textContent = action;
+          planRecsList.appendChild(li);
+        });
+        if(recs.notes && recs.notes.length){
+          recs.notes.forEach(note=>{
+            const li = document.createElement("li");
+            li.textContent = note;
+            planRecsList.appendChild(li);
+          });
+        }
+      }
+
+      function getPlanSummary(){
+        const cur = planCurrentCode ? planCurrentCode : "Not selected";
+        const tgt = planTargetCode ? planTargetCode : "Not selected";
+        const actions = Array.from(planRecsList.querySelectorAll("li")).map(li=>`- ${li.textContent}`).join("\n");
+        return `Adaptive Maturity Plan\nCurrent: ${cur}\nTarget: ${tgt}\n${planPath.textContent}\n\nActions:\n${actions}`;
+      }
+
+      planNext.addEventListener("click",()=>{
+        if(!planCurrentCode){ showStatus("Select a current state before continuing."); return; }
+        showStatus("");
+        setPlanStep(2);
       });
-
-      /* ---------- COMPARE ---------- */
-      const cmp=$("#amx-compare");
-      function toggleCompare(on){
-        cmp.style.display = on ? "block":"none";
-        single.style.display = on ? "none":"block";
-        $("#amx-compare-toggle").setAttribute("aria-expanded", on ? "true":"false");
-        if(on){ initCompareSelects(); updateCompare(); } else { history.replaceState(null,"","#"+cellCode(rowSel.value,currentPM())); }
+      planFinish.addEventListener("click",()=>{
+        if(!planTargetCode){ showStatus("Select a target state before finishing."); return; }
+        showStatus("");
+        updatePlanRecommendations();
+        setPlanStep(3);
+      });
+      planReset.addEventListener("click",()=>{
+        planCurrentCode = null;
+        planTargetCode = null;
+        planRecsList.textContent = "";
+        planPath.textContent = "";
+        setPlanStep(1);
+      });
+      if(planReset2){
+        planReset2.addEventListener("click",()=>{
+          planCurrentCode = null;
+          planTargetCode = null;
+          planRecsList.textContent = "";
+          planPath.textContent = "";
+          setPlanStep(1);
+        });
       }
-      $("#amx-compare-toggle").addEventListener("change",()=>toggleCompare($("#amx-compare-toggle").checked));
-
-      function initCompareSelects(){
-        const lr=$("#cmp-left-row"), lc=$("#cmp-left-col"), rr=$("#cmp-right-row"), rc=$("#cmp-right-col");
-        if(!lr.options.length){ ROWS.forEach(r=>{ lr.add(new Option(r,r)); rr.add(new Option(r,r)); }); }
-        if(!lc.options.length){ COLS.forEach(c=>{ lc.add(new Option(c,c)); rc.add(new Option(c,c)); }); }
-        const [L,R]=parseHashCompare();
-        const [lRow,lCol]=L?decodeCode(L):[ROWS[2],COLS[2]];
-        const [rRow,rCol]=R?decodeCode(R):[ROWS[4],COLS[4]];
-        lr.value=lRow; lc.value=lCol; rr.value=rRow; rc.value=rCol;
-        [lr,lc,rr,rc].forEach(el=>{ if(!el._wired){ el.addEventListener("change",updateCompare); el._wired=true; }});
-      }
-      function updateCompare(){
-        const lr=$("#cmp-left-row").value, lc=$("#cmp-left-col").value, rr=$("#cmp-right-row").value, rc=$("#cmp-right-col").value;
-        const L={title:cellTitle(lr,lc), meta:`${ROW_META[lr].desc} · ${COL_META[lc].code}`, text:CELLS[lr][lc], code:cellCode(lr,lc)};
-        const R={title:cellTitle(rr,rc), meta:`${ROW_META[rr].desc} · ${COL_META[rc].code}`, text:CELLS[rr][rc], code:cellCode(rr,rc)};
-        const Lc=$("#cmp-left .card"), Rc=$("#cmp-right .card");
-        Lc.querySelector(".title").textContent=`${L.title} [${L.code}]`;  Lc.querySelector(".meta").textContent=L.meta;  Lc.querySelector(".body").textContent=L.text;
-        Rc.querySelector(".title").textContent=`${R.title} [${R.code}]`;  Rc.querySelector(".meta").textContent=R.meta;  Rc.querySelector(".body").textContent=R.text;
-
-        $("[data-copy-left]").onclick  = ()=>copyToClipboard(`${L.title} [${L.code}]\n${L.meta}\n\n${L.text}`);
-        $("[data-copy-right]").onclick = ()=>copyToClipboard(`${R.title} [${R.code}]\n${R.meta}\n\n${R.text}`);
-        $("[data-link-left]").onclick  = async ()=>{ const u=baseUrl()+"#"+L.code; await copyToClipboard(u); const el=$("[data-link-left]"); const p=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=p,1200); };
-        $("[data-link-right]").onclick = async ()=>{ const u=baseUrl()+"#"+R.code; await copyToClipboard(u); const el=$("[data-link-right]"); const p=el.textContent; el.textContent="Link copied"; setTimeout(()=>el.textContent=p,1200); };
-
-        history.replaceState(null,"","#"+L.code+"~"+R.code);
+      planCopy.addEventListener("click",async ()=>{
+        const text = getPlanSummary();
+        await copyToClipboard(text);
+      });
+      if(planReset3){
+        planReset3.addEventListener("click",()=>{
+          planCurrentCode = null;
+          planTargetCode = null;
+          planRecsList.textContent = "";
+          planPath.textContent = "";
+          setPlanStep(1);
+        });
       }
 
       /* ---------- Init ---------- */
-      function init(){
+      async function init(){
+        const data = await loadData();
+        const actions = await loadActions();
+        if(!data || !actions) return;
+        applyData(data);
+        applyActions(actions);
         // Build single-card UI
         initSingle();
-        // Single or compare from hash
-        const [L,R]=parseHashCompare();
-        if(L && R){ $("#amx-compare-toggle").checked=true; toggleCompare(true); }
-        else if(L){ openSingleByCode(L,false); }
+        buildMiniGrid();
+        buildPlanGrid();
+        setPlanStep(1);
+        modeTabs.forEach(btn=>btn.addEventListener("click",()=>setMode(btn.dataset.mode)));
+        // Single from hash
+        const hash = (location.hash || "").replace("#","");
+        if(hash){ openSingleByCode(hash,false); }
         else { rowSel.value=ROWS[0]; tablist.querySelectorAll(".tab").forEach((t,i)=>t.setAttribute("aria-selected", i===0?"true":"false")); updateSingle(ROWS[0],COLS[0]); }
+        setMode("investigate");
       }
       init();
     })();
   </script>
 </div>
 
-  <!-- auto-resizer at the end -->
-  <script src="../common/embed.js"></script>
 </body>
 </html>
