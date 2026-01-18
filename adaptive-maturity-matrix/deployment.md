@@ -129,8 +129,14 @@ function amx_render_matrix_table($atts) {
             <?php
               $cell = isset($grid[$row['id']][$col['id']]) ? $grid[$row['id']][$col['id']] : null;
               $text = $cell ? $cell['current'] : '';
+              $lead = $cell && isset($cell['lead']) ? $cell['lead'] : '';
             ?>
-            <td><?php echo nl2br(esc_html($text)); ?></td>
+            <td>
+              <?php if ($lead) : ?>
+                <strong><?php echo esc_html($lead); ?></strong>
+              <?php endif; ?>
+              <?php echo nl2br(esc_html($text)); ?>
+            </td>
           <?php endforeach; ?>
         </tr>
       <?php endforeach; ?>
