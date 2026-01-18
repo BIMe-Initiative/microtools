@@ -112,7 +112,8 @@ function amx_render_matrix_table($atts) {
 
   ob_start();
   ?>
-  <table class="amx-table">
+  <div class="amx-table-wrap" data-amx-table data-amx-json-url="<?php echo esc_url($atts['src']); ?>">
+    <table class="amx-table">
     <thead>
       <tr>
         <th>ACI \ PMI</th>
@@ -141,7 +142,70 @@ function amx_render_matrix_table($atts) {
         </tr>
       <?php endforeach; ?>
     </tbody>
-  </table>
+    </table>
+    <div class="amx-table-tools">
+      <button type="button" class="amx-btn" data-amx-copy>Copy HTML</button>
+      <button type="button" class="amx-btn" data-amx-download>Download JSON</button>
+    </div>
+    <script>
+      (function(){
+        var root = document.currentScript && document.currentScript.closest('[data-amx-table]');
+        if (!root) return;
+        function setLabel(btn, label) {
+          btn.textContent = label;
+          setTimeout(function(){ btn.textContent = btn.dataset.label; }, 1400);
+        }
+        var copyBtn = root.querySelector('[data-amx-copy]');
+        var dlBtn = root.querySelector('[data-amx-download]');
+        if (copyBtn) {
+          copyBtn.dataset.label = copyBtn.textContent;
+          copyBtn.addEventListener('click', function(){
+            var table = root.querySelector('.amx-table');
+            if (!table) return;
+            var html = table.outerHTML;
+            var doCopy = (navigator.clipboard && navigator.clipboard.writeText)
+              ? navigator.clipboard.writeText(html)
+              : Promise.reject();
+            doCopy.then(function(){ setLabel(copyBtn, 'copied'); })
+              .catch(function(){
+                var ta = document.createElement('textarea');
+                ta.value = html;
+                document.body.appendChild(ta);
+                ta.select();
+                try {
+                  document.execCommand('copy');
+                  setLabel(copyBtn, 'copied');
+                } catch (e) {}
+                document.body.removeChild(ta);
+              });
+          });
+        }
+        if (dlBtn) {
+          dlBtn.dataset.label = dlBtn.textContent;
+          dlBtn.addEventListener('click', function(){
+            var url = root.getAttribute('data-amx-json-url');
+            if (!url) return;
+            fetch(url).then(function(r){ return r.blob(); }).then(function(blob){
+              var d = new Date();
+              var y = d.getFullYear();
+              var m = ('0' + (d.getMonth() + 1)).slice(-2);
+              var day = ('0' + d.getDate()).slice(-2);
+              var name = 'Adaptive_Maturity_Matrix_Table_' + y + m + day + '.JSON';
+              var a = document.createElement('a');
+              var href = URL.createObjectURL(blob);
+              a.href = href;
+              a.download = name;
+              document.body.appendChild(a);
+              a.click();
+              a.remove();
+              URL.revokeObjectURL(href);
+              setLabel(dlBtn, 'downloaded');
+            }).catch(function(){});
+          });
+        }
+      })();
+    </script>
+  </div>
   <?php
   return ob_get_clean();
 }
@@ -158,6 +222,33 @@ Use in WordPress:
 Add this to your theme or Cornerstone custom CSS:
 
 ```css
+$el .amx-table-tools {
+  margin-top: 5px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+$el .amx-btn {
+  background: #f37f73;
+  color: #fff;
+  border: 0;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 999px;
+  text-decoration: none;
+  cursor: pointer;
+  min-width: 140px;
+  text-align: center;
+  transition: transform 150ms ease, box-shadow 150ms ease;
+}
+$el .amx-btn:hover,
+$el .amx-btn:focus-visible {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(243, 127, 115, 0.25);
+}
+
 .amx-table {
   width: 100%;
   border-collapse: collapse;
