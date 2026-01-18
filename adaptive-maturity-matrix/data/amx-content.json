@@ -5,36 +5,36 @@
     {
       "id": "Resistant",
       "label": "Resistant",
-      "code": "AC: Low",
-      "desc": "Low Adaptive Capacity",
+      "code": "Low AC",
+      "desc": "Low AC",
       "table_label": "(1) Resistant Low AC"
     },
     {
       "id": "Receptive",
       "label": "Receptive",
-      "code": "AC: Med-Low",
-      "desc": "Medium\u2013Low Adaptive Capacity",
+      "code": "Med-Low AC",
+      "desc": "Med-Low AC",
       "table_label": "(2) Receptive Med-Low AC"
     },
     {
       "id": "Responsive",
       "label": "Responsive",
-      "code": "AC: Medium",
-      "desc": "Medium Adaptive Capacity",
+      "code": "Medium AC",
+      "desc": "Medium AC",
       "table_label": "(3) Responsive Medium AC"
     },
     {
       "id": "Reformative",
       "label": "Reformative",
-      "code": "AC: Med-High",
-      "desc": "Medium\u2013High Adaptive Capacity",
+      "code": "Med-High AC",
+      "desc": "Med-High AC",
       "table_label": "(4) Reformative Med-High AC"
     },
     {
       "id": "Regenerative",
       "label": "Regenerative",
-      "code": "AC: High",
-      "desc": "High Adaptive Capacity",
+      "code": "High AC",
+      "desc": "High AC",
       "table_label": "(5) Regenerative High AC"
     }
   ],
@@ -43,35 +43,35 @@
       "id": "Ad-hoc",
       "label": "Ad-hoc",
       "short": "a",
-      "code": "PM: Low",
+      "code": "Low PM",
       "table_label": "(a) Ad-hoc | Low PM"
     },
     {
       "id": "Defined",
       "label": "Defined",
       "short": "b",
-      "code": "PM: Med\u2013Low",
+      "code": "Med-Low PM",
       "table_label": "(b) Defined | Med-Low PM"
     },
     {
       "id": "Managed",
       "label": "Managed",
       "short": "c",
-      "code": "PM: Medium",
+      "code": "Medium PM",
       "table_label": "(c) Managed | Medium PM"
     },
     {
       "id": "Integrated",
       "label": "Integrated",
       "short": "d",
-      "code": "PM: Med\u2013High",
+      "code": "Med-High PM",
       "table_label": "(d) Integrated | Med-High PM"
     },
     {
       "id": "Optimised",
       "label": "Optimised",
       "short": "e",
-      "code": "PM: High",
+      "code": "High PM",
       "table_label": "(e) Optimised | High PM"
     }
   ],
@@ -80,8 +80,8 @@
       "row": "Resistant",
       "col": "Ad-hoc",
       "title": "Ad-hoc Resistant",
-      "current": "Frequent improvisation while retaining inefficient legacy routines; no responses to disruption and no learning from mistakes; practices replicated without reflection; risks are largely unseen, and requests for change is unheard; innovation champions and incentives are absent",
-      "suggested": "Document recurring disruptions, nominate a change champion, and run a short retro after each incident to capture lessons.",
+      "current": "Frequent improvisation while retaining inefficient legacy routines; no responses to disruption and no learning from mistakes;\npractices replicated without reflection; risks unseen and requests for change unheard; innovation champions and incentives absent",
+      "suggested": "",
       "graphic": "",
       "lead": "a1 | Ad-hoc Resistant:"
     },
@@ -89,8 +89,8 @@
       "row": "Resistant",
       "col": "Defined",
       "title": "Defined Resistant",
-      "current": "Procedures are documented then treated as scripture; no responses or learning from disruption; practices locked into rigid templates; risk remains largely unseen while unyielding gatekeepers block change; deviations from legacy workflows are summarily rejected; new ideas dismissed; absence of incentives prevents champions from emerging",
-      "suggested": "Introduce a controlled exception process so teams can trial small improvements without breaking governance.",
+      "current": "Procedures documented then treated as scripture; no responses or learning; practices locked into rigid templates; risks unseen;\nunyielding gatekeepers block change; deviations rejected; new ideas dismissed; absence of incentives prevents champions from emerging",
+      "suggested": "",
       "graphic": "",
       "lead": "b1 | Defined Resistant:"
     },
@@ -98,8 +98,8 @@
       "row": "Resistant",
       "col": "Managed",
       "title": "Managed Resistant",
-      "current": "Management enforces strict conformity to legacy methods; no responses or learning beyond memorising directives; risks are unseen or dismissed as noise; change efforts are non-existent or indefinitely stalled; management activity preserves order and without generating improvement",
-      "suggested": "Pilot a low-risk improvement with clear success criteria and publish results to build confidence in change.",
+      "current": "Management enforces strict conformity to legacy methods; no learning beyond memorising directives; risks unseen or dismissed;\nchange efforts stalled; management preserves order without improvement",
+      "suggested": "",
       "graphic": "",
       "lead": "c1 | Managed Resistant:"
     },
@@ -107,7 +107,7 @@
       "row": "Resistant",
       "col": "Integrated",
       "title": "Integrated Resistant",
-      "current": "End-to-end workflows are welded together by prescriptive procedures and integrated dashboards; managers monitor for any variance only to keep everything as is; no learning except within the system and practices are frozen; risks go unrecognised and requests for change are frowned-upon or die in wait of multi-layer sign-off loops",
+      "current": "End-to-end workflows welded together by prescriptive procedures; dashboards monitor variance only to keep things unchanged;\nlearning restricted; risks unrecognised; change requests die in multilayer sign-off loops",
       "suggested": "",
       "graphic": "",
       "lead": "d1 | Integrated Resistant:"
@@ -116,7 +116,7 @@
       "row": "Resistant",
       "col": "Optimised",
       "title": "Optimised Resistant",
-      "current": "Well-honed machine-like organisation yields consistent performance; optimisations are incremental due to fossilised practices; no willingness to learn or pivot to new solutions; efficiency masks fragility with risk signals ignored and change forcibly blocked; a highly optimised yet brittle machine that might stop or irrecoverably collapse with any disruption",
+      "current": "A machine-like organisation with consistent output but fossilised practices; no willingness to pivot; efficiency masks fragility;\nrisk signals ignored; change forcibly blocked; a brittle system liable to collapse under disruption",
       "suggested": "",
       "graphic": "",
       "lead": "e1 | Optimised Resistant:"
@@ -125,7 +125,7 @@
       "row": "Receptive",
       "col": "Ad-hoc",
       "title": "Ad-hoc Receptive",
-      "current": "Disruptions are acknowledged but responses are slow, non-systemic and nonadaptive; learning is imitative; blindness to operational and environmental risks persists; cultural complacency dampens attempts to change; fixes are forgotten once the immediate crisis passes; occasional champions surface yet lack organisational support",
+      "current": "Disruptions acknowledged but responses non-systemic and slow; learning imitative; risks still largely unseen; complacency dampens change;\nfixes forgotten after crises; occasional champions surface but unsupported",
       "suggested": "",
       "graphic": "",
       "lead": "a2 | Ad-hoc Receptive:"
@@ -134,7 +134,7 @@
       "row": "Receptive",
       "col": "Defined",
       "title": "Defined Receptive",
-      "current": "Documented processes provide a stable frame yet permit only timid alterations; disruptions prompt incremental tweaks not full pivots; learning is imitative with brief exploratory bursts whose lessons are seldom learned; risk is partially acknowledged but thinly analysed; change only accepted if nestled within existing procedures; scattered champions pilot improvements, but momentum fades for lack of mandate or resources",
+      "current": "Documented processes stabilise work yet limit change to timid tweaks; disruptions prompt incremental adjustments; learning brief, lessons seldom learned;\nrisk partially acknowledged; champions pilot improvements but momentum fades",
       "suggested": "",
       "graphic": "",
       "lead": "b2 | Defined Receptive:"
@@ -143,7 +143,7 @@
       "row": "Receptive",
       "col": "Managed",
       "title": "Managed Receptive",
-      "current": "Management tracks disruptions and issues cautious instructions; responses activated only on command; learning copies prior fixes, and practices only receive minor tweaks; risk is acknowledged but mitigation favours the least-impact option; every change requires supervisory sign-off; improvement momentum follows managerial directives yet lacks the vitality to grow",
+      "current": "Management tracks disruptions and issues instructions; responses activated on command; learning copies prior fixes; risk acknowledged but mitigated minimally;\nevery change requires approval; improvement momentum depends on supervision",
       "suggested": "",
       "graphic": "",
       "lead": "c2 | Managed Receptive:"
@@ -152,7 +152,7 @@
       "row": "Receptive",
       "col": "Integrated",
       "title": "Integrated Receptive",
-      "current": "Control rooms (e.g. boards, committees) centrally monitor disruptions and respond through rigid scripts; agility is muted, and most responses are nonadaptive; learning copies prior fixes with only minor, low-impact tweaks allowed; risks are logged but thinly analysed, and every change must thread a narrow hole or cross a long bureaucratic corridor",
+      "current": "Committees centrally monitor disruptions; responses follow rigid scripts; learning imitates past fixes; risks logged but thinly analysed; change passes through long bureaucratic corridors",
       "suggested": "",
       "graphic": "",
       "lead": "d2 | Integrated Receptive:"
@@ -161,7 +161,7 @@
       "row": "Receptive",
       "col": "Optimised",
       "title": "Optimised Receptive",
-      "current": "Controlled improvements reflect a flicker of agility and vitality; disruptions are acknowledged through established norms; responses follow tested paths only; learning optimises prior fixes, and new knowledge percolate; risk is noted yet under-analysed; minor change within silos is welcomed and system-wide transformations discussed yet seldom implemented",
+      "current": "Controlled improvements show flickers of agility; disruptions acknowledged through norms; responses follow tested paths; learning optimises prior fixes;\nrisk noted but under-analysed; small silo changes accepted; transformation seldom implemented",
       "suggested": "",
       "graphic": "",
       "lead": "e2 | Optimised Receptive:"
@@ -170,7 +170,7 @@
       "row": "Responsive",
       "col": "Ad-hoc",
       "title": "Ad-hoc Responsive",
-      "current": "Disruptions trigger organised yet limited adaptive responses; experience steers reactive actions; fleeting patches of agility appear; learning is based on repetition and calibration; disrupted practices are restored rather than re-designed (\u201conly first aid is provided\u201d); risk is no longer ignored, and change is tolerated; adaptive responses are accepted provided they mimic past responses; attempts at long-term improvements stall due to lack of strategic intent",
+      "current": "Disruptions trigger organised yet limited responses; agility appears in short bursts; learning based on repetition; disrupted practices restored rather than redesigned;\nrisk no longer ignored; adaptive responses tolerated if imitating past actions; long-term improvements stall",
       "suggested": "",
       "graphic": "",
       "lead": "a3 | Ad-hoc Responsive:"
@@ -179,7 +179,7 @@
       "row": "Responsive",
       "col": "Defined",
       "title": "Defined Responsive",
-      "current": "Process guides are tweaked after each disruption; agility flares briefly, and resilience inches upward; learning remains iterative and anchored to precedents; risk is acknowledged and given cursory analysis; change is nudged rather than re-engineered and only approved when it reinforces existing templates; lacking stewardship, improvements are disjoined and short-lived",
+      "current": "Guides tweaked after disruptions; agility flares briefly; resilience rises modestly; learning iterative but precedent-bound;\nrisk given cursory analysis; change nudged rather than re-engineered; improvements short-lived",
       "suggested": "",
       "graphic": "",
       "lead": "b3 | Defined Responsive:"
@@ -188,7 +188,7 @@
       "row": "Responsive",
       "col": "Managed",
       "title": "Managed Responsive",
-      "current": "Management reacts with agility to most disruptions; learning is iterative and cumulative (feedback loops close); practices are steadily enhanced through controlled pilots that scale when evidence is favourable; reviews that balance risk-opportunity precede decisions, and change is implemented with clear action plans; confidence and momentum grow, silo walls start to crumble; and improvements become rhythmic",
+      "current": "Management reacts with agility; learning iterative and cumulative; controlled pilots scale based on evidence;\nrisk-opportunity reviews precede decisions; improvements become rhythmic and confidence grows",
       "suggested": "",
       "graphic": "",
       "lead": "c3 | Managed Responsive:"
@@ -197,7 +197,7 @@
       "row": "Responsive",
       "col": "Integrated",
       "title": "Integrated Responsive",
-      "current": "Cross-functional teams operate under a common roadmap; responsiveness to disruption is mostly adaptive; pivoting to new solutions is fast yet coordinated; learning is iterative; practices are synchronised across teams/ units; structured risk-opportunity reviews guide adjustments; change is implemented through shared action plans; the momentum builds, yet improvements still require passing hard approval gates",
+      "current": "Cross-functional teams operate under a shared roadmap; pivoting fast and coordinated; learning iterative; practices synchronised;\nrisk-opportunity reviews structured; approval gates remain hard",
       "suggested": "",
       "graphic": "",
       "lead": "d3 | Integrated Responsive:"
@@ -206,7 +206,7 @@
       "row": "Responsive",
       "col": "Optimised",
       "title": "Optimised Responsive",
-      "current": "Closed-loop controls optimise operations in near-real time in response to any disruption, thus keeping performance on target; learning is iterative, and practices are synchronised across functions; risk and opportunities are well-balanced during process optimisation reviews; preparedness for disruptive change is factored into the evolving system; new rules and standards are adopted but only after whole-system testing",
+      "current": "Closed-loop controls optimise operations in near-real time; learning iterative and synchronised; risk-opportunity balance maintained;\npreparedness embedded; new rules adopted after whole-system testing",
       "suggested": "",
       "graphic": "",
       "lead": "e3 | Optimised Responsive:"
@@ -215,7 +215,7 @@
       "row": "Reformative",
       "col": "Ad-hoc",
       "title": "Ad-hoc Reformative",
-      "current": "Disruption sends the energetic organisation into unknown new directions; learning is exploratory across diverse domains; practices are reinvented with or without need; risk-taking with or without clear rewards is tolerated; change is chased with haste; team cohesion grows around ad-hoc wins yet fails to crystallise into durable culture; operational successes and failures oscillate yielding erratic breakthroughs and backslides",
+      "current": "Disruption sends the energetic organisation in many directions; learning exploratory; practices reinvented frequently;\nrisk-taking tolerated; change chased hastily; cohesion formed around wins but not institutionalised",
       "suggested": "",
       "graphic": "",
       "lead": "a4 | Ad-hoc Reformative:"
@@ -224,7 +224,7 @@
       "row": "Reformative",
       "col": "Defined",
       "title": "Defined Reformative",
-      "current": "Process manuals are re-written following disruptions; agility turns proactive, and learning becomes exploratory; risk-taking is tolerated inside loosely defined guardrails; and change is championed; lacking permanent mechanisms, momentum evaporates once champions leave or teams disband",
+      "current": "Manuals rewritten after disruptions; agility proactive; learning exploratory; risk-taking tolerated; change championed;\nmomentum evaporates when champions leave",
       "suggested": "",
       "graphic": "",
       "lead": "b4 | Defined Reformative:"
@@ -233,7 +233,7 @@
       "row": "Reformative",
       "col": "Managed",
       "title": "Managed Reformative",
-      "current": "Management is proactive, agile and responds adaptively to most disruptions; learning is exploratory, and lessons are shared broadly; practices are re-engineered to meet moving targets; calculated risk is welcomed within governance gates; transformations are guided by roadmaps; momentum accelerates, although progress still relies on discrete projects rather than a unifying platform",
+      "current": "Management proactive and adaptive; learning exploratory and shared; practices re-engineered;\ncalculated risk welcomed; transformations roadmap-guided; progress still project-based",
       "suggested": "",
       "graphic": "",
       "lead": "c4 | Managed Reformative:"
@@ -242,7 +242,7 @@
       "row": "Reformative",
       "col": "Integrated",
       "title": "Integrated Reformative",
-      "current": "Interconnected teams coordinate swift responses to disruption; learning is exploratory and collaborative, and practices are iteratively redesigned through rapid-feedback loops; calculated risks are welcomed, and change initiatives energise the network; lean guiding structures steer progress without dictating it",
+      "current": "Interconnected teams coordinate swift responses; exploratory collaborative learning; rapid-feedback loops redesign practices;\ncalculated risks welcomed; lightweight structures steer progress",
       "suggested": "",
       "graphic": "",
       "lead": "d4 | Integrated Reformative:"
@@ -251,7 +251,7 @@
       "row": "Reformative",
       "col": "Optimised",
       "title": "Optimised Reformative",
-      "current": "Integrated teams use rapid-feedback cycles to redesign practices on the fly; proactive and adaptive responses are the norm; learning is exploratory, and lessons are immediately implemented; calculated risk-taking is encouraged; change initiatives energise the network, and improvements spread quickly without needing internal or external mandates",
+      "current": "Integrated teams use rapid-feedback cycles to redesign practices; proactive, adaptive responses standard;\nlessons implemented immediately; calculated risk encouraged; improvements spread rapidly",
       "suggested": "",
       "graphic": "",
       "lead": "e4 | Optimised Reformative:"
@@ -260,7 +260,7 @@
       "row": "Regenerative",
       "col": "Ad-hoc",
       "title": "Ad-hoc Regenerative",
-      "current": "Continuous trialling without capturing lessons; extensive learning and experimentation without application; continuous recombination of knowledge and resources into impermanent structures; risk-taking is encouraged even without guardrails; incessant change is expected; progress hinges on isolated initiatives rather than orchestrated programmes",
+      "current": "Continuous trialling without capturing lessons; experimentation without application; repeated recombination of knowledge;\nrisk-taking encouraged even without guardrails; progress driven by isolated initiatives",
       "suggested": "",
       "graphic": "",
       "lead": "a5 | Ad-hoc Regenerative:"
@@ -269,7 +269,7 @@
       "row": "Regenerative",
       "col": "Defined",
       "title": "Defined Regenerative",
-      "current": "Process maps evolve almost continuously; high agility allows rapid pivoting in response to disruptions; learning embraces disciplined experimentation and lessons are captured; risk is weighed and hedged; change flows seamlessly but \u2013 lacking structure \u2013 implementation is hampered; progress is reliant on champions and informal networks that are unable to scale",
+      "current": "Process maps evolve continuously; agility high; learning disciplined and lessons captured; risk hedged;\nchange flows but implementation hampered; progress reliant on champions and informal networks",
       "suggested": "",
       "graphic": "",
       "lead": "b5 | Defined Regenerative:"
@@ -278,7 +278,7 @@
       "row": "Regenerative",
       "col": "Managed",
       "title": "Managed Regenerative",
-      "current": "Management sustains a portfolio of linked renewal programmes; responsiveness is adaptive and habitual; learning is experimental yet swiftly codified; risk is countered through predictive processes and capabilities, and a rolling cadence of change keeps the organisation ahead of innovation curves; improvements accelerate and are self-reinforcing, yet \u2013 due to lack of integration - may overlap or generate avoidable waste",
+      "current": "Management sustains linked renewal programmes; adaptive responsiveness habitual; learning experimental and codified;\npredictive processes counter risk; cadence of change keeps organisation ahead; improvements accelerate but may overlap",
       "suggested": "",
       "graphic": "",
       "lead": "c5 | Managed Regenerative:"
@@ -287,7 +287,7 @@
       "row": "Regenerative",
       "col": "Integrated",
       "title": "Integrated Regenerative",
-      "current": "Organisation operates as a fluid network for joint learning and co-creation; pivots are anticipatory, enabled by real-time recombination of resources; learning is experimental and swiftly codified, and a confident risk appetite plus seamless change cycles turn disruption into advantage; high energy and integrated - but lightweight - systems sustain continuous improvement",
+      "current": "Organisation operates as a fluid network; pivots anticipatory; learning codified rapidly; confident risk appetite;\nlightweight systems sustain continuous improvement",
       "suggested": "",
       "graphic": "",
       "lead": "d5 | Integrated Regenerative:"
@@ -296,7 +296,7 @@
       "row": "Regenerative",
       "col": "Optimised",
       "title": "Optimised Regenerative",
-      "current": "An antifragile organisation that senses, learns and elevates itself autonomously within its ecosystem; agility is habitual, learning experimental and instantly codified, and resilience reinforced through real-time recombination of resources; minimal rules, a strong shared purpose and flexible connections sustain perpetual renewal, while a confident risk appetite turns every stressor into fresh advantage",
+      "current": "An antifragile organisation that senses, learns and elevates itself autonomously; agility habitual; learning instantly codified;\nresilience reinforced through real-time recombination; shared purpose and flexible connections sustain renewal",
       "suggested": "",
       "graphic": "",
       "lead": "e5 | Optimised Regenerative:"
