@@ -115,7 +115,7 @@ function amx_render_matrix_table($atts) {
   <table class="amx-table">
     <thead>
       <tr>
-        <th>ACI \\ PMI</th>
+        <th>ACI \ PMI</th>
         <?php foreach ($cols as $col) : ?>
           <th><?php echo esc_html($col['table_label']); ?></th>
         <?php endforeach; ?>
@@ -133,7 +133,7 @@ function amx_render_matrix_table($atts) {
             ?>
             <td>
               <?php if ($lead) : ?>
-                <strong><?php echo esc_html($lead); ?></strong>
+                <strong><?php echo esc_html($lead); ?></strong><br>
               <?php endif; ?>
               <?php echo nl2br(esc_html($text)); ?>
             </td>
