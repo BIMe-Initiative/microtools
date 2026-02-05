@@ -87,3 +87,4 @@ env/
 # Project specific
 # _archived/ - Now tracked for educational purposes
 .github/copilot-instructions.md
+macro-adoption-dashboard/documentation/
