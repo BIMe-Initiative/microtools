@@ -3,6 +3,7 @@ from datetime import timedelta
 from typing import BinaryIO
 
 from google.api_core import exceptions
+from google.auth.transport.requests import Request
 from google.cloud import storage
 
 logger = logging.getLogger(__name__)
@@ -42,11 +43,34 @@ class GCSStorage:
     ) -> str:
         """Generate a signed HTTPS URL for temporary access."""
         blob = self.bucket.blob(path)
-        return blob.generate_signed_url(
-            version="v4",
-            expiration=timedelta(minutes=expiration_minutes),
-            method="GET",
-        )
+        expiration = timedelta(minutes=expiration_minutes)
+        try:
+            return blob.generate_signed_url(
+                version="v4",
+                expiration=expiration,
+                method="GET",
+            )
+        except Exception as exc:
+            # Cloud Run uses token-only credentials by default. Fallback to
+            # IAM-based signing using the runtime service account access token.
+            if "private key" not in str(exc).lower():
+                raise
+
+            creds = self.client._credentials
+            if not getattr(creds, "token", None):
+                creds.refresh(Request())
+
+            service_account_email = getattr(creds, "service_account_email", None)
+            if not service_account_email:
+                raise
+
+            return blob.generate_signed_url(
+                version="v4",
+                expiration=expiration,
+                method="GET",
+                service_account_email=service_account_email,
+                access_token=creds.token,
+            )
 
     def delete_file(self, path: str) -> bool:
         """Delete a file from GCS."""
