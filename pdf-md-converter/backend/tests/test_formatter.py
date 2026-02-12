@@ -56,6 +56,35 @@ class ObsidianMarkdownFormatterTests(unittest.TestCase):
         self.assertNotIn("[Alt Text](", markdown)
         self.assertNotIn("![[![[", markdown)
 
+    def test_replaces_nested_wikilink_with_single_embed(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 2,
+                    "markdown": (
+                        "![[Macro-BIM Adoption, Conceptual Structures_p3_"
+                        "![[Macro-BIM Adoption, Conceptual Structures_p3_img-1.jpeg.png]].png]]"
+                    ),
+                    "images": [
+                        {
+                            "id": "Macro-BIM Adoption, Conceptual Structures_p3_img-1.jpeg.png",
+                            "image_base64": PNG_DATA_URI,
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, attachments = self.formatter.format_document(
+            ocr_result, "Macro-BIM Adoption, Conceptual Structures.pdf"
+        )
+
+        expected_name = "Macro-BIM Adoption, Conceptual Structures_p3_img-1.png"
+        self.assertIn(f"![[{expected_name}]]", markdown)
+        self.assertNotIn(".jpeg.png", markdown)
+        self.assertNotIn("![[![[", markdown)
+        self.assertIn(expected_name, attachments)
+
 
 if __name__ == "__main__":
     unittest.main()

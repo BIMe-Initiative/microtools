@@ -87,10 +87,22 @@ class ObsidianMarkdownFormatter:
     def _build_image_filename(
         self, stem: str, page_num: int, image_id: str, image_base64: str
     ) -> str:
-        base_name = Path(self._strip_query_and_fragment(image_id)).name
+        normalized_id = self._extract_reference_core(image_id)
+        base_name = Path(self._strip_query_and_fragment(normalized_id)).name
         clean_id = self._strip_known_image_extensions(base_name) or "image"
-        ext = self._extension_from_base64(image_base64) or ".png"
-        return f"{stem}_p{page_num}_{clean_id}{ext}"
+        clean_id = re.sub(r"[^\w\-. ]+", "", clean_id).strip() or "image"
+        # Always normalize output image naming to .png for Obsidian attachments.
+        if clean_id.lower().endswith(".png"):
+            clean_id = clean_id[:-4]
+        page_marker = f"_p{page_num}_"
+        if page_marker in clean_id:
+            tail = clean_id.split(page_marker, 1)[1].strip()
+            if tail:
+                return f"{stem}_p{page_num}_{tail}.png"
+        page_prefix = f"{stem}_p{page_num}_"
+        if clean_id.startswith(page_prefix):
+            return f"{clean_id}.png"
+        return f"{page_prefix}{clean_id}.png"
 
     def _replace_image_references(
         self, page_md: str, image_id: str, wikilink: str
@@ -99,19 +111,41 @@ class ObsidianMarkdownFormatter:
         if not targets:
             return page_md
 
-        pattern = re.compile(r"(!?)\[[^\]]*\]\(([^)]+)\)")
+        md_link_pattern = re.compile(r"(!?)\[[^\]]*\]\(([^)]+)\)")
+        wiki_link_pattern = re.compile(r"(!?)\[\[([^\]]+)\]\]")
 
-        def _replace(match: re.Match[str]) -> str:
-            target = self._normalize_link_target(match.group(2))
+        def _matches_target(target: str) -> bool:
             if target in targets:
+                return True
+            return any(t in target for t in targets)
+
+        def _replace_md_link(match: re.Match[str]) -> str:
+            target = self._normalize_link_target(match.group(2))
+            if _matches_target(target):
                 return wikilink
             return match.group(0)
 
-        return pattern.sub(_replace, page_md)
+        def _replace_wikilink(match: re.Match[str]) -> str:
+            target = self._normalize_reference(self._extract_reference_core(match.group(2)))
+            if _matches_target(target):
+                return wikilink
+            return match.group(0)
+
+        page_md = md_link_pattern.sub(_replace_md_link, page_md)
+        page_md = wiki_link_pattern.sub(_replace_wikilink, page_md)
+        # If a malformed nested wikilink leaves trailing outer wrapper text,
+        # collapse it back to the resolved single wikilink.
+        page_md = re.sub(
+            rf"{re.escape(wikilink)}[^\n\[]*\]\]",
+            wikilink,
+            page_md,
+        )
+        return page_md
 
     def _reference_targets(self, image_id: str) -> set[str]:
-        normalized_id = self._normalize_reference(image_id)
-        basename = Path(self._strip_query_and_fragment(image_id)).name
+        core = self._extract_reference_core(image_id)
+        normalized_id = self._normalize_reference(core)
+        basename = Path(self._strip_query_and_fragment(core)).name
         normalized_basename = self._normalize_reference(basename)
         stemmed_basename = self._normalize_reference(
             self._strip_known_image_extensions(basename)
@@ -143,6 +177,19 @@ class ObsidianMarkdownFormatter:
     def _strip_query_and_fragment(self, value: str) -> str:
         return value.split("#", 1)[0].split("?", 1)[0]
 
+    def _extract_reference_core(self, value: str) -> str:
+        if not value:
+            return value
+        raw = value.strip()
+        matches = re.findall(r"!\[\[([^\]]+)\]\]", raw)
+        if matches:
+            raw = matches[-1]
+        else:
+            wiki_matches = re.findall(r"\[\[([^\]]+)\]\]", raw)
+            if wiki_matches:
+                raw = wiki_matches[-1]
+        return raw
+
     def _strip_known_image_extensions(self, value: str) -> str:
         if not value:
             return value
@@ -155,24 +202,6 @@ class ObsidianMarkdownFormatter:
                 continue
             break
         return base
-
-    def _extension_from_base64(self, image_base64: str) -> str | None:
-        if not image_base64.startswith("data:"):
-            return None
-        header = image_base64.split(",", 1)[0].lower()
-        if "image/png" in header:
-            return ".png"
-        if "image/jpeg" in header or "image/jpg" in header:
-            return ".jpeg"
-        if "image/webp" in header:
-            return ".webp"
-        if "image/gif" in header:
-            return ".gif"
-        if "image/bmp" in header:
-            return ".bmp"
-        if "image/tiff" in header:
-            return ".tiff"
-        return None
 
     def create_zip_archive(
         self,
