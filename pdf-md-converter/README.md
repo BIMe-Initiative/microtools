@@ -143,13 +143,34 @@ docker run -p 8080:8080 \
 
 Deployment is designed to run through GitHub Actions workflows, not ad-hoc local deploy commands.
 
-- CI: `.github/workflows/ci.yml`
-- Deploy: `.github/workflows/deploy-cloud-run.yml` (manual `workflow_dispatch`)
+- CI: `.github/workflows/pdf-md-converter-ci.yml`
+- Deploy: `.github/workflows/pdf-md-converter-deploy.yml` (manual `workflow_dispatch`)
 
 ### Required GitHub Secrets
 
 - `GCP_WORKLOAD_IDENTITY_PROVIDER`
 - `GCP_SERVICE_ACCOUNT`
+- `PDFMD_GOOGLE_CLIENT_ID`
+- `PDFMD_AUTH_ALLOWED_EMAILS`
+- `PDFMD_AUTH_ALLOWED_DOMAINS`
+
+### Secret Manager Secret (Session Cookie Signing)
+
+Store session secret in Google Secret Manager (recommended), then pass only the secret name to deploy workflow:
+
+```bash
+gcloud secrets create pdf-md-session-secret --replication-policy="automatic" --project bimei-ai
+printf '%s' 'replace-with-long-random-value' | gcloud secrets versions add pdf-md-session-secret --data-file=- --project bimei-ai
+```
+
+Grant runtime service account access:
+
+```bash
+gcloud secrets add-iam-policy-binding pdf-md-session-secret \
+  --project bimei-ai \
+  --member="serviceAccount:pdf-md-runtime@bimei-ai.iam.gserviceaccount.com" \
+  --role="roles/secretmanager.secretAccessor"
+```
 
 ### IAM Required for Deploy Service Account
 
@@ -157,6 +178,7 @@ Deployment is designed to run through GitHub Actions workflows, not ad-hoc local
 - `roles/iam.serviceAccountUser`
 - `roles/cloudbuild.builds.editor`
 - `roles/storage.admin` (or scoped bucket-level permissions)
+- `roles/secretmanager.admin` (or narrower secret-level admin) to wire secret refs during deploy
 
 ### IAM Required for Runtime Cloud Run Service Account
 

@@ -69,13 +69,34 @@ app.add_middleware(
 # Services
 upload_bucket = settings.gcs_upload_bucket_name or settings.gcs_bucket_name
 results_bucket = settings.gcs_results_bucket_name or settings.gcs_bucket_name
-upload_storage = GCSStorage(upload_bucket)
-results_storage = GCSStorage(results_bucket)
-ocr_service = MistralOCRService()
 formatter = ObsidianMarkdownFormatter()
+upload_storage: GCSStorage | None = None
+results_storage: GCSStorage | None = None
+ocr_service: MistralOCRService | None = None
 
 # In-memory job store
 jobs: dict[str, JobRecord] = {}
+
+
+def _get_upload_storage() -> GCSStorage:
+    global upload_storage
+    if upload_storage is None:
+        upload_storage = GCSStorage(upload_bucket)
+    return upload_storage
+
+
+def _get_results_storage() -> GCSStorage:
+    global results_storage
+    if results_storage is None:
+        results_storage = GCSStorage(results_bucket)
+    return results_storage
+
+
+def _get_ocr_service() -> MistralOCRService:
+    global ocr_service
+    if ocr_service is None:
+        ocr_service = MistralOCRService()
+    return ocr_service
 
 
 def _require_api_key(x_api_key: str | None = Header(None)):
@@ -138,7 +159,7 @@ def _persist_job(job: JobRecord):
     jobs[job.job_id] = job
     payload = json.dumps(job.model_dump(mode="json")).encode("utf-8")
     try:
-        results_storage.upload_bytes(
+        _get_results_storage().upload_bytes(
             payload,
             _job_metadata_path(job.job_id),
             "application/json",
@@ -152,7 +173,7 @@ def _load_job(job_id: str) -> JobRecord | None:
     if in_mem is not None:
         return in_mem
     try:
-        payload = results_storage.download_as_bytes(_job_metadata_path(job_id))
+        payload = _get_results_storage().download_as_bytes(_job_metadata_path(job_id))
     except Exception:
         return None
     try:
@@ -178,18 +199,18 @@ async def _cleanup_old_jobs():
             if job is None:
                 continue
             if job.gcs_pdf_path:
-                upload_storage.delete_file(
+                _get_upload_storage().delete_file(
                     job.gcs_pdf_path.replace(f"gs://{upload_bucket}/", "")
                 )
             if job.md_gcs_path:
-                results_storage.delete_file(
+                _get_results_storage().delete_file(
                     job.md_gcs_path.replace(f"gs://{results_bucket}/", "")
                 )
             if job.zip_gcs_path:
-                results_storage.delete_file(
+                _get_results_storage().delete_file(
                     job.zip_gcs_path.replace(f"gs://{results_bucket}/", "")
                 )
-            results_storage.delete_file(_job_metadata_path(jid))
+            _get_results_storage().delete_file(_job_metadata_path(jid))
             logger.info(f"Cleaned up expired job {jid}")
 
 
@@ -268,7 +289,7 @@ async def upload_pdf(
         raise HTTPException(status_code=400, detail="Only PDF files are accepted")
 
     content = await file.read()
-    if not ocr_service.validate_document_size(len(content)):
+    if not _get_ocr_service().validate_document_size(len(content)):
         raise HTTPException(
             status_code=400,
             detail=f"File exceeds the {settings.max_file_size_mb}MB limit",
@@ -287,7 +308,7 @@ async def upload_pdf(
     # Upload to GCS
     try:
         gcs_path = f"uploads/{job_id}/{file.filename}"
-        gcs_uri = upload_storage.upload_file(
+        gcs_uri = _get_upload_storage().upload_file(
             io.BytesIO(content), gcs_path, content_type="application/pdf"
         )
         job.gcs_pdf_path = gcs_uri
@@ -320,14 +341,14 @@ async def _process_pdf(job_id: str):
         gcs_relative = job.gcs_pdf_path.replace(
             f"gs://{upload_bucket}/", ""
         )
-        signed_url = upload_storage.generate_signed_url(
+        signed_url = _get_upload_storage().generate_signed_url(
             gcs_relative, expiration_minutes=60
         )
 
         async def _update(j: JobRecord):
             _persist_job(j)
 
-        ocr_result = await ocr_service.process_document(signed_url, job, _update)
+        ocr_result = await _get_ocr_service().process_document(signed_url, job, _update)
 
         # Format to Obsidian markdown
         md_content, attachments = formatter.format_document(
@@ -337,7 +358,7 @@ async def _process_pdf(job_id: str):
 
         stem = Path(job.original_filename).stem
         md_gcs_path = f"results/{job_id}/{stem}.md"
-        job.md_gcs_path = results_storage.upload_bytes(
+        job.md_gcs_path = _get_results_storage().upload_bytes(
             md_content.encode("utf-8"),
             md_gcs_path,
             "text/markdown; charset=utf-8",
@@ -346,7 +367,7 @@ async def _process_pdf(job_id: str):
         # Build zip and store in GCS
         zip_bytes = formatter.create_zip_archive(md_content, attachments, stem)
         zip_gcs_path = f"results/{job_id}/{stem}.zip"
-        job.zip_gcs_path = results_storage.upload_bytes(
+        job.zip_gcs_path = _get_results_storage().upload_bytes(
             zip_bytes, zip_gcs_path, "application/zip"
         )
 
@@ -403,7 +424,7 @@ async def get_preview(job_id: str, request: Request):
     if not job.markdown_content and job.md_gcs_path:
         try:
             rel_path = job.md_gcs_path.replace(f"gs://{results_bucket}/", "")
-            job.markdown_content = results_storage.download_as_bytes(rel_path).decode(
+            job.markdown_content = _get_results_storage().download_as_bytes(rel_path).decode(
                 "utf-8"
             )
             _persist_job(job)
@@ -432,7 +453,7 @@ async def download_result(job_id: str, request: Request):
         rel_path = job.zip_gcs_path.replace(
             f"gs://{results_bucket}/", ""
         )
-        zip_bytes = results_storage.download_as_bytes(rel_path)
+        zip_bytes = _get_results_storage().download_as_bytes(rel_path)
         stem = Path(job.original_filename).stem
         return StreamingResponse(
             io.BytesIO(zip_bytes),
@@ -462,7 +483,7 @@ async def analyze_document(
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.markdown_content and job.md_gcs_path:
         rel_path = job.md_gcs_path.replace(f"gs://{results_bucket}/", "")
-        job.markdown_content = results_storage.download_as_bytes(rel_path).decode(
+        job.markdown_content = _get_results_storage().download_as_bytes(rel_path).decode(
             "utf-8"
         )
     if not job.markdown_content:
