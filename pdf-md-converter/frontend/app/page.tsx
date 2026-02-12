@@ -43,6 +43,8 @@ export default function Home() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
+  const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
@@ -96,6 +98,20 @@ export default function Home() {
     try {
       setState("uploading");
       setError(null);
+      const duplicate = uploadedFileNames.some(
+        (name) => name.toLowerCase() === file.name.toLowerCase()
+      );
+      setDuplicateWarning(
+        duplicate
+          ? "A file with the same name was uploaded before. A new conversion will be created."
+          : null
+      );
+      setUploadedFileNames((prev) => {
+        if (prev.some((name) => name.toLowerCase() === file.name.toLowerCase())) {
+          return prev;
+        }
+        return [...prev, file.name];
+      });
       const res = await api.uploadPDF(file);
       setJobId(res.job_id);
       setState("processing");
@@ -127,6 +143,7 @@ export default function Home() {
     setJobId(null);
     setMarkdown("");
     setError(null);
+    setDuplicateWarning(null);
   };
 
   const handleLogout = async () => {
@@ -193,6 +210,11 @@ export default function Home() {
             <Alert variant="destructive" className="mt-4">
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>{error}</AlertDescription>
+            </Alert>
+          )}
+          {duplicateWarning && !error && (
+            <Alert className="mt-4">
+              <AlertDescription>{duplicateWarning}</AlertDescription>
             </Alert>
           )}
         </div>

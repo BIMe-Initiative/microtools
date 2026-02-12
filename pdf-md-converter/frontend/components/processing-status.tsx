@@ -20,6 +20,7 @@ export function ProcessingStatus({
   onFailed,
 }: ProcessingStatusProps) {
   const [status, setStatus] = useState<JobStatus | null>(null);
+  const [indeterminateProgress, setIndeterminateProgress] = useState(10);
   const doneRef = useRef(false);
 
   useEffect(() => {
@@ -47,6 +48,16 @@ export function ProcessingStatus({
     }, 2000);
     return () => clearInterval(id);
   }, [jobId, onComplete, onFailed]);
+
+  useEffect(() => {
+    if (status?.progress != null || status?.status === "completed" || status?.status === "failed") {
+      return;
+    }
+    const id = setInterval(() => {
+      setIndeterminateProgress((prev) => (prev >= 85 ? 15 : prev + 10));
+    }, 600);
+    return () => clearInterval(id);
+  }, [status?.progress, status?.status]);
 
   const icon =
     status?.status === "completed" ? (
@@ -76,7 +87,7 @@ export function ProcessingStatus({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {status?.progress != null && (
+        {status?.progress != null ? (
           <div className="space-y-1">
             <div className="flex justify-between text-sm">
               <span>Progress</span>
@@ -84,7 +95,15 @@ export function ProcessingStatus({
             </div>
             <Progress value={status.progress} />
           </div>
-        )}
+        ) : status?.status !== "completed" && status?.status !== "failed" ? (
+          <div className="space-y-1">
+            <div className="flex justify-between text-sm">
+              <span>Progress</span>
+              <span className="font-medium">Processing...</span>
+            </div>
+            <Progress value={indeterminateProgress} />
+          </div>
+        ) : null}
 
         {status?.message && (
           <p className="text-sm text-muted-foreground">{status.message}</p>

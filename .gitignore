@@ -88,3 +88,4 @@ env/
 # _archived/ - Now tracked for educational purposes
 .github/copilot-instructions.md
 macro-adoption-dashboard/documentation/
+documentation_local/
