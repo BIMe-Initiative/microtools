@@ -7,6 +7,7 @@ Convert PDF documents to Obsidian-compatible Markdown using Mistral OCR (`mistra
 - Mistral OCR with image extraction
 - Obsidian-ready Markdown output (`.md` + `attachments/`)
 - Downloadable ZIP export
+- Google Sign-In authentication with session cookies
 - Optional Gemini analysis (`/api/analyze/{job_id}`)
 - Single-container deployment (FastAPI + static Next.js)
 
@@ -94,6 +95,15 @@ Set at minimum:
 - `GCS_BUCKET_NAME` (fallback bucket)
 - `GCS_UPLOAD_BUCKET_NAME`
 - `GCS_RESULTS_BUCKET_NAME`
+- `GOOGLE_CLIENT_ID`
+- `SESSION_SECRET`
+- `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (same value as `GOOGLE_CLIENT_ID`)
+
+Optional allowlist controls:
+
+- `AUTH_ALLOWED_EMAILS` JSON array of explicit users.
+- `AUTH_ALLOWED_DOMAINS` JSON array of allowed domains.
+- If either list is non-empty, user must match at least one.
 
 ### 2. Run backend
 
@@ -158,6 +168,9 @@ Deployment is designed to run through GitHub Actions workflows, not ad-hoc local
 
 | Method | Endpoint | Description |
 |---|---|---|
+| `POST` | `/api/auth/google` | Login with Google ID token, sets session cookie |
+| `GET` | `/api/auth/me` | Get current authenticated user |
+| `POST` | `/api/auth/logout` | Clear session cookie |
 | `POST` | `/api/upload` | Upload PDF, returns `job_id` |
 | `GET` | `/api/status/{job_id}` | Poll job status |
 | `GET` | `/api/preview/{job_id}` | Fetch converted markdown |
@@ -167,9 +180,21 @@ Deployment is designed to run through GitHub Actions workflows, not ad-hoc local
 
 ## Notes on Production Hardening
 
-- Set `API_KEY` to enforce API key checks for upload/analyze endpoints.
-- Prefer authenticated Cloud Run deployments (`allow_unauthenticated=false`).
+- Google Sign-In is the primary auth path. Restrict access with `AUTH_ALLOWED_EMAILS` and/or `AUTH_ALLOWED_DOMAINS`.
+- Keep `SESSION_SECRET` strong and rotated periodically.
+- For this app-level auth flow, deploy Cloud Run with `allow_unauthenticated=true` so users can reach the login UI.
 - Keep lifecycle policies enabled to control storage cost.
+
+## Multi-user Access Pattern
+
+To allow only specific users while still requiring Google auth:
+
+1. Deploy with Cloud Run `allow_unauthenticated=true` (so login page is reachable).
+2. Set:
+   - `GOOGLE_CLIENT_ID` (backend)
+   - `NEXT_PUBLIC_GOOGLE_CLIENT_ID` (frontend build-time)
+   - `AUTH_ALLOWED_EMAILS` (preferred user-level allowlist)
+3. Share app URL only with allowlisted users.
 
 ## License
 

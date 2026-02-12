@@ -7,6 +7,8 @@ import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 
+from google.auth.transport import requests as google_requests
+from google.oauth2 import id_token
 from fastapi import (
     BackgroundTasks,
     Depends,
@@ -14,17 +16,23 @@ from fastapi import (
     File,
     Header,
     HTTPException,
+    Request,
+    Response,
     UploadFile,
 )
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from fastapi.staticfiles import StaticFiles
+from itsdangerous import BadSignature, SignatureExpired, URLSafeTimedSerializer
 
 from .config import get_settings
 from .formatter import ObsidianMarkdownFormatter
 from .models import (
     AnalyzeRequest,
     AnalyzeResponse,
+    AuthResponse,
+    AuthUser,
+    GoogleAuthRequest,
     JobRecord,
     JobStatus,
     JobStatusResponse,
@@ -38,6 +46,11 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 settings = get_settings()
+session_serializer: URLSafeTimedSerializer | None = (
+    URLSafeTimedSerializer(settings.session_secret)
+    if settings.session_secret
+    else None
+)
 
 app = FastAPI(
     title="PDF to Markdown Converter",
@@ -71,6 +84,50 @@ def _require_api_key(x_api_key: str | None = Header(None)):
         return
     if not x_api_key or not secrets.compare_digest(x_api_key, settings.api_key):
         raise HTTPException(status_code=401, detail="Unauthorized")
+
+
+def _require_configured_auth():
+    if not settings.google_client_id:
+        raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_ID is not configured")
+    if not session_serializer:
+        raise HTTPException(status_code=500, detail="SESSION_SECRET is not configured")
+
+
+def _load_session_user(request: Request) -> AuthUser:
+    _require_configured_auth()
+    token = request.cookies.get("session")
+    if not token:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    try:
+        payload = session_serializer.loads(  # type: ignore[union-attr]
+            token, max_age=settings.session_max_age_seconds
+        )
+    except SignatureExpired:
+        raise HTTPException(status_code=401, detail="Session expired")
+    except BadSignature:
+        raise HTTPException(status_code=401, detail="Invalid session")
+    return AuthUser.model_validate(payload)
+
+
+def _set_session_cookie(response: Response, user: AuthUser, request: Request):
+    token = session_serializer.dumps(user.model_dump())  # type: ignore[union-attr]
+    response.set_cookie(
+        key="session",
+        value=token,
+        httponly=True,
+        secure=request.url.scheme == "https",
+        samesite="lax",
+        max_age=settings.session_max_age_seconds,
+    )
+
+
+def _clear_session_cookie(response: Response):
+    response.delete_cookie("session")
+
+
+def _verify_job_owner(job: JobRecord, user: AuthUser):
+    if job.owner_email and job.owner_email != user.email:
+        raise HTTPException(status_code=403, detail="Forbidden")
 
 
 def _job_metadata_path(job_id: str) -> str:
@@ -149,9 +206,60 @@ async def health():
     return {"status": "healthy", "service": "pdf-md-converter"}
 
 
+@app.post("/api/auth/google", response_model=AuthResponse)
+async def auth_google(request: Request, response: Response, body: GoogleAuthRequest):
+    _require_configured_auth()
+    try:
+        claims = id_token.verify_oauth2_token(
+            body.credential,
+            google_requests.Request(),
+            settings.google_client_id,
+        )
+    except Exception:
+        raise HTTPException(status_code=401, detail="Invalid Google credential")
+
+    email = claims.get("email")
+    if not email or not claims.get("email_verified"):
+        raise HTTPException(status_code=401, detail="Google account email is not verified")
+
+    allowed_emails = {e.lower() for e in settings.auth_allowed_emails}
+    allowed_domains = {d.lower() for d in settings.auth_allowed_domains}
+    email_normalized = email.lower()
+    email_domain = email_normalized.split("@")[-1]
+
+    has_email_allowlist = len(allowed_emails) > 0
+    has_domain_allowlist = len(allowed_domains) > 0
+    if has_email_allowlist or has_domain_allowlist:
+        email_allowed = email_normalized in allowed_emails
+        domain_allowed = email_domain in allowed_domains
+        if not (email_allowed or domain_allowed):
+            raise HTTPException(status_code=403, detail="Email is not allowlisted")
+
+    user = AuthUser(
+        email=email,
+        name=claims.get("name"),
+        picture=claims.get("picture"),
+    )
+    _set_session_cookie(response, user, request)
+    return AuthResponse(user=user)
+
+
+@app.get("/api/auth/me", response_model=AuthResponse)
+async def auth_me(request: Request):
+    user = _load_session_user(request)
+    return AuthResponse(user=user)
+
+
+@app.post("/api/auth/logout")
+async def auth_logout(response: Response):
+    _clear_session_cookie(response)
+    return {"ok": True}
+
+
 @app.post("/api/upload", response_model=UploadResponse)
 async def upload_pdf(
     background_tasks: BackgroundTasks,
+    request: Request,
     file: UploadFile = File(...),
     _: None = Depends(_require_api_key),
 ):
@@ -171,6 +279,7 @@ async def upload_pdf(
         job_id=job_id,
         status=JobStatus.UPLOADING,
         original_filename=file.filename,
+        owner_email=_load_session_user(request).email,
         created_at=datetime.now(),
     )
     _persist_job(job)
@@ -255,11 +364,12 @@ async def _process_pdf(job_id: str):
 
 
 @app.get("/api/status/{job_id}", response_model=JobStatusResponse)
-async def get_status(job_id: str):
+async def get_status(job_id: str, request: Request):
     """Poll the status of a processing job."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_owner(job, _load_session_user(request))
 
     progress = None
     if job.total_pages and job.total_pages > 0:
@@ -282,11 +392,12 @@ async def get_status(job_id: str):
 
 
 @app.get("/api/preview/{job_id}", response_model=PreviewResponse)
-async def get_preview(job_id: str):
+async def get_preview(job_id: str, request: Request):
     """Return the converted markdown for in-browser preview."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_owner(job, _load_session_user(request))
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.markdown_content and job.md_gcs_path:
@@ -306,11 +417,12 @@ async def get_preview(job_id: str):
 
 
 @app.get("/api/download/{job_id}")
-async def download_result(job_id: str):
+async def download_result(job_id: str, request: Request):
     """Download the result zip archive."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_owner(job, _load_session_user(request))
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.zip_gcs_path:
@@ -337,13 +449,15 @@ async def download_result(job_id: str):
 @app.post("/api/analyze/{job_id}", response_model=AnalyzeResponse)
 async def analyze_document(
     job_id: str,
-    request: AnalyzeRequest,
+    request: Request,
+    body: AnalyzeRequest,
     _: None = Depends(_require_api_key),
 ):
     """Send the converted markdown to Vertex AI Gemini for analysis."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_owner(job, _load_session_user(request))
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.markdown_content and job.md_gcs_path:
@@ -363,7 +477,7 @@ async def analyze_document(
             location=settings.vertex_ai_location,
         )
         model = GenerativeModel("gemini-2.0-flash")
-        prompt = f"{request.prompt}\n\nDocument Content:\n{job.markdown_content}"
+        prompt = f"{body.prompt}\n\nDocument Content:\n{job.markdown_content}"
         response = model.generate_content(prompt)
 
         token_count = None
