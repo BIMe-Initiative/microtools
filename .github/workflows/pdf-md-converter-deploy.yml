@@ -50,7 +50,7 @@ jobs:
           PROJECT_ID: ${{ inputs.project_id }}
           SERVICE: ${{ inputs.service }}
         run: |
-          gcloud builds submit --tag gcr.io/${PROJECT_ID}/${SERVICE}
+          gcloud builds submit pdf-md-converter --tag gcr.io/${PROJECT_ID}/${SERVICE}
 
       - name: Deploy to Cloud Run
         env:
