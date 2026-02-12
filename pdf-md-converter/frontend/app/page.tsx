@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { UploadZone } from "@/components/upload-zone";
 import { ProcessingStatus } from "@/components/processing-status";
 import { MarkdownPreview } from "@/components/markdown-preview";
@@ -8,15 +8,89 @@ import { ActionButtons } from "@/components/action-buttons";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle, RotateCcw } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, type AuthUser } from "@/lib/api";
 
 type AppState = "idle" | "uploading" | "processing" | "completed" | "failed";
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (config: {
+            client_id: string;
+            callback: (response: { credential: string }) => void;
+          }) => void;
+          renderButton: (
+            parent: HTMLElement,
+            options: {
+              theme: "outline" | "filled_black" | "filled_blue";
+              size: "large" | "medium" | "small";
+              text?: "signin_with";
+            }
+          ) => void;
+        };
+      };
+    };
+  }
+}
 
 export default function Home() {
   const [state, setState] = useState<AppState>("idle");
   const [jobId, setJobId] = useState<string | null>(null);
   const [markdown, setMarkdown] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [authError, setAuthError] = useState<string | null>(null);
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
+  const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
+
+  useEffect(() => {
+    let mounted = true;
+    api
+      .me()
+      .then((res) => {
+        if (mounted) setUser(res.user);
+      })
+      .catch(() => {
+        if (mounted) setUser(null);
+      })
+      .finally(() => {
+        if (mounted) setAuthLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    if (authLoading || user || !googleClientId || !googleButtonRef.current) return;
+    if (!window.google?.accounts?.id) return;
+
+    const handleCredential = async (response: { credential: string }) => {
+      try {
+        const res = await api.authGoogle(response.credential);
+        setUser(res.user);
+        setAuthError(null);
+      } catch (err) {
+        setAuthError(
+          err instanceof Error ? err.message : "Google sign-in failed"
+        );
+      }
+    };
+
+    window.google.accounts.id.initialize({
+      client_id: googleClientId,
+      callback: handleCredential,
+    });
+    googleButtonRef.current.innerHTML = "";
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      theme: "outline",
+      size: "large",
+      text: "signin_with",
+    });
+  }, [authLoading, user, googleClientId]);
 
   const handleUpload = async (file: File) => {
     try {
@@ -55,8 +129,59 @@ export default function Home() {
     setError(null);
   };
 
+  const handleLogout = async () => {
+    await api.logout().catch(() => undefined);
+    setUser(null);
+    reset();
+  };
+
+  if (authLoading) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <Alert>
+          <AlertDescription>Checking authentication...</AlertDescription>
+        </Alert>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="max-w-2xl mx-auto space-y-4">
+        <Alert>
+          <AlertDescription>
+            Sign in with Google to use the PDF converter.
+          </AlertDescription>
+        </Alert>
+        {!googleClientId && (
+          <Alert variant="destructive">
+            <AlertDescription>
+              Missing NEXT_PUBLIC_GOOGLE_CLIENT_ID configuration.
+            </AlertDescription>
+          </Alert>
+        )}
+        <div ref={googleButtonRef} />
+        {authError && (
+          <Alert variant="destructive">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>{authError}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
+      <div className="max-w-2xl mx-auto flex items-center justify-between border rounded-md p-3">
+        <p className="text-sm text-muted-foreground">
+          Signed in as <span className="font-medium text-foreground">{user.email}</span>
+        </p>
+        <Button variant="outline" size="sm" onClick={handleLogout}>
+          Sign out
+        </Button>
+      </div>
+
       {/* Upload state */}
       {(state === "idle" || state === "uploading") && (
         <div className="max-w-2xl mx-auto">

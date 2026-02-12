@@ -26,6 +26,16 @@ export interface AnalyzeResponse {
   token_count?: number | null;
 }
 
+export interface AuthUser {
+  email: string;
+  name?: string | null;
+  picture?: string | null;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+}
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? "";
 
@@ -41,6 +51,7 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
   const res = await fetch(`${BASE_URL}${url}`, {
     ...init,
     headers: withAuthHeaders(init?.headers),
+    credentials: "include",
   });
   if (!res.ok) {
     const body = await res.json().catch(() => ({}));
@@ -67,6 +78,7 @@ export const api = {
   async downloadResult(jobId: string): Promise<void> {
     const res = await fetch(`${BASE_URL}/api/download/${jobId}`, {
       headers: withAuthHeaders(),
+      credentials: "include",
     });
     if (!res.ok) throw new Error("Download failed");
     const blob = await res.blob();
@@ -86,5 +98,21 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
     });
+  },
+
+  authGoogle(credential: string): Promise<AuthResponse> {
+    return request("/api/auth/google", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential }),
+    });
+  },
+
+  me(): Promise<AuthResponse> {
+    return request("/api/auth/me");
+  },
+
+  logout(): Promise<{ ok: boolean }> {
+    return request("/api/auth/logout", { method: "POST" });
   },
 };

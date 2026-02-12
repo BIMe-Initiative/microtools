@@ -23,7 +23,7 @@ on:
       allow_unauthenticated:
         description: Allow unauthenticated invocations
         required: true
-        default: 'false'
+        default: 'true'
 
 permissions:
   id-token: write
@@ -49,8 +49,11 @@ jobs:
         env:
           PROJECT_ID: ${{ inputs.project_id }}
           SERVICE: ${{ inputs.service }}
+          GOOGLE_CLIENT_ID: ${{ secrets.PDFMD_GOOGLE_CLIENT_ID }}
         run: |
-          gcloud builds submit pdf-md-converter --tag gcr.io/${PROJECT_ID}/${SERVICE}
+          gcloud builds submit pdf-md-converter \
+            --config pdf-md-converter/cloudbuild.yaml \
+            --substitutions _SERVICE=${SERVICE},_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
 
       - name: Deploy to Cloud Run
         env:
@@ -60,6 +63,10 @@ jobs:
           UPLOAD_BUCKET: ${{ inputs.upload_bucket }}
           RESULTS_BUCKET: ${{ inputs.results_bucket }}
           ALLOW_UNAUTH: ${{ inputs.allow_unauthenticated }}
+          GOOGLE_CLIENT_ID: ${{ secrets.PDFMD_GOOGLE_CLIENT_ID }}
+          SESSION_SECRET: ${{ secrets.PDFMD_SESSION_SECRET }}
+          AUTH_ALLOWED_EMAILS: ${{ secrets.PDFMD_AUTH_ALLOWED_EMAILS }}
+          AUTH_ALLOWED_DOMAINS: ${{ secrets.PDFMD_AUTH_ALLOWED_DOMAINS }}
         run: |
           AUTH_FLAG="--no-allow-unauthenticated"
           if [ "${ALLOW_UNAUTH}" = "true" ]; then
@@ -72,4 +79,4 @@ jobs:
             --region "${REGION}" \
             ${AUTH_FLAG} \
             --memory 2Gi --cpu 2 --timeout 300 --concurrency 10 \
-            --set-env-vars "GCP_PROJECT_ID=${PROJECT_ID},GCP_REGION=${REGION},MISTRAL_REGION=${REGION},VERTEX_AI_LOCATION=${REGION},GCS_BUCKET_NAME=${UPLOAD_BUCKET},GCS_UPLOAD_BUCKET_NAME=${UPLOAD_BUCKET},GCS_RESULTS_BUCKET_NAME=${RESULTS_BUCKET}"
+            --set-env-vars "^@^GCP_PROJECT_ID=${PROJECT_ID}@GCP_REGION=${REGION}@MISTRAL_REGION=${REGION}@VERTEX_AI_LOCATION=${REGION}@GCS_BUCKET_NAME=${UPLOAD_BUCKET}@GCS_UPLOAD_BUCKET_NAME=${UPLOAD_BUCKET}@GCS_RESULTS_BUCKET_NAME=${RESULTS_BUCKET}@GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}@SESSION_SECRET=${SESSION_SECRET}@AUTH_ALLOWED_EMAILS=${AUTH_ALLOWED_EMAILS}@AUTH_ALLOWED_DOMAINS=${AUTH_ALLOWED_DOMAINS}"

@@ -46,12 +46,27 @@ class AnalyzeResponse(BaseModel):
     token_count: Optional[int] = None
 
 
+class GoogleAuthRequest(BaseModel):
+    credential: str
+
+
+class AuthUser(BaseModel):
+    email: str
+    name: Optional[str] = None
+    picture: Optional[str] = None
+
+
+class AuthResponse(BaseModel):
+    user: AuthUser
+
+
 class JobRecord(BaseModel):
     """Internal job state tracking."""
 
     job_id: str
     status: JobStatus
     original_filename: str = ""
+    owner_email: str = ""
     gcs_pdf_path: Optional[str] = None
     md_gcs_path: Optional[str] = None
     markdown_content: Optional[str] = None

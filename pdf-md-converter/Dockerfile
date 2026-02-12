@@ -1,6 +1,8 @@
 # Stage 1: Build Next.js frontend
 FROM node:20-alpine AS frontend-builder
 WORKDIR /build
+ARG NEXT_PUBLIC_GOOGLE_CLIENT_ID=""
+ENV NEXT_PUBLIC_GOOGLE_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_CLIENT_ID
 COPY frontend/package*.json ./
 RUN npm ci
 COPY frontend/ ./
