@@ -2,6 +2,7 @@ import logging
 from datetime import timedelta
 from typing import BinaryIO
 
+import google.auth
 from google.api_core import exceptions
 from google.auth.transport.requests import Request
 from google.cloud import storage
@@ -56,9 +57,11 @@ class GCSStorage:
             if "private key" not in str(exc).lower():
                 raise
 
-            creds = self.client._credentials
-            if not getattr(creds, "token", None):
-                creds.refresh(Request())
+            # Ensure access token includes IAMCredentials-compatible scope.
+            creds, _ = google.auth.default(
+                scopes=["https://www.googleapis.com/auth/cloud-platform"]
+            )
+            creds.refresh(Request())
 
             service_account_email = getattr(creds, "service_account_email", None)
             if not service_account_email:
