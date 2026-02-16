@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     mistral_model: str = "mistral-ocr-2505"
 
     # File limits
-    max_file_size_mb: int = 30
-    max_pages_per_request: int = 30
+    max_file_size_mb: int = 100
+    max_pages_per_request: int = 100
 
     # Job management
     job_retention_hours: int = 24

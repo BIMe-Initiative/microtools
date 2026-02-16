@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import { Download, Sparkles, Loader2 } from "lucide-react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/cjs/styles/prism";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { api } from "@/lib/api";
+import "katex/dist/katex.min.css";
 
 interface ActionButtonsProps {
   jobId: string;
@@ -97,8 +104,35 @@ export function ActionButtons({ jobId }: ActionButtonsProps) {
 
         {analysis && (
           <Alert>
-            <AlertDescription className="whitespace-pre-wrap max-h-[400px] overflow-auto">
-              {analysis}
+            <AlertDescription className="max-h-[600px] overflow-auto">
+              <div className="prose dark:prose-invert max-w-none">
+                <ReactMarkdown
+                  remarkPlugins={[remarkGfm, remarkMath]}
+                  rehypePlugins={[rehypeKatex]}
+                  components={{
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    code({ className, children, ...props }: any) {
+                      const match = /language-(\w+)/.exec(className || "");
+                      const inline = !match;
+                      return !inline ? (
+                        <SyntaxHighlighter
+                          style={vscDarkPlus}
+                          language={match![1]}
+                          PreTag="div"
+                        >
+                          {String(children).replace(/\n$/, "")}
+                        </SyntaxHighlighter>
+                      ) : (
+                        <code className={className} {...props}>
+                          {children}
+                        </code>
+                      );
+                    },
+                  }}
+                >
+                  {analysis}
+                </ReactMarkdown>
+              </div>
             </AlertDescription>
           </Alert>
         )}

@@ -6,6 +6,7 @@ import secrets
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
@@ -16,6 +17,7 @@ from fastapi import (
     File,
     Header,
     HTTPException,
+    Query,
     Request,
     Response,
     UploadFile,
@@ -282,6 +284,12 @@ async def upload_pdf(
     background_tasks: BackgroundTasks,
     request: Request,
     file: UploadFile = File(...),
+    vault_mode: bool = Query(False),
+    type: Optional[str] = Query(None),
+    subtype: Optional[str] = Query(None),
+    use_scope: Optional[str] = Query(None),
+    access_level: Optional[str] = Query(None),
+    export_targets: list[str] = Query([]),
     _: None = Depends(_require_api_key),
 ):
     """Upload a PDF and start OCR processing."""
@@ -302,6 +310,12 @@ async def upload_pdf(
         original_filename=file.filename,
         owner_email=_load_session_user(request).email,
         created_at=datetime.now(),
+        vault_mode=vault_mode,
+        kos_type=type,
+        kos_subtype=subtype,
+        kos_use_scope=use_scope,
+        kos_access_level=access_level,
+        kos_export_targets=export_targets,
     )
     _persist_job(job)
 
@@ -352,7 +366,7 @@ async def _process_pdf(job_id: str):
 
         # Format to Obsidian markdown
         md_content, attachments = formatter.format_document(
-            ocr_result, job.original_filename
+            ocr_result, job
         )
         job.markdown_content = md_content
 

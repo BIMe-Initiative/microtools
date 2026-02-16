@@ -76,3 +76,11 @@ class JobRecord(BaseModel):
     error: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None
+
+    # Vault Mode overrides
+    vault_mode: bool = False
+    kos_type: Optional[str] = None
+    kos_subtype: Optional[str] = None
+    kos_use_scope: Optional[str] = None
+    kos_access_level: Optional[str] = None
+    kos_export_targets: list[str] = []

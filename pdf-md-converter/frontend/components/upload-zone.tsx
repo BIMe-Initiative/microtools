@@ -10,7 +10,7 @@ interface UploadZoneProps {
   disabled?: boolean;
 }
 
-const MAX_SIZE = 30 * 1024 * 1024; // 30 MB
+const MAX_SIZE = 100 * 1024 * 1024; // 100 MB
 
 export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
   const [dragActive, setDragActive] = useState(false);
@@ -24,7 +24,7 @@ export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
         return;
       }
       if (file.size > MAX_SIZE) {
-        setError("File must be smaller than 30 MB.");
+        setError("File must be smaller than 100 MB.");
         return;
       }
       onUpload(file);
@@ -93,7 +93,7 @@ export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
           <p className="text-sm text-muted-foreground text-center">
             Drag and drop or click to select
             <br />
-            <span className="text-xs">Maximum size: 30 MB</span>
+            <span className="text-xs">Maximum size: 100 MB</span>
           </p>
         </label>
       </div>
