@@ -1,11 +1,14 @@
+import io
 import logging
 import re
+import tempfile
 from typing import Any, Callable, Optional
 
 import google.auth
 import google.auth.transport.requests
 import httpx
 from mistralai_gcp import MistralGoogleCloud
+from pypdf import PdfReader, PdfWriter
 
 from .config import get_settings
 from .models import JobRecord
@@ -32,79 +35,97 @@ class MistralOCRService:
         document_url: str,
         job_record: JobRecord,
         on_progress: Optional[Callable] = None,
+        storage_client: Any = None,
     ) -> dict[str, Any]:
         """
         Process a PDF document with Mistral OCR.
-
-        Args:
-            document_url: Signed HTTPS URL accessible by Mistral.
-            job_record: Job record for progress tracking.
-            on_progress: Async callback for progress updates.
-
-        Returns:
-            Dict with pages containing markdown and images.
+        If document exceeds 30 pages, it will be split into chunks.
         """
         logger.info(f"Starting OCR for job {job_record.job_id}")
         max_pages = self._settings.max_pages_per_request
         seen_pages: dict[int, dict[str, Any]] = {}
-        start = 0
 
-        while True:
-            end = start + max_pages
-            page_indices = list(range(start, end))
-            logger.info(
-                "Requesting OCR batch for job %s, pages %s-%s",
-                job_record.job_id,
-                start,
-                end - 1,
-            )
+        # 1. Inspect document to see if splitting is needed
+        # Since we have a signed URL, we need to download it or be passed the content.
+        # For simplicity and robustness, we'll download it here.
+        async with httpx.AsyncClient() as h_client:
+            res = await h_client.get(document_url)
+            if res.status_code != 200:
+                raise RuntimeError(f"Failed to download PDF from {document_url}: {res.status_code}")
+            pdf_bytes = res.content
 
-            response = self._process_ocr_batch(document_url, page_indices)
-            raw_pages = response.pages if hasattr(response, "pages") else []
-            if not raw_pages:
-                break
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        total_pages_count = len(reader.pages)
+        logger.info(f"Job {job_record.job_id} has {total_pages_count} pages")
 
-            new_pages = 0
-            for page in raw_pages:
-                serialized = self._serialize_page(page)
-                page_index = serialized["index"]
-                if page_index not in seen_pages:
-                    new_pages += 1
-                seen_pages[page_index] = serialized
-
-            if new_pages == 0:
-                logger.warning(
-                    "OCR batch returned no new pages for job %s, stopping to avoid loop",
-                    job_record.job_id,
+        current_page_offset = 0
+        while current_page_offset < total_pages_count:
+            chunk_size = min(max_pages, total_pages_count - current_page_offset)
+            page_indices = list(range(current_page_offset, current_page_offset + chunk_size))
+            
+            # If total document is <= 30 pages, process it directly via original URL
+            if total_pages_count <= max_pages:
+                logger.info(f"Processing small document (pages {page_indices}) directly")
+                batch_res = self._process_ocr_batch(document_url, page_indices)
+                self._collect_pages(batch_res, seen_pages)
+                current_page_offset += chunk_size
+            else:
+                # Splitting needed. Create a new PDF for this chunk.
+                writer = PdfWriter()
+                for i in range(current_page_offset, current_page_offset + chunk_size):
+                    writer.add_page(reader.pages[i])
+                
+                chunk_pdf = io.BytesIO()
+                writer.write(chunk_pdf)
+                chunk_pdf.seek(0)
+                
+                # Upload chunk temporarily if storage client is available
+                if not storage_client:
+                    raise RuntimeError("Large document processing requires storage_client to be passed to MistralOCRService")
+                
+                chunk_path = f"temp/{job_record.job_id}/chunk_{current_page_offset}.pdf"
+                chunk_url = storage_client.upload_file(
+                    chunk_pdf, chunk_path, content_type="application/pdf"
                 )
-                break
+                
+                # Sign the chunk URL
+                signed_chunk_url = storage_client.generate_signed_url(chunk_path, expiration_minutes=60)
+                
+                logger.info(f"Processing chunk {current_page_offset} (pages 0-{chunk_size-1} of chunk)")
+                # Mistral sees this chunk as a new 0-indexed document
+                batch_res = self._process_ocr_batch(signed_chunk_url, list(range(chunk_size)))
+                
+                # Collect and adjust indices
+                self._collect_pages(batch_res, seen_pages, index_offset=current_page_offset)
+                
+                # Cleanup temp chunk
+                try:
+                    storage_client.delete_file(chunk_path)
+                except Exception as e:
+                    logger.warning(f"Failed to cleanup temp chunk {chunk_path}: {e}")
+                
+                current_page_offset += chunk_size
 
+            # Update progress
             job_record.processed_pages = len(seen_pages)
-            job_record.total_pages = len(seen_pages)
+            job_record.total_pages = total_pages_count
             if on_progress:
                 await on_progress(job_record)
 
-            if len(raw_pages) < max_pages:
-                break
-
-            start += max_pages
-
         all_pages = [seen_pages[idx] for idx in sorted(seen_pages)]
-        logger.info(
-            "OCR complete for job %s: %s pages",
-            job_record.job_id,
-            len(all_pages),
-        )
         return {"pages": all_pages}
 
-    def _process_ocr_batch(self, document_url: str, page_indices: list[int]):
-        """
-        Run one OCR batch.
+    def _collect_pages(self, response: Any, seen_pages: dict, index_offset: int = 0):
+        raw_pages = response.pages if hasattr(response, "pages") else []
+        for page in raw_pages:
+            serialized = self._serialize_page(page)
+            # Adjust index if it's from a chunk
+            page_index = serialized["index"] + index_offset
+            serialized["index"] = page_index
+            seen_pages[page_index] = serialized
 
-        The GCP SDK currently ships without an `ocr` namespace on
-        `MistralGoogleCloud` in some versions, so we fallback to direct Vertex
-        rawPredict calls for the OCR model.
-        """
+    def _process_ocr_batch(self, document_url: str, page_indices: list[int]):
+        """Run one OCR batch."""
         if hasattr(self.client, "ocr"):
             return self.client.ocr.process(
                 model=self._settings.mistral_model,
@@ -143,11 +164,10 @@ class MistralOCRService:
                 url,
                 json=payload,
                 headers={"Authorization": f"Bearer {token}"},
-                timeout=120,
+                timeout=180,
             )
             if res.status_code == 200:
                 data = res.json()
-                # Normalize to object-like response used by existing serializer logic.
                 if isinstance(data, dict) and "pages" in data:
                     return type("OCRResult", (), data)
                 raise RuntimeError(f"Unexpected OCR response shape: {data}")
@@ -167,16 +187,19 @@ class MistralOCRService:
 
     def _model_candidates(self, configured_model: str) -> list[tuple[str, str]]:
         candidates: list[tuple[str, str]] = []
-        # Explicit known OCR model mapping used by Vertex partner routing.
+        
+        # Vertex AI - Mistral OCR favored ID
         if configured_model == "mistral-ocr-2505":
-            candidates.append(("mistral-ocr", "mistral-ocr@2505"))
-
-        # Generic fallback for dash-version suffix models, e.g. model-2505.
+             candidates.append(("mistral-ocr", "mistral-ocr-2505"))
+             candidates.append(("mistral-ocr", "mistral-ocr@2505"))
+        
+        # Generic fallback
         match = re.match(r"^(.+)-(\d{4})$", configured_model)
         if match:
+            candidates.append((match.group(1), f"{match.group(1)}-{match.group(2)}"))
             candidates.append((match.group(1), f"{match.group(1)}@{match.group(2)}"))
 
-        # Last fallback to exact configured model string.
+        # Last fallback to exact configured model string
         candidates.append((configured_model, configured_model))
 
         unique: list[tuple[str, str]] = []

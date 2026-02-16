@@ -362,7 +362,9 @@ async def _process_pdf(job_id: str):
         async def _update(j: JobRecord):
             _persist_job(j)
 
-        ocr_result = await _get_ocr_service().process_document(signed_url, job, _update)
+        ocr_result = await _get_ocr_service().process_document(
+            signed_url, job, _update, storage_client=_get_upload_storage()
+        )
 
         # Format to Obsidian markdown
         md_content, attachments = formatter.format_document(

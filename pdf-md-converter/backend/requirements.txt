@@ -9,3 +9,4 @@ google-cloud-aiplatform>=1.71.0
 google-auth>=2.36.0
 itsdangerous>=2.2.0
 mistralai[gcp]>=1.2.0
+pypdf>=5.0.0
