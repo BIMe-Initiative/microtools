@@ -28,6 +28,48 @@ The converter supports a specialized **Vault Mode** for advanced metadata manage
 - `access_level`: Override access level (Default: `open`)
 - `export_targets`: List of external systems for export.
 
+## Backend Service Auth
+
+Backend callers can authenticate with `x-api-key` instead of browser Google Sign-In cookies. Set a shared key in the converter environment and send the same value from the calling backend:
+
+```env
+API_KEY=dev-local-converter-key
+SERVICE_ACCOUNT_EMAIL=service:mad-evidence
+CORS_ORIGINS_RAW=http://localhost:3001,http://localhost:3000
+```
+
+Service uploads are recorded with `owner_email` set to `SERVICE_ACCOUNT_EMAIL`. A valid service key can read job status, preview, and download results without a browser session cookie. Browser users can still use Google Sign-In and their session cookie as before.
+
+Local upload example:
+
+```bash
+curl -X POST "http://localhost:8000/api/upload?vault_mode=true&type=Content&subtype=Report" \
+  -H "x-api-key: dev-local-converter-key" \
+  -F "file=@/path/to/document.pdf"
+```
+
+Poll status:
+
+```bash
+curl "http://localhost:8000/api/status/JOB_ID" \
+  -H "x-api-key: dev-local-converter-key"
+```
+
+Preview markdown:
+
+```bash
+curl "http://localhost:8000/api/preview/JOB_ID" \
+  -H "x-api-key: dev-local-converter-key"
+```
+
+Download result zip:
+
+```bash
+curl -L "http://localhost:8000/api/download/JOB_ID" \
+  -H "x-api-key: dev-local-converter-key" \
+  -o result.zip
+```
+
 ## 📝 ID Generation
 
 IDs are generated deterministically to ensure stability within a project:

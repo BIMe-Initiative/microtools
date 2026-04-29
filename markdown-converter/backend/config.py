@@ -31,6 +31,7 @@ class Settings(BaseSettings):
 
     # Optional API key guard for API endpoints
     api_key: str | None = None
+    service_account_email: str = "service:api-key"
 
     # Google auth
     google_client_id: str | None = None

@@ -140,6 +140,14 @@ def _require_api_key(x_api_key: str | None = Header(None)):
         raise HTTPException(status_code=401, detail="Unauthorized")
 
 
+def _is_valid_api_key(x_api_key: str | None) -> bool:
+    return bool(
+        settings.api_key
+        and x_api_key
+        and secrets.compare_digest(x_api_key, settings.api_key)
+    )
+
+
 def _require_configured_auth():
     if not settings.google_client_id:
         raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_ID is not configured")
@@ -163,6 +171,17 @@ def _load_session_user(request: Request) -> AuthUser:
     return AuthUser.model_validate(payload)
 
 
+def _load_request_actor(request: Request, x_api_key: str | None) -> AuthUser:
+    if x_api_key is not None:
+        if _is_valid_api_key(x_api_key):
+            return AuthUser(email=settings.service_account_email)
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    if not request.cookies.get("session"):
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return _load_session_user(request)
+
+
 def _set_session_cookie(response: Response, user: AuthUser, request: Request):
     token = session_serializer.dumps(user.model_dump())  # type: ignore[union-attr]
     response.set_cookie(
@@ -182,6 +201,14 @@ def _clear_session_cookie(response: Response):
 def _verify_job_owner(job: JobRecord, user: AuthUser):
     if job.owner_email and job.owner_email != user.email:
         raise HTTPException(status_code=403, detail="Forbidden")
+
+
+def _verify_job_access(job: JobRecord, actor: AuthUser | None, service_authenticated: bool):
+    if service_authenticated:
+        return
+    if actor is None:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    _verify_job_owner(job, actor)
 
 
 def _job_metadata_path(job_id: str) -> str:
@@ -323,9 +350,11 @@ async def upload_pdf(
     use_scope: Optional[str] = Query(None),
     access_level: Optional[str] = Query(None),
     export_targets: list[str] = Query([]),
-    _: None = Depends(_require_api_key),
+    x_api_key: str | None = Header(None),
 ):
     """Upload a PDF and start OCR processing."""
+    actor = _load_request_actor(request, x_api_key)
+
     valid_exts = (".pdf", ".docx", ".xlsx")
     if not file.filename or not file.filename.lower().endswith(valid_exts):
         raise HTTPException(status_code=400, detail="Only PDF, DOCX, and XLSX files are accepted")
@@ -355,7 +384,7 @@ async def upload_pdf(
         job_id=job_id,
         status=JobStatus.UPLOADING,
         original_filename=file.filename,
-        owner_email=_load_session_user(request).email,
+        owner_email=actor.email,
         created_at=datetime.now(),
         vault_mode=vault_mode,
         kos_type=type,
@@ -448,12 +477,18 @@ async def _process_pdf(job_id: str):
 
 
 @app.get("/api/status/{job_id}", response_model=JobStatusResponse)
-async def get_status(job_id: str, request: Request):
+async def get_status(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
     """Poll the status of a processing job."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    _verify_job_owner(job, _load_session_user(request))
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    _verify_job_access(job, actor, service_authenticated)
 
     progress = None
     if job.total_pages and job.total_pages > 0:
@@ -476,12 +511,18 @@ async def get_status(job_id: str, request: Request):
 
 
 @app.get("/api/preview/{job_id}", response_model=PreviewResponse)
-async def get_preview(job_id: str, request: Request):
+async def get_preview(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
     """Return the converted markdown for in-browser preview."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    _verify_job_owner(job, _load_session_user(request))
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    _verify_job_access(job, actor, service_authenticated)
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.markdown_content and job.md_gcs_path:
@@ -501,12 +542,18 @@ async def get_preview(job_id: str, request: Request):
 
 
 @app.get("/api/download/{job_id}")
-async def download_result(job_id: str, request: Request):
+async def download_result(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
     """Download the result zip archive."""
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    _verify_job_owner(job, _load_session_user(request))
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    _verify_job_access(job, actor, service_authenticated)
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
     if not job.zip_gcs_path:
