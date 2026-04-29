@@ -7,7 +7,7 @@ from typing import Any, Callable, Optional
 import google.auth
 import google.auth.transport.requests
 import httpx
-from mistralai_gcp import MistralGoogleCloud
+from mistralai.gcp.client import MistralGCP
 from pypdf import PdfReader, PdfWriter
 
 from .config import get_settings
@@ -19,12 +19,12 @@ logger = logging.getLogger(__name__)
 class MistralOCRService:
     def __init__(self, settings=None):
         self._settings = settings or get_settings()
-        self._client: Optional[MistralGoogleCloud] = None
+        self._client: Optional[MistralGCP] = None
 
     @property
-    def client(self) -> MistralGoogleCloud:
+    def client(self) -> MistralGCP:
         if self._client is None:
-            self._client = MistralGoogleCloud(
+            self._client = MistralGCP(
                 region=self._settings.mistral_region,
                 project_id=self._settings.gcp_project_id,
             )
