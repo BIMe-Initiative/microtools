@@ -7,7 +7,7 @@ import zipfile
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import unquote
-from .models import JobRecord
+from .models import JobRecord, JobStatus
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +16,7 @@ class ObsidianMarkdownFormatter:
     """Convert Mistral OCR response to Obsidian-compatible markdown."""
 
     def format_document(
-        self, ocr_result: dict, job: JobRecord
+        self, ocr_result: dict, job: JobRecord | str
     ) -> tuple[str, dict[str, bytes]]:
         """
         Convert OCR result to Obsidian markdown with attachments.
@@ -25,6 +25,13 @@ class ObsidianMarkdownFormatter:
             (markdown_content, attachments_dict)
             where attachments_dict maps image filenames to PNG bytes.
         """
+        if isinstance(job, str):
+            job = JobRecord(
+                job_id=job,
+                status=JobStatus.COMPLETED,
+                original_filename=job,
+                created_at=datetime.now(),
+            )
         original_filename = job.original_filename
         stem = Path(original_filename).stem
         
