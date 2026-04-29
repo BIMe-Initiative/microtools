@@ -61,11 +61,11 @@ export function ProcessingStatus({
 
   const icon =
     status?.status === "completed" ? (
-      <CheckCircle className="h-5 w-5 text-green-500" />
+      <CheckCircle className="h-5 w-5 text-emerald-600" />
     ) : status?.status === "failed" ? (
       <XCircle className="h-5 w-5 text-red-500" />
     ) : (
-      <Loader2 className="h-5 w-5 animate-spin" />
+      <Loader2 className="h-5 w-5 animate-spin text-brand-coral-press" />
     );
 
   const badgeVariant =
@@ -76,9 +76,10 @@ export function ProcessingStatus({
       : "secondary";
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
+      <div className="h-[3px] bg-gradient-to-r from-brand-coral via-indigo-400 to-emerald-400" />
       <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
+        <CardTitle className="flex items-center gap-2 text-lg text-ink-display">
           {icon}
           Processing
           <Badge variant={badgeVariant} className="capitalize ml-auto">
@@ -89,24 +90,24 @@ export function ProcessingStatus({
       <CardContent className="space-y-4">
         {status?.progress != null ? (
           <div className="space-y-1">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm text-ink-muted">
               <span>Progress</span>
-              <span className="font-medium">{status.progress}%</span>
+              <span className="font-semibold text-ink">{status.progress}%</span>
             </div>
             <Progress value={status.progress} />
           </div>
         ) : status?.status !== "completed" && status?.status !== "failed" ? (
           <div className="space-y-1">
-            <div className="flex justify-between text-sm">
+            <div className="flex justify-between text-sm text-ink-muted">
               <span>Progress</span>
-              <span className="font-medium">Processing...</span>
+              <span className="font-semibold text-ink">Processing...</span>
             </div>
             <Progress value={indeterminateProgress} />
           </div>
         ) : null}
 
         {status?.message && (
-          <p className="text-sm text-muted-foreground">{status.message}</p>
+          <p className="text-sm text-ink-muted">{status.message}</p>
         )}
 
         {status?.error && (
@@ -116,7 +117,7 @@ export function ProcessingStatus({
           </Alert>
         )}
 
-        <p className="text-xs text-muted-foreground">Job ID: {jobId}</p>
+        <p className="text-xs text-ink-muted/70">Job ID: {jobId}</p>
       </CardContent>
     </Card>
   );

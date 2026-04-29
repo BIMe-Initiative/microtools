@@ -55,8 +55,8 @@ session_serializer: URLSafeTimedSerializer | None = (
 )
 
 app = FastAPI(
-    title="PDF to Markdown Converter",
-    description="Convert PDFs to Obsidian-compatible Markdown using Mistral OCR",
+    title="BIMei Markdown Converter",
+    description="Convert PDFs, DOCX, and XLSX files to Obsidian-compatible Markdown using Mistral OCR",
     version="1.0.0",
 )
 
@@ -82,34 +82,41 @@ jobs: dict[str, JobRecord] = {}
 genai_model = None
 
 
-def _convert_to_pdf_via_drive(filename: str, file_bytes: bytes, is_docx: bool) -> bytes:
-    import google.auth
-    from googleapiclient.discovery import build
-    from googleapiclient.http import MediaIoBaseUpload
+def _convert_to_pdf_via_libreoffice(filename: str, file_bytes: bytes) -> bytes:
+    import subprocess
+    import tempfile
+    import os
 
-    credentials, _ = google.auth.default(scopes=["https://www.googleapis.com/auth/drive"])
-    service = build("drive", "v3", credentials=credentials)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        input_path = os.path.join(temp_dir, filename)
+        with open(input_path, "wb") as f:
+            f.write(file_bytes)
 
-    mime_type = "application/vnd.google-apps.document" if is_docx else "application/vnd.google-apps.spreadsheet"
-    source_mime_type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document" if is_docx else "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        # Run LibreOffice headless conversion
+        # libreoffice --headless --convert-to pdf input.docx --outdir /tmp
+        result = subprocess.run(
+            [
+                "libreoffice",
+                "--headless",
+                "--convert-to",
+                "pdf",
+                input_path,
+                "--outdir",
+                temp_dir,
+            ],
+            capture_output=True,
+            check=False,
+        )
 
-    file_metadata = {
-        "name": filename,
-        "mimeType": mime_type
-    }
-    media = MediaIoBaseUpload(io.BytesIO(file_bytes), mimetype=source_mime_type, resumable=True)
+        if result.returncode != 0:
+            logger.error(f"LibreOffice conversion failed: {result.stderr.decode('utf-8')}")
+            raise Exception("Failed to convert document locally.")
 
-    file = service.files().create(body=file_metadata, media_body=media, fields="id").execute()
-    file_id = file.get("id")
+        output_filename = os.path.splitext(filename)[0] + ".pdf"
+        output_path = os.path.join(temp_dir, output_filename)
 
-    try:
-        request = service.files().export_media(fileId=file_id, mimeType="application/pdf")
-        return request.execute()
-    finally:
-        try:
-            service.files().delete(fileId=file_id).execute()
-        except:
-            pass
+        with open(output_path, "rb") as f:
+            return f.read()
 
 def _get_upload_storage() -> GCSStorage:
     global upload_storage
@@ -366,7 +373,7 @@ async def upload_pdf(
     
     if is_docx or is_xlsx:
         try:
-            content = _convert_to_pdf_via_drive(file.filename, content, is_docx)
+            content = _convert_to_pdf_via_libreoffice(file.filename, content)
             # Change filename to represent the converted PDF
             file.filename = file.filename.rsplit(".", 1)[0] + ".pdf"
         except Exception as exc:

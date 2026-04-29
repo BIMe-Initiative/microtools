@@ -63,16 +63,29 @@ export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
   );
 
   return (
-    <Card className="p-8">
+    <Card className="overflow-hidden p-5 sm:p-6">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <div>
+          <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">
+            Upload source
+          </div>
+          <h3 className="mt-1 text-xl font-semibold tracking-tight text-ink-display">
+            Choose a document
+          </h3>
+        </div>
+        <div className="rounded-full border border-surface-line bg-surface-muted px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
+          100 MB max
+        </div>
+      </div>
       <div
         onDragEnter={handleDrag}
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`relative border-2 border-dashed rounded-lg p-12 transition-colors ${dragActive
-            ? "border-primary bg-primary/5"
-            : "border-muted-foreground/25"
-          } ${disabled ? "pointer-events-none opacity-50" : "cursor-pointer hover:border-primary"}`}
+        className={`relative rounded-lg border-2 border-dashed p-8 transition-all sm:p-12 ${dragActive
+            ? "border-brand-coral bg-brand-coral-tint"
+            : "border-surface-line bg-surface-muted"
+          } ${disabled ? "pointer-events-none opacity-50" : "cursor-pointer hover:border-brand-coral hover:bg-brand-coral-tint/50"}`}
       >
         <input
           type="file"
@@ -87,17 +100,17 @@ export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
           className="flex flex-col items-center justify-center cursor-pointer"
         >
           {dragActive ? (
-            <Upload className="w-16 h-16 text-primary mb-4" />
+            <Upload className="mb-4 h-16 w-16 text-brand-coral-press" />
           ) : (
-            <FileText className="w-16 h-16 text-muted-foreground mb-4" />
+            <FileText className="mb-4 h-16 w-16 text-indigo-600" />
           )}
-          <h3 className="text-xl font-semibold mb-2">
-            {dragActive ? "Drop your file here" : "Upload Document"}
-          </h3>
-          <p className="text-sm text-muted-foreground text-center">
+          <div className="mb-2 text-xl font-semibold tracking-tight text-ink-display">
+            {dragActive ? "Drop your file here" : "Upload document"}
+          </div>
+          <p className="text-center text-sm leading-relaxed text-ink-muted">
             Drag and drop or click to select
             <br />
-            <span className="text-xs">Maximum size: 100 MB</span>
+            <span className="text-xs">PDF, DOCX, and XLSX are supported</span>
           </p>
         </label>
       </div>

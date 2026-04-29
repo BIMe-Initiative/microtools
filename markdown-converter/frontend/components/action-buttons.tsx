@@ -55,9 +55,13 @@ export function ActionButtons({ jobId }: ActionButtonsProps) {
   };
 
   return (
-    <Card>
+    <Card className="overflow-hidden">
+      <div className="h-[3px] bg-gradient-to-r from-brand-coral via-amber-300 to-transparent" />
       <CardHeader>
-        <CardTitle className="text-lg">Actions</CardTitle>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-coral-press">
+          Export and analyse
+        </div>
+        <CardTitle className="text-lg text-ink-display">Actions</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <Button
@@ -103,9 +107,9 @@ export function ActionButtons({ jobId }: ActionButtonsProps) {
         )}
 
         {analysis && (
-          <Alert>
+          <Alert className="border-emerald-200 bg-emerald-50 text-emerald-900">
             <AlertDescription className="max-h-[600px] overflow-auto">
-              <div className="prose dark:prose-invert max-w-none">
+              <div className="prose max-w-none dark:prose-invert">
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm, remarkMath]}
                   rehypePlugins={[rehypeKatex]}

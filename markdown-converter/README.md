@@ -1,4 +1,4 @@
-# PDF to Markdown Converter
+# BIMei Markdown Converter
 
 A premium web application for converting PDF documents into rich, Obsidian-compatible Markdown formatted using Knowledge Object Schema (KOS) standards.
 
@@ -69,6 +69,40 @@ curl -L "http://localhost:8000/api/download/JOB_ID" \
   -H "x-api-key: dev-local-converter-key" \
   -o result.zip
 ```
+
+## MAD Evidence Normalizer Contract
+
+MAD can call the deployed converter with:
+
+```env
+EVIDENCE_NORMALIZER_ADAPTER=markdown_converter_http
+MARKDOWN_CONVERTER_BASE_URL=https://markdown-converter-jilezw5qqq-uc.a.run.app
+MARKDOWN_CONVERTER_API_KEY=<injected secret>
+MARKDOWN_CONVERTER_TIMEOUT_MS=120000
+```
+
+The converter accepts `POST /api/upload` as `multipart/form-data` with field
+`file` and header `x-api-key`. The JSON response includes `job_id`.
+
+`GET /api/status/{job_id}` returns JSON including `status` and `error`. For
+jobs returned by `/api/upload`, MAD should see `processing`, `completed`, or
+`failed`; only `completed` means preview is ready.
+
+`GET /api/preview/{job_id}` returns JSON with non-empty `markdown` after the
+job is completed. This is the normalized Markdown source MAD should consume.
+
+`GET /api/download/{job_id}` returns the derivative archive as:
+
+- `Content-Type: application/zip`
+- `Content-Disposition: attachment; filename="<original_stem>_obsidian.zip"`
+- Payload: ZIP containing the Markdown file and any extracted attachments.
+
+Production Cloud Run is configured with `API_KEY` from Secret Manager,
+`SERVICE_ACCOUNT_EMAIL=service:mad-evidence`, and a 300 second request timeout.
+The app limit is 100 MB, but the current Cloud Run container serves HTTP/1, so
+direct multipart request size is constrained by Cloud Run's HTTP/1 request
+limit. For evidence files larger than that limit, add a signed-upload flow
+instead of posting the file through `/api/upload`.
 
 ## 📝 ID Generation
 

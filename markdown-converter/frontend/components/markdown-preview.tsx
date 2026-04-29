@@ -19,9 +19,13 @@ export function MarkdownPreview({ markdown }: MarkdownPreviewProps) {
   const [tab, setTab] = useState("preview");
 
   return (
-    <Card className="h-full">
+    <Card className="h-full overflow-hidden">
+      <div className="h-[3px] bg-gradient-to-r from-sky-500 via-indigo-400 to-transparent" />
       <CardHeader>
-        <CardTitle className="text-lg">Document Preview</CardTitle>
+        <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">
+          Markdown output
+        </div>
+        <CardTitle className="text-lg text-ink-display">Document Preview</CardTitle>
       </CardHeader>
       <CardContent>
         <Tabs value={tab} onValueChange={setTab}>
@@ -31,7 +35,7 @@ export function MarkdownPreview({ markdown }: MarkdownPreviewProps) {
           </TabsList>
 
           <TabsContent value="preview" className="mt-4">
-            <div className="prose dark:prose-invert max-w-none overflow-auto max-h-[600px] p-4 border rounded-md">
+            <div className="prose max-h-[600px] max-w-none overflow-auto rounded-lg border border-surface-line bg-white p-4 text-ink dark:prose-invert">
               <ReactMarkdown
                 remarkPlugins={[remarkGfm, remarkMath]}
                 rehypePlugins={[rehypeKatex]}
@@ -62,8 +66,8 @@ export function MarkdownPreview({ markdown }: MarkdownPreviewProps) {
           </TabsContent>
 
           <TabsContent value="raw" className="mt-4">
-            <div className="bg-muted rounded-md p-4 overflow-auto max-h-[600px]">
-              <pre className="text-sm font-mono whitespace-pre-wrap">
+            <div className="max-h-[600px] overflow-auto rounded-lg border border-surface-line bg-surface-sunk p-4">
+              <pre className="whitespace-pre-wrap font-mono text-sm text-ink">
                 {markdown}
               </pre>
             </div>

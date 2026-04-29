@@ -15,6 +15,22 @@ const config: Config = {
     },
     extend: {
       colors: {
+        brand: {
+          coral: "#f37f73",
+          "coral-press": "#e0695b",
+          "coral-tint": "#fdeae6",
+        },
+        ink: {
+          DEFAULT: "#1d293d",
+          muted: "#314158",
+          display: "#0f172a",
+        },
+        surface: {
+          DEFAULT: "#ffffff",
+          muted: "#f8fafc",
+          sunk: "#f1f5f9",
+          line: "#e2e8f0",
+        },
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
