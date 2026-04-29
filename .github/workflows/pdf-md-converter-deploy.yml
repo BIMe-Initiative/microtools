@@ -55,8 +55,8 @@ jobs:
           SERVICE: ${{ inputs.service }}
           GOOGLE_CLIENT_ID: ${{ secrets.PDFMD_GOOGLE_CLIENT_ID }}
         run: |
-          gcloud builds submit pdf-md-converter \
-            --config pdf-md-converter/cloudbuild.yaml \
+          gcloud builds submit markdown-converter \
+            --config markdown-converter/cloudbuild.yaml \
             --substitutions _SERVICE=${SERVICE},_GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
 
       - name: Deploy to Cloud Run
