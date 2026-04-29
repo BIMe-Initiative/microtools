@@ -483,11 +483,11 @@ async def get_status(
     x_api_key: str | None = Header(None),
 ):
     """Poll the status of a processing job."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    service_authenticated = _is_valid_api_key(x_api_key)
-    actor = _load_request_actor(request, x_api_key)
     _verify_job_access(job, actor, service_authenticated)
 
     progress = None
@@ -517,11 +517,11 @@ async def get_preview(
     x_api_key: str | None = Header(None),
 ):
     """Return the converted markdown for in-browser preview."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    service_authenticated = _is_valid_api_key(x_api_key)
-    actor = _load_request_actor(request, x_api_key)
     _verify_job_access(job, actor, service_authenticated)
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
@@ -548,11 +548,11 @@ async def download_result(
     x_api_key: str | None = Header(None),
 ):
     """Download the result zip archive."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
     job = _load_job(job_id)
     if job is None:
         raise HTTPException(status_code=404, detail="Job not found")
-    service_authenticated = _is_valid_api_key(x_api_key)
-    actor = _load_request_actor(request, x_api_key)
     _verify_job_access(job, actor, service_authenticated)
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
