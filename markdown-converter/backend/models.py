@@ -28,6 +28,27 @@ class JobStatusResponse(BaseModel):
     result_available: bool = False
 
 
+class JobLogItem(BaseModel):
+    job_id: str
+    status: JobStatus
+    original_filename: str
+    file_type: Optional[str] = None
+    original_content_type: Optional[str] = None
+    original_file_size: Optional[int] = None
+    owner_email: str = ""
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    result_available: bool = False
+    source_available: bool = False
+    markdown_available: bool = False
+    archive_available: bool = False
+    error: Optional[str] = None
+
+
+class JobLogResponse(BaseModel):
+    jobs: list[JobLogItem]
+
+
 class PreviewResponse(BaseModel):
     job_id: str
     markdown: str
@@ -66,7 +87,11 @@ class JobRecord(BaseModel):
     job_id: str
     status: JobStatus
     original_filename: str = ""
+    file_type: Optional[str] = None
+    original_content_type: Optional[str] = None
+    original_file_size: Optional[int] = None
     owner_email: str = ""
+    source_gcs_path: Optional[str] = None
     gcs_pdf_path: Optional[str] = None
     md_gcs_path: Optional[str] = None
     markdown_content: Optional[str] = None

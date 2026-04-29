@@ -39,6 +39,10 @@ class GCSStorage:
         blob = self.bucket.blob(source_path)
         return blob.download_as_bytes()
 
+    def list_paths(self, prefix: str) -> list[str]:
+        """List object paths for a prefix."""
+        return [blob.name for blob in self.client.list_blobs(self.bucket, prefix=prefix)]
+
     def generate_signed_url(
         self, path: str, expiration_minutes: int = 60
     ) -> str:

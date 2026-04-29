@@ -34,6 +34,9 @@ class FakeStorage:
     def download_as_bytes(self, source_path: str) -> bytes:
         return self.objects[source_path]
 
+    def list_paths(self, prefix: str) -> list[str]:
+        return [path for path in self.objects if path.startswith(prefix)]
+
     def generate_signed_url(self, source_path: str, expiration_minutes: int = 60) -> str:
         return f"https://signed.example/{source_path}"
 
@@ -128,6 +131,35 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         self.assertEqual(download.headers["content-type"], "application/zip")
         self.assertIn("attachment;", download.headers["content-disposition"])
         self.assertGreater(len(download.content), 0)
+
+        history = self.client.get(
+            "/api/jobs",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(history.status_code, 200)
+        history_body = history.json()
+        self.assertEqual(len(history_body["jobs"]), 1)
+        self.assertEqual(history_body["jobs"][0]["job_id"], job_id)
+        self.assertEqual(history_body["jobs"][0]["file_type"], "PDF")
+        self.assertEqual(history_body["jobs"][0]["original_file_size"], 15)
+        self.assertTrue(history_body["jobs"][0]["source_available"])
+        self.assertTrue(history_body["jobs"][0]["markdown_available"])
+
+        source = self.client.get(
+            f"/api/source/{job_id}",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(source.status_code, 200)
+        self.assertEqual(source.content, b"%PDF-1.4\n%%EOF\n")
+        self.assertIn("evidence.pdf", source.headers["content-disposition"])
+
+        markdown = self.client.get(
+            f"/api/output/{job_id}",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(markdown.status_code, 200)
+        self.assertEqual(markdown.headers["content-type"], "text/markdown; charset=utf-8")
+        self.assertIn("Converted Evidence", markdown.text)
 
     def test_missing_or_invalid_api_key_is_not_public(self) -> None:
         missing = self.client.post(

@@ -15,6 +15,27 @@ export interface JobStatus {
   result_available: boolean;
 }
 
+export interface JobLogItem {
+  job_id: string;
+  status: "uploading" | "processing" | "completed" | "failed";
+  original_filename: string;
+  file_type?: string | null;
+  original_content_type?: string | null;
+  original_file_size?: number | null;
+  owner_email: string;
+  created_at: string;
+  completed_at?: string | null;
+  result_available: boolean;
+  source_available: boolean;
+  markdown_available: boolean;
+  archive_available: boolean;
+  error?: string | null;
+}
+
+export interface JobLogResponse {
+  jobs: JobLogItem[];
+}
+
 export interface PreviewResponse {
   job_id: string;
   markdown: string;
@@ -71,8 +92,16 @@ export const api = {
     return request(`/api/status/${jobId}`);
   },
 
+  getJobLog(): Promise<JobLogResponse> {
+    return request("/api/jobs");
+  },
+
   getPreview(jobId: string): Promise<PreviewResponse> {
     return request(`/api/preview/${jobId}`);
+  },
+
+  documentUrl(path: "source" | "output" | "download", jobId: string): string {
+    return `${BASE_URL}/api/${path}/${jobId}`;
   },
 
   async downloadResult(jobId: string): Promise<void> {

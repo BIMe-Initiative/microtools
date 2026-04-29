@@ -5,6 +5,7 @@ import { UploadZone } from "@/components/upload-zone";
 import { ProcessingStatus } from "@/components/processing-status";
 import { MarkdownPreview } from "@/components/markdown-preview";
 import { ActionButtons } from "@/components/action-buttons";
+import { ConversionLog } from "@/components/conversion-log";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
@@ -35,6 +36,7 @@ export default function Home() {
   const [authError, setAuthError] = useState<string | null>(null);
   const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
+  const [logRefreshKey, setLogRefreshKey] = useState(0);
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
@@ -105,6 +107,7 @@ export default function Home() {
       const res = await api.uploadPDF(file);
       setJobId(res.job_id);
       setState("processing");
+      setLogRefreshKey((value) => value + 1);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Upload failed");
       setState("idle");
@@ -117,15 +120,18 @@ export default function Home() {
       const preview = await api.getPreview(jobId);
       setMarkdown(preview.markdown);
       setState("completed");
+      setLogRefreshKey((value) => value + 1);
     } catch {
       setMarkdown("");
       setState("completed");
+      setLogRefreshKey((value) => value + 1);
     }
   }, [jobId]);
 
   const handleFailed = useCallback((msg: string) => {
     setError(msg);
     setState("failed");
+    setLogRefreshKey((value) => value + 1);
   }, []);
 
   const reset = () => {
@@ -341,6 +347,8 @@ export default function Home() {
           </div>
         </section>
       )}
+
+      <ConversionLog refreshKey={logRefreshKey} />
     </div>
   );
 }

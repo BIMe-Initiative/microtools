@@ -2,11 +2,13 @@ import asyncio
 import io
 import json
 import logging
+import mimetypes
 import secrets
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Optional
+from urllib.parse import quote
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import id_token
@@ -35,6 +37,8 @@ from .models import (
     AuthResponse,
     AuthUser,
     GoogleAuthRequest,
+    JobLogItem,
+    JobLogResponse,
     JobRecord,
     JobStatus,
     JobStatusResponse,
@@ -222,6 +226,49 @@ def _job_metadata_path(job_id: str) -> str:
     return f"jobs/{job_id}.json"
 
 
+def _gcs_relative_path(gcs_uri: str, bucket_name: str) -> str:
+    return gcs_uri.replace(f"gs://{bucket_name}/", "")
+
+
+def _file_type(filename: str) -> str:
+    suffix = Path(filename).suffix.lower().lstrip(".")
+    return suffix.upper() if suffix else "UNKNOWN"
+
+
+def _content_type(filename: str, fallback: str | None = None) -> str:
+    guessed = mimetypes.guess_type(filename)[0]
+    if fallback and fallback != "application/octet-stream":
+        return fallback
+    return guessed or fallback or "application/octet-stream"
+
+
+def _attachment_header(filename: str) -> str:
+    ascii_filename = (
+        filename.encode("ascii", "ignore").decode("ascii").replace('"', "")
+        or "download"
+    )
+    return f'attachment; filename="{ascii_filename}"; filename*=UTF-8\'\'{quote(filename)}'
+
+
+def _job_to_log_item(job: JobRecord) -> JobLogItem:
+    return JobLogItem(
+        job_id=job.job_id,
+        status=job.status,
+        original_filename=job.original_filename,
+        file_type=job.file_type or _file_type(job.original_filename),
+        original_content_type=job.original_content_type,
+        original_file_size=job.original_file_size,
+        owner_email=job.owner_email,
+        created_at=job.created_at,
+        completed_at=job.completed_at,
+        result_available=job.status == JobStatus.COMPLETED,
+        source_available=bool(job.source_gcs_path or job.gcs_pdf_path),
+        markdown_available=job.status == JobStatus.COMPLETED and bool(job.md_gcs_path),
+        archive_available=job.status == JobStatus.COMPLETED and bool(job.zip_gcs_path),
+        error=job.error,
+    )
+
+
 def _persist_job(job: JobRecord):
     jobs[job.job_id] = job
     if len(jobs) > MAX_JOBS_IN_MEMORY:
@@ -254,6 +301,30 @@ def _load_job(job_id: str) -> JobRecord | None:
     return job
 
 
+def _load_persisted_jobs() -> list[JobRecord]:
+    records = list(jobs.values())
+    seen = {job.job_id for job in records}
+    try:
+        paths = _get_results_storage().list_paths("jobs/")
+    except AttributeError:
+        paths = []
+    except Exception as exc:
+        logger.error("Failed to list persisted jobs: %s", exc)
+        paths = []
+
+    for path in paths:
+        if not path.endswith(".json"):
+            continue
+        job_id = Path(path).stem
+        if job_id in seen:
+            continue
+        job = _load_job(job_id)
+        if job is not None:
+            records.append(job)
+            seen.add(job.job_id)
+    return records
+
+
 # ---------------------------------------------------------------------------
 # Background cleanup
 # ---------------------------------------------------------------------------
@@ -270,6 +341,10 @@ async def _cleanup_old_jobs():
             if job.gcs_pdf_path:
                 _get_upload_storage().delete_file(
                     job.gcs_pdf_path.replace(f"gs://{upload_bucket}/", "")
+                )
+            if job.source_gcs_path and job.source_gcs_path != job.gcs_pdf_path:
+                _get_upload_storage().delete_file(
+                    job.source_gcs_path.replace(f"gs://{upload_bucket}/", "")
                 )
             if job.md_gcs_path:
                 _get_results_storage().delete_file(
@@ -366,31 +441,45 @@ async def upload_pdf(
     if not file.filename or not file.filename.lower().endswith(valid_exts):
         raise HTTPException(status_code=400, detail="Only PDF, DOCX, and XLSX files are accepted")
 
-    content = await file.read()
-    
-    is_docx = file.filename.lower().endswith(".docx")
-    is_xlsx = file.filename.lower().endswith(".xlsx")
-    
+    original_filename = file.filename
+    original_content_type = _content_type(original_filename, file.content_type)
+    original_content = await file.read()
+
+    if not _get_ocr_service().validate_document_size(len(original_content)):
+        raise HTTPException(
+            status_code=400,
+            detail=f"File exceeds the {settings.max_file_size_mb}MB limit",
+        )
+
+    processing_filename = original_filename
+    processing_content = original_content
+    is_docx = original_filename.lower().endswith(".docx")
+    is_xlsx = original_filename.lower().endswith(".xlsx")
+
     if is_docx or is_xlsx:
         try:
-            content = _convert_to_pdf_via_libreoffice(file.filename, content)
-            # Change filename to represent the converted PDF
-            file.filename = file.filename.rsplit(".", 1)[0] + ".pdf"
+            processing_content = _convert_to_pdf_via_libreoffice(
+                original_filename, original_content
+            )
+            processing_filename = original_filename.rsplit(".", 1)[0] + ".pdf"
         except Exception as exc:
             logger.error(f"Doc conversion failed: {exc}")
             raise HTTPException(status_code=500, detail="Failed to convert document to PDF")
 
-    if not _get_ocr_service().validate_document_size(len(content)):
+    if not _get_ocr_service().validate_document_size(len(processing_content)):
         raise HTTPException(
             status_code=400,
-            detail=f"File exceeds the {settings.max_file_size_mb}MB limit",
+            detail=f"Converted PDF exceeds the {settings.max_file_size_mb}MB limit",
         )
 
     job_id = str(uuid.uuid4())
     job = JobRecord(
         job_id=job_id,
         status=JobStatus.UPLOADING,
-        original_filename=file.filename,
+        original_filename=original_filename,
+        file_type=_file_type(original_filename),
+        original_content_type=original_content_type,
+        original_file_size=len(original_content),
         owner_email=actor.email,
         created_at=datetime.now(),
         vault_mode=vault_mode,
@@ -404,10 +493,25 @@ async def upload_pdf(
 
     # Upload to GCS
     try:
-        gcs_path = f"uploads/{job_id}/{file.filename}"
-        gcs_uri = _get_upload_storage().upload_file(
-            io.BytesIO(content), gcs_path, content_type="application/pdf"
-        )
+        if original_filename == processing_filename:
+            gcs_path = f"uploads/{job_id}/{processing_filename}"
+            gcs_uri = _get_upload_storage().upload_file(
+                io.BytesIO(processing_content), gcs_path, content_type="application/pdf"
+            )
+            job.source_gcs_path = gcs_uri
+        else:
+            source_path = f"uploads/{job_id}/source/{original_filename}"
+            job.source_gcs_path = _get_upload_storage().upload_file(
+                io.BytesIO(original_content),
+                source_path,
+                content_type=original_content_type,
+            )
+
+            gcs_path = f"uploads/{job_id}/{processing_filename}"
+            gcs_uri = _get_upload_storage().upload_file(
+                io.BytesIO(processing_content), gcs_path, content_type="application/pdf"
+            )
+
         job.gcs_pdf_path = gcs_uri
         job.status = JobStatus.PROCESSING
         _persist_job(job)
@@ -517,6 +621,22 @@ async def get_status(
     )
 
 
+@app.get("/api/jobs", response_model=JobLogResponse)
+async def list_jobs(
+    request: Request,
+    limit: int = Query(100, ge=1, le=500),
+    x_api_key: str | None = Header(None),
+):
+    """Return conversion history for the authenticated actor."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    records = _load_persisted_jobs()
+    if not service_authenticated:
+        records = [job for job in records if job.owner_email == actor.email]
+    records.sort(key=lambda job: job.created_at, reverse=True)
+    return JobLogResponse(jobs=[_job_to_log_item(job) for job in records[:limit]])
+
+
 @app.get("/api/preview/{job_id}", response_model=PreviewResponse)
 async def get_preview(
     job_id: str,
@@ -548,6 +668,73 @@ async def get_preview(
     return PreviewResponse(job_id=job.job_id, markdown=job.markdown_content)
 
 
+@app.get("/api/source/{job_id}")
+async def download_source(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
+    """Download the originally uploaded source document."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    job = _load_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_access(job, actor, service_authenticated)
+
+    source_gcs_path = job.source_gcs_path or job.gcs_pdf_path
+    if not source_gcs_path:
+        raise HTTPException(status_code=500, detail="Source file not found")
+
+    try:
+        rel_path = _gcs_relative_path(source_gcs_path, upload_bucket)
+        source_bytes = _get_upload_storage().download_as_bytes(rel_path)
+        filename = job.original_filename or f"{job.job_id}.pdf"
+        return StreamingResponse(
+            io.BytesIO(source_bytes),
+            media_type=_content_type(filename, job.original_content_type),
+            headers={"Content-Disposition": _attachment_header(filename)},
+        )
+    except Exception as exc:
+        logger.error(f"Source download failed for job {job_id}: {exc}")
+        raise HTTPException(status_code=500, detail="Source download failed")
+
+
+@app.get("/api/output/{job_id}")
+async def download_markdown(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
+    """Download the converted markdown file."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    job = _load_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_access(job, actor, service_authenticated)
+    if job.status != JobStatus.COMPLETED:
+        raise HTTPException(status_code=400, detail="Job not completed yet")
+    if not job.md_gcs_path:
+        raise HTTPException(status_code=500, detail="Markdown file not found")
+
+    try:
+        if job.markdown_content:
+            markdown_bytes = job.markdown_content.encode("utf-8")
+        else:
+            rel_path = _gcs_relative_path(job.md_gcs_path, results_bucket)
+            markdown_bytes = _get_results_storage().download_as_bytes(rel_path)
+        filename = f"{Path(job.original_filename).stem or job.job_id}.md"
+        return StreamingResponse(
+            io.BytesIO(markdown_bytes),
+            media_type="text/markdown; charset=utf-8",
+            headers={"Content-Disposition": _attachment_header(filename)},
+        )
+    except Exception as exc:
+        logger.error(f"Markdown download failed for job {job_id}: {exc}")
+        raise HTTPException(status_code=500, detail="Markdown download failed")
+
+
 @app.get("/api/download/{job_id}")
 async def download_result(
     job_id: str,
@@ -575,9 +762,7 @@ async def download_result(
         return StreamingResponse(
             io.BytesIO(zip_bytes),
             media_type="application/zip",
-            headers={
-                "Content-Disposition": f'attachment; filename="{stem}_obsidian.zip"'
-            },
+            headers={"Content-Disposition": _attachment_header(f"{stem}_obsidian.zip")},
         )
     except Exception as exc:
         logger.error(f"Download failed for job {job_id}: {exc}")
