@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     # Mistral OCR
     mistral_region: str = "us-central1"
     mistral_model: str = "mistral-ocr-2505"
+    enable_image_annotations: bool = False
+    image_annotation_min_size: int = 80
+    image_annotation_limit: int | None = None
 
     # File limits
     max_file_size_mb: int = 100
@@ -56,6 +59,13 @@ class Settings(BaseSettings):
                 pass
         # Fallback to comma-separated string
         return [s.strip() for s in v.split(",") if s.strip()]
+
+    @field_validator("image_annotation_limit", mode="before")
+    @classmethod
+    def _empty_image_annotation_limit(cls, v: Any) -> Any:
+        if v == "":
+            return None
+        return v
 
     @property
     def auth_allowed_emails(self) -> list[str]:

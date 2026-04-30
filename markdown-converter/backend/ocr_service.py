@@ -1,19 +1,148 @@
 import io
+import inspect
+import json
 import logging
 import re
 import tempfile
-from typing import Any, Callable, Optional
+from copy import deepcopy
+from typing import Annotated, Any, Callable, Literal, Optional
 
 import google.auth
 import google.auth.transport.requests
 import httpx
 from mistralai.gcp.client import MistralGCP
+from pydantic import BaseModel, Field
 from pypdf import PdfReader, PdfWriter
 
 from .config import get_settings
 from .models import JobRecord
 
 logger = logging.getLogger(__name__)
+
+try:
+    from mistralai.extra import response_format_from_pydantic_model
+except ImportError:  # pragma: no cover - depends on installed SDK extras
+    response_format_from_pydantic_model = None
+
+
+class BBoxImageAnnotation(BaseModel):
+    image_type: Literal[
+        "flowchart",
+        "process_diagram",
+        "system_diagram",
+        "chart",
+        "table_image",
+        "screenshot",
+        "photo",
+        "logo",
+        "signature",
+        "decorative",
+        "other",
+    ] = Field(..., description="Closest type for the extracted image.")
+
+    short_description: str = Field(
+        ...,
+        max_length=240,
+        description=(
+            "One concise factual sentence, maximum 40 words, describing what the image communicates. "
+            "For flowcharts, process diagrams, lifecycle diagrams, or architecture diagrams, state the main flow from start to end. "
+            "Describe only visible content. Do not infer hidden steps or unstated business meaning."
+        ),
+    )
+
+    flow_steps: list[Annotated[str, Field(max_length=120)]] = Field(
+        default_factory=list,
+        max_length=8,
+        description=(
+            "Ordered visible steps for flowcharts, workflows, process diagrams, lifecycle diagrams, or architecture diagrams. "
+            "Maximum 8 short items. Empty list if the image is not a flow/process/architecture diagram."
+        ),
+    )
+
+    key_labels: list[Annotated[str, Field(max_length=80)]] = Field(
+        default_factory=list,
+        max_length=12,
+        description=(
+            "Important visible labels, node names, axis labels, legends, or captions. "
+            "Maximum 12 short items. Do not invent labels."
+        ),
+    )
+
+    confidence: Literal["high", "medium", "low"] = Field(
+        ...,
+        description="Confidence in the description based on image clarity and readable text.",
+    )
+
+
+BBOX_IMAGE_ANNOTATION_RESPONSE_FORMAT: dict[str, Any] = {
+    "type": "json_schema",
+    "json_schema": {
+        "name": "bbox_image_annotation",
+        "strict": True,
+        "schema": {
+            "type": "object",
+            "additionalProperties": False,
+            "required": [
+                "image_type",
+                "short_description",
+                "flow_steps",
+                "key_labels",
+                "confidence",
+            ],
+            "properties": {
+                "image_type": {
+                    "type": "string",
+                    "enum": [
+                        "flowchart",
+                        "process_diagram",
+                        "system_diagram",
+                        "chart",
+                        "table_image",
+                        "screenshot",
+                        "photo",
+                        "logo",
+                        "signature",
+                        "decorative",
+                        "other",
+                    ],
+                    "description": "Closest type for the extracted image.",
+                },
+                "short_description": {
+                    "type": "string",
+                    "maxLength": 240,
+                    "description": (
+                        "One concise factual sentence, maximum 40 words, describing what the image communicates. "
+                        "For flow/process/architecture diagrams, state the main visible flow from start to end. "
+                        "Do not infer hidden steps."
+                    ),
+                },
+                "flow_steps": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "items": {"type": "string", "maxLength": 120},
+                    "description": (
+                        "Ordered visible steps for flowcharts/workflows/process/architecture diagrams. "
+                        "Empty if not applicable."
+                    ),
+                },
+                "key_labels": {
+                    "type": "array",
+                    "maxItems": 12,
+                    "items": {"type": "string", "maxLength": 80},
+                    "description": (
+                        "Important visible labels, node names, axis labels, legends, or captions. "
+                        "Do not invent labels."
+                    ),
+                },
+                "confidence": {
+                    "type": "string",
+                    "enum": ["high", "medium", "low"],
+                    "description": "Confidence based on visual clarity and readable text.",
+                },
+            },
+        },
+    },
+}
 
 
 class MistralOCRService:
@@ -59,6 +188,7 @@ class MistralOCRService:
         logger.info(f"Job {job_record.job_id} has {total_pages_count} pages")
 
         current_page_offset = 0
+        image_annotations = bool(getattr(job_record, "image_annotations", False))
         while current_page_offset < total_pages_count:
             chunk_size = min(max_pages, total_pages_count - current_page_offset)
             page_indices = list(range(current_page_offset, current_page_offset + chunk_size))
@@ -66,7 +196,9 @@ class MistralOCRService:
             # If total document is <= 30 pages, process it directly via original URL
             if total_pages_count <= max_pages:
                 logger.info(f"Processing small document (pages {page_indices}) directly")
-                batch_res = self._process_ocr_batch(document_url, page_indices)
+                batch_res = self._process_ocr_batch(
+                    document_url, page_indices, image_annotations=image_annotations
+                )
                 self._collect_pages(batch_res, seen_pages)
                 current_page_offset += chunk_size
             else:
@@ -93,7 +225,11 @@ class MistralOCRService:
                 
                 logger.info(f"Processing chunk {current_page_offset} (pages 0-{chunk_size-1} of chunk)")
                 # Mistral sees this chunk as a new 0-indexed document
-                batch_res = self._process_ocr_batch(signed_chunk_url, list(range(chunk_size)))
+                batch_res = self._process_ocr_batch(
+                    signed_chunk_url,
+                    list(range(chunk_size)),
+                    image_annotations=image_annotations,
+                )
                 
                 # Collect and adjust indices
                 self._collect_pages(batch_res, seen_pages, index_offset=current_page_offset)
@@ -124,16 +260,67 @@ class MistralOCRService:
             serialized["index"] = page_index
             seen_pages[page_index] = serialized
 
-    def _process_ocr_batch(self, document_url: str, page_indices: list[int]):
+    def _process_ocr_batch(
+        self,
+        document_url: str,
+        page_indices: list[int],
+        image_annotations: bool = False,
+    ):
         """Run one OCR batch."""
         if hasattr(self.client, "ocr"):
-            return self.client.ocr.process(
-                model=self._settings.mistral_model,
-                document={"type": "document_url", "document_url": document_url},
-                include_image_base64=True,
-                pages=page_indices,
+            process = self.client.ocr.process
+            kwargs: dict[str, Any] = {
+                "model": self._settings.mistral_model,
+                "document": {"type": "document_url", "document_url": document_url},
+                "include_image_base64": True,
+                "pages": page_indices,
+            }
+            if image_annotations:
+                if self._supports_bbox_annotation_format(process):
+                    kwargs.update(self._image_annotation_ocr_kwargs())
+                else:
+                    logger.warning(
+                        "Mistral OCR SDK path does not expose bbox_annotation_format; "
+                        "continuing without image annotations."
+                    )
+            return process(**kwargs)
+        if image_annotations:
+            logger.warning(
+                "Mistral rawPredict fallback does not have verified bbox_annotation_format "
+                "support; continuing without image annotations."
             )
         return self._process_ocr_via_raw_predict(document_url, page_indices)
+
+    def _supports_bbox_annotation_format(self, process: Callable[..., Any]) -> bool:
+        try:
+            parameters = inspect.signature(process).parameters
+        except (TypeError, ValueError):
+            return False
+        return "bbox_annotation_format" in parameters or any(
+            param.kind == inspect.Parameter.VAR_KEYWORD
+            for param in parameters.values()
+        )
+
+    def _image_annotation_ocr_kwargs(self) -> dict[str, Any]:
+        kwargs: dict[str, Any] = {
+            "bbox_annotation_format": self._bbox_annotation_response_format(),
+            "image_min_size": self._settings.image_annotation_min_size,
+        }
+        if self._settings.image_annotation_limit is not None:
+            kwargs["image_limit"] = self._settings.image_annotation_limit
+        return kwargs
+
+    def _bbox_annotation_response_format(self) -> dict[str, Any]:
+        if response_format_from_pydantic_model is not None:
+            try:
+                return response_format_from_pydantic_model(BBoxImageAnnotation)
+            except Exception as exc:
+                logger.warning(
+                    "Failed to build bbox annotation format from Pydantic model; "
+                    "using static JSON schema fallback: %s",
+                    exc,
+                )
+        return deepcopy(BBOX_IMAGE_ANNOTATION_RESPONSE_FORMAT)
 
     def _process_ocr_via_raw_predict(
         self, document_url: str, page_indices: list[int]
@@ -221,19 +408,19 @@ class MistralOCRService:
 
         for img in page_images:
             if isinstance(img, dict):
-                images.append(
-                    {
-                        "id": img.get("id", str(id(img))),
-                        "image_base64": img.get("image_base64", ""),
-                    }
-                )
+                serialized_img = {
+                    "id": img.get("id", str(id(img))),
+                    "image_base64": img.get("image_base64", ""),
+                }
             else:
-                images.append(
-                    {
-                        "id": img.id if hasattr(img, "id") else str(id(img)),
-                        "image_base64": getattr(img, "image_base64", ""),
-                    }
-                )
+                serialized_img = {
+                    "id": img.id if hasattr(img, "id") else str(id(img)),
+                    "image_base64": getattr(img, "image_base64", ""),
+                }
+            annotation = self._extract_image_annotation(img)
+            if annotation:
+                serialized_img["annotation"] = annotation
+            images.append(serialized_img)
         return {
             "index": (
                 page.get("index", 0)
@@ -247,6 +434,40 @@ class MistralOCRService:
             ),
             "images": images,
         }
+
+    def _extract_image_annotation(self, image: Any) -> dict[str, Any] | None:
+        for field_name in ("annotation", "bbox_annotation", "image_annotation"):
+            if isinstance(image, dict):
+                raw_annotation = image.get(field_name)
+            else:
+                raw_annotation = getattr(image, field_name, None)
+            annotation = self._coerce_annotation(raw_annotation)
+            if annotation:
+                return annotation
+        return None
+
+    def _coerce_annotation(self, raw_annotation: Any) -> dict[str, Any] | None:
+        if raw_annotation is None or type(raw_annotation).__name__ == "Unset":
+            return None
+        if isinstance(raw_annotation, dict):
+            return raw_annotation
+        if isinstance(raw_annotation, str):
+            value = raw_annotation.strip()
+            if not value:
+                return None
+            try:
+                parsed = json.loads(value)
+            except json.JSONDecodeError:
+                logger.warning("Skipping malformed OCR image annotation JSON")
+                return None
+            return parsed if isinstance(parsed, dict) else None
+        if hasattr(raw_annotation, "model_dump"):
+            dumped = raw_annotation.model_dump(mode="json", exclude_none=True)
+            return dumped if isinstance(dumped, dict) else None
+        if hasattr(raw_annotation, "dict"):
+            dumped = raw_annotation.dict()
+            return dumped if isinstance(dumped, dict) else None
+        return None
 
     def validate_document_size(self, file_size_bytes: int) -> bool:
         """Check that file size is within Mistral limits."""

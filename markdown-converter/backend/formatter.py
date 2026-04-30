@@ -42,6 +42,7 @@ class ObsidianMarkdownFormatter:
 
         markdown_parts: list[str] = []
         attachments: dict[str, bytes] = {}
+        annotated_images: set[str] = set()
 
         for page in ocr_result.get("pages", []):
             page_num = page["index"] + 1
@@ -78,6 +79,13 @@ class ObsidianMarkdownFormatter:
                 # Replace markdown image or link references to this image with a flat
                 # Obsidian embed, e.g. ![[filename.png]].
                 page_md = self._replace_image_references(page_md, img_id, wikilink)
+                annotation = self._format_image_annotation(img.get("annotation"))
+                if annotation and img_filename not in annotated_images:
+                    page_md, inserted = self._insert_after_first_wikilink(
+                        page_md, wikilink, annotation
+                    )
+                    if inserted:
+                        annotated_images.add(img_filename)
 
             markdown_parts.append(page_md)
 
@@ -160,6 +168,95 @@ class ObsidianMarkdownFormatter:
         if clean_id.startswith(page_prefix):
             return f"{clean_id}.png"
         return f"{page_prefix}{clean_id}.png"
+
+    def _format_image_annotation(self, annotation: dict | None) -> str:
+        if not isinstance(annotation, dict):
+            return ""
+
+        image_type = self._clean_annotation_text(annotation.get("image_type"), 32).lower()
+        if image_type == "decorative":
+            return ""
+
+        description = self._clean_annotation_text(
+            annotation.get("short_description"), 240
+        )
+        if not description:
+            return ""
+
+        confidence = self._clean_annotation_text(
+            annotation.get("confidence"), 16
+        ).lower()
+        description = self._ensure_sentence(description)
+
+        lines = ["> [!note] Image description"]
+        if confidence == "low":
+            lines.append(f"> Low-confidence description: {description}")
+            return "\n".join(lines)
+
+        lines.append(f"> {description}")
+
+        steps = self._clean_annotation_list(
+            annotation.get("flow_steps"), max_items=8, max_chars=120
+        )
+        if steps:
+            lines.extend([">", f"> Steps: {self._ensure_sentence('; '.join(steps))}"])
+
+        labels = self._clean_annotation_list(
+            annotation.get("key_labels"), max_items=12, max_chars=80
+        )
+        if labels:
+            lines.extend([">", f"> Labels: {self._ensure_sentence('; '.join(labels))}"])
+
+        return "\n".join(lines)
+
+    def _insert_after_first_wikilink(
+        self, page_md: str, wikilink: str, annotation: str
+    ) -> tuple[str, bool]:
+        marker = page_md.find(wikilink)
+        if marker == -1:
+            return page_md, False
+        insertion_point = marker + len(wikilink)
+        suffix = page_md[insertion_point:]
+        suffix_separator = ""
+        if suffix and not suffix.startswith("\n"):
+            suffix = suffix.lstrip()
+            suffix_separator = "\n\n"
+        return (
+            page_md[:insertion_point]
+            + "\n\n"
+            + annotation
+            + suffix_separator
+            + suffix,
+            True,
+        )
+
+    def _clean_annotation_list(
+        self, value: object, max_items: int, max_chars: int
+    ) -> list[str]:
+        if not isinstance(value, list):
+            return []
+        cleaned: list[str] = []
+        for item in value:
+            cleaned_item = self._clean_annotation_text(item, max_chars)
+            if cleaned_item:
+                cleaned.append(cleaned_item)
+            if len(cleaned) >= max_items:
+                break
+        return cleaned
+
+    def _clean_annotation_text(self, value: object, max_chars: int) -> str:
+        if not isinstance(value, str):
+            return ""
+        cleaned = re.sub(r"\s+", " ", value).strip().strip("`")
+        cleaned = re.sub(r"^[>#*\-\s]+", "", cleaned).strip()
+        if len(cleaned) <= max_chars:
+            return cleaned
+        return cleaned[:max_chars].rstrip()
+
+    def _ensure_sentence(self, value: str) -> str:
+        if not value or value[-1] in ".!?":
+            return value
+        return f"{value}."
 
     def _replace_image_references(
         self, page_md: str, image_id: str, wikilink: str

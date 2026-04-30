@@ -98,6 +98,7 @@ class JobRecord(BaseModel):
     zip_gcs_path: Optional[str] = None
     total_pages: Optional[int] = None
     processed_pages: int = 0
+    image_annotations: bool = False
     error: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None

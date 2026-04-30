@@ -85,6 +85,176 @@ class ObsidianMarkdownFormatterTests(unittest.TestCase):
         self.assertNotIn("![[![[", markdown)
         self.assertIn(expected_name, attachments)
 
+    def test_image_annotation_inserts_callout_below_embed(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 0,
+                    "markdown": "![Figure](img-0.jpeg)",
+                    "images": [
+                        {
+                            "id": "img-0.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": {
+                                "image_type": "chart",
+                                "short_description": "Bar chart comparing quarterly revenue by region",
+                                "flow_steps": [],
+                                "key_labels": ["Q1", "Q2", "APAC"],
+                                "confidence": "high",
+                            },
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, attachments = self.formatter.format_document(ocr_result, "Doc.pdf")
+
+        expected_name = "Doc_p1_img-0.png"
+        self.assertIn(expected_name, attachments)
+        self.assertIn(
+            f"![[{expected_name}]]\n\n"
+            "> [!note] Image description\n"
+            "> Bar chart comparing quarterly revenue by region.\n"
+            ">\n"
+            "> Labels: Q1; Q2; APAC.",
+            markdown,
+        )
+
+    def test_flow_steps_and_labels_are_rendered_compactly(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 0,
+                    "markdown": "![Flow](img-0.jpeg)",
+                    "images": [
+                        {
+                            "id": "img-0.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": {
+                                "image_type": "flowchart",
+                                "short_description": "Flowchart showing request handling from intake to notification",
+                                "flow_steps": [
+                                    "Submit request",
+                                    "Validate details",
+                                    "Approve or reject",
+                                ],
+                                "key_labels": ["Submit", "Validate", "Notify"],
+                                "confidence": "medium",
+                            },
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, _ = self.formatter.format_document(ocr_result, "Doc.pdf")
+
+        self.assertIn(
+            "> Steps: Submit request; Validate details; Approve or reject.",
+            markdown,
+        )
+        self.assertIn("> Labels: Submit; Validate; Notify.", markdown)
+
+    def test_decorative_or_malformed_annotations_do_not_break_formatting(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 0,
+                    "markdown": "![Decorative](decor.jpeg)\n\n![Malformed](bad.jpeg)",
+                    "images": [
+                        {
+                            "id": "decor.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": {
+                                "image_type": "decorative",
+                                "short_description": "Small dividing flourish",
+                                "flow_steps": [],
+                                "key_labels": [],
+                                "confidence": "high",
+                            },
+                        },
+                        {
+                            "id": "bad.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": "not a dict",
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, attachments = self.formatter.format_document(ocr_result, "Doc.pdf")
+
+        self.assertIn("![[Doc_p1_decor.png]]", markdown)
+        self.assertIn("![[Doc_p1_bad.png]]", markdown)
+        self.assertNotIn("Image description", markdown)
+        self.assertEqual(set(attachments), {"Doc_p1_decor.png", "Doc_p1_bad.png"})
+
+    def test_duplicate_image_reference_gets_one_annotation(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 0,
+                    "markdown": "![Figure](img-0.jpeg)\n\n![Figure again](img-0.jpeg)",
+                    "images": [
+                        {
+                            "id": "img-0.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": {
+                                "image_type": "screenshot",
+                                "short_description": "Screenshot of a settings page",
+                                "flow_steps": [],
+                                "key_labels": ["Settings"],
+                                "confidence": "low",
+                            },
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, _ = self.formatter.format_document(ocr_result, "Doc.pdf")
+
+        self.assertEqual(markdown.count("> [!note] Image description"), 1)
+        self.assertIn(
+            "> Low-confidence description: Screenshot of a settings page.",
+            markdown,
+        )
+
+    def test_annotation_preserves_text_after_inline_image_reference(self) -> None:
+        ocr_result = {
+            "pages": [
+                {
+                    "index": 0,
+                    "markdown": "![Figure](img-0.jpeg) caption text",
+                    "images": [
+                        {
+                            "id": "img-0.jpeg",
+                            "image_base64": PNG_DATA_URI,
+                            "annotation": {
+                                "image_type": "chart",
+                                "short_description": "Chart showing quarterly revenue",
+                                "flow_steps": [],
+                                "key_labels": [],
+                                "confidence": "high",
+                            },
+                        },
+                    ],
+                }
+            ]
+        }
+
+        markdown, _ = self.formatter.format_document(ocr_result, "Doc.pdf")
+
+        self.assertIn(
+            "![[Doc_p1_img-0.png]]\n\n"
+            "> [!note] Image description\n"
+            "> Chart showing quarterly revenue.\n\n"
+            "caption text",
+            markdown,
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
