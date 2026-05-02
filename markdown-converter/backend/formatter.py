@@ -1,6 +1,7 @@
 import base64
 import hashlib
 import io
+import json
 import logging
 import re
 import zipfile
@@ -148,6 +149,37 @@ class ObsidianMarkdownFormatter:
             "  - imported\n"
             "---"
         )
+
+    def add_translation_metadata(
+        self,
+        markdown_content: str,
+        source_language: str | None,
+        target_language: str,
+        provider: str,
+        source_markdown_ref: str,
+        detected_source_language: str | None = None,
+    ) -> str:
+        """Insert translation provenance into existing YAML frontmatter."""
+        block = (
+            "\n"
+            "language:\n"
+            f"  source: {self._yaml_scalar(detected_source_language or source_language or 'auto')}\n"
+            f"  target: {self._yaml_scalar(target_language)}\n"
+            "  translated: true\n\n"
+            "translation:\n"
+            f"  provider: {self._yaml_scalar(provider)}\n"
+            f"  source_markdown_ref: {self._yaml_scalar(source_markdown_ref)}\n"
+        )
+
+        lines = markdown_content.splitlines(keepends=True)
+        if lines and lines[0].strip() == "---":
+            for index in range(1, len(lines)):
+                if lines[index].strip() == "---":
+                    return "".join(lines[:index]) + block + "".join(lines[index:])
+        return "---\n" + block.lstrip() + "---\n\n" + markdown_content
+
+    def _yaml_scalar(self, value: str) -> str:
+        return json.dumps(value, ensure_ascii=False)
 
     def _build_image_filename(
         self, stem: str, page_num: int, image_id: str, image_base64: str
@@ -362,6 +394,7 @@ class ObsidianMarkdownFormatter:
         markdown_content: str,
         attachments: dict[str, bytes],
         base_filename: str,
+        extra_markdown_files: dict[str, str] | None = None,
     ) -> bytes:
         """
         Create a zip containing the .md file and an attachments/ folder.
@@ -377,6 +410,8 @@ class ObsidianMarkdownFormatter:
             zf.writestr(
                 f"{base_filename}.md", markdown_content.encode("utf-8")
             )
+            for filename, content in (extra_markdown_files or {}).items():
+                zf.writestr(filename, content.encode("utf-8"))
             for img_name, img_bytes in attachments.items():
                 zf.writestr(f"attachments/{img_name}", img_bytes)
         buf.seek(0)

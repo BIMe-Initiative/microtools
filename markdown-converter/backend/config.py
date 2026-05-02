@@ -45,6 +45,11 @@ class Settings(BaseSettings):
     # Vertex AI (for Gemini analysis)
     vertex_ai_location: str = "us-central1"
 
+    # Google Cloud Translation v3
+    google_translate_project: str | None = None
+    google_translate_location: str = "global"
+    google_translate_quota_project: str | None = None
+
     def _parse_list(self, v: str) -> list[str]:
         if not v.strip():
             return []

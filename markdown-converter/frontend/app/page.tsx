@@ -14,11 +14,13 @@ import {
   ArrowRight,
   ChartNoAxesCombined,
   FileText,
+  Languages,
+  Loader2,
   RotateCcw,
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import { api, type AuthUser } from "@/lib/api";
+import { api, type AuthUser, type MarkdownVariant } from "@/lib/api";
 
 type AppState = "idle" | "uploading" | "processing" | "completed" | "failed";
 
@@ -40,6 +42,10 @@ export default function Home() {
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
   const [logRefreshKey, setLogRefreshKey] = useState(0);
   const [imageAnnotations, setImageAnnotations] = useState(false);
+  const [translateToEnglish, setTranslateToEnglish] = useState(false);
+  const [currentJobTranslated, setCurrentJobTranslated] = useState(false);
+  const [markdownVariant, setMarkdownVariant] = useState<"english" | "source">("source");
+  const [variantLoading, setVariantLoading] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
@@ -107,7 +113,9 @@ export default function Home() {
         }
         return [...prev, file.name];
       });
-      const res = await api.uploadPDF(file, { imageAnnotations });
+      setCurrentJobTranslated(translateToEnglish);
+      setMarkdownVariant(translateToEnglish ? "english" : "source");
+      const res = await api.uploadPDF(file, { imageAnnotations, translateToEnglish });
       setJobId(res.job_id);
       setState("processing");
       setLogRefreshKey((value) => value + 1);
@@ -122,6 +130,8 @@ export default function Home() {
     try {
       const preview = await api.getPreview(jobId);
       setMarkdown(preview.markdown);
+      setCurrentJobTranslated(Boolean(preview.translated));
+      setMarkdownVariant(preview.translated ? "english" : "source");
       setState("completed");
       setLogRefreshKey((value) => value + 1);
     } catch {
@@ -143,6 +153,23 @@ export default function Home() {
     setMarkdown("");
     setError(null);
     setDuplicateWarning(null);
+    setCurrentJobTranslated(false);
+    setMarkdownVariant("source");
+  };
+
+  const loadMarkdownVariant = async (variant: "english" | "source") => {
+    if (!jobId || variant === markdownVariant) return;
+    try {
+      setVariantLoading(true);
+      setError(null);
+      const preview = await api.getPreview(jobId, variant as MarkdownVariant);
+      setMarkdown(preview.markdown);
+      setMarkdownVariant(variant);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not load Markdown variant");
+    } finally {
+      setVariantLoading(false);
+    }
   };
 
   const handleLogout = async () => {
@@ -266,15 +293,17 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,0.64fr)_minmax(320px,0.36fr)]">
-          <div>
+        <div className="grid items-stretch gap-6 p-5 sm:p-8 lg:grid-cols-[minmax(0,0.64fr)_minmax(320px,0.36fr)]">
+          <div className="min-w-0">
             {(state === "idle" || state === "uploading") && (
-              <div>
+              <div className="h-full">
                 <UploadZone
                   onUpload={handleUpload}
                   disabled={state === "uploading"}
                   imageAnnotations={imageAnnotations}
                   onImageAnnotationsChange={setImageAnnotations}
+                  translateToEnglish={translateToEnglish}
+                  onTranslateToEnglishChange={setTranslateToEnglish}
                 />
                 {error && (
                   <Alert variant="destructive" className="mt-4">
@@ -312,11 +341,11 @@ export default function Home() {
             )}
           </div>
 
-          <aside className="rounded-lg border border-surface-line bg-surface-muted p-5">
+          <aside className="flex h-full flex-col rounded-lg border border-surface-line bg-surface-muted p-5">
             <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-indigo-700">
               Workflow
             </div>
-            <div className="mt-4 space-y-4">
+            <div className="mt-4 grid flex-1 content-stretch gap-4">
               <WorkflowItem
                 icon={<FileText className="h-4 w-4" />}
                 title="Document intake"
@@ -334,6 +363,12 @@ export default function Home() {
                 title="Figure annotation"
                 body="Optionally describe extracted figures and charts in the Markdown."
                 tone="text-violet-700"
+              />
+              <WorkflowItem
+                icon={<Languages className="h-4 w-4" />}
+                title="LOTE translation"
+                body="Optionally produce English Markdown while retaining the source-language file."
+                tone="text-emerald-700"
               />
               <WorkflowItem
                 icon={<ArrowRight className="h-4 w-4" />}
@@ -365,6 +400,42 @@ export default function Home() {
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
+              {error && (
+                <Alert variant="destructive" className="mb-3">
+                  <AlertCircle className="h-4 w-4" />
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+              {currentJobTranslated && (
+                <div className="mb-3 inline-flex rounded-md border border-surface-line bg-white p-1 shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={markdownVariant === "english" ? "default" : "ghost"}
+                    disabled={variantLoading}
+                    onClick={() => void loadMarkdownVariant("english")}
+                    className="h-8 rounded"
+                  >
+                    {variantLoading && markdownVariant !== "english" ? (
+                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                    ) : null}
+                    English
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant={markdownVariant === "source" ? "default" : "ghost"}
+                    disabled={variantLoading}
+                    onClick={() => void loadMarkdownVariant("source")}
+                    className="h-8 rounded"
+                  >
+                    {variantLoading && markdownVariant !== "source" ? (
+                      <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+                    ) : null}
+                    Source LOTE
+                  </Button>
+                </div>
+              )}
               <MarkdownPreview markdown={markdown} />
             </div>
             <div>

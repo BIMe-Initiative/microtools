@@ -6,6 +6,7 @@ import {
   Download,
   ExternalLink,
   FileText,
+  Languages,
   Loader2,
   RefreshCw,
   Search,
@@ -215,6 +216,14 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
                       {job.error}
                     </div>
                   )}
+                  {job.translated && (
+                    <Badge
+                      variant="outline"
+                      className="mt-2 border-emerald-200 bg-emerald-50 text-[11px] text-emerald-800"
+                    >
+                      English translation
+                    </Badge>
+                  )}
                 </td>
                 <td className="px-4 py-4 text-ink-muted">
                   {normalizedType(job)}
@@ -246,15 +255,33 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
                     <DocumentLink
                       href={api.documentUrl("source", job.job_id)}
                       disabled={!job.source_available}
-                      label="Source"
+                      label="Original"
                       icon={<FileText className="h-3.5 w-3.5" />}
                     />
                     <DocumentLink
-                      href={api.documentUrl("output", job.job_id)}
+                      href={api.documentUrl(
+                        "output",
+                        job.job_id,
+                        job.translated ? "english" : undefined
+                      )}
                       disabled={!job.markdown_available}
-                      label="Markdown"
-                      icon={<ExternalLink className="h-3.5 w-3.5" />}
+                      label={job.translated ? "English MD" : "Markdown"}
+                      icon={
+                        job.translated ? (
+                          <Languages className="h-3.5 w-3.5" />
+                        ) : (
+                          <ExternalLink className="h-3.5 w-3.5" />
+                        )
+                      }
                     />
+                    {job.source_markdown_available && (
+                      <DocumentLink
+                        href={api.documentUrl("output", job.job_id, "source")}
+                        disabled={!job.source_markdown_available}
+                        label="Source MD"
+                        icon={<ExternalLink className="h-3.5 w-3.5" />}
+                      />
+                    )}
                     <DocumentLink
                       href={api.documentUrl("download", job.job_id)}
                       disabled={!job.archive_available}

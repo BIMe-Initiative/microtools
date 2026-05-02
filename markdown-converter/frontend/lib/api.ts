@@ -28,6 +28,11 @@ export interface JobLogItem {
   result_available: boolean;
   source_available: boolean;
   markdown_available: boolean;
+  source_markdown_available: boolean;
+  translated: boolean;
+  translation_available: boolean;
+  translation_status?: string | null;
+  translation_error?: string | null;
   archive_available: boolean;
   error?: string | null;
 }
@@ -43,6 +48,10 @@ export interface JobDeleteResponse {
 export interface PreviewResponse {
   job_id: string;
   markdown: string;
+  variant: "primary" | "source" | "english";
+  translated: boolean;
+  source_language?: string | null;
+  target_language?: string | null;
 }
 
 export interface AnalyzeResponse {
@@ -63,7 +72,11 @@ export interface AuthResponse {
 
 export interface UploadOptions {
   imageAnnotations?: boolean;
+  translateToEnglish?: boolean;
+  sourceLanguage?: string;
 }
+
+export type MarkdownVariant = "primary" | "source" | "english";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? "";
@@ -93,7 +106,13 @@ export const api = {
   uploadPDF(file: File, options: UploadOptions = {}): Promise<UploadResponse> {
     const form = new FormData();
     form.append("file", file);
-    const query = options.imageAnnotations ? "?image_annotations=true" : "";
+    const params = new URLSearchParams();
+    if (options.imageAnnotations) params.set("image_annotations", "true");
+    if (options.translateToEnglish) {
+      params.set("translate_to_english", "true");
+      if (options.sourceLanguage) params.set("source_language", options.sourceLanguage);
+    }
+    const query = params.toString() ? `?${params.toString()}` : "";
     return request(`/api/upload${query}`, { method: "POST", body: form });
   },
 
@@ -109,12 +128,18 @@ export const api = {
     return request(`/api/jobs/${jobId}`, { method: "DELETE" });
   },
 
-  getPreview(jobId: string): Promise<PreviewResponse> {
-    return request(`/api/preview/${jobId}`);
+  getPreview(jobId: string, variant: MarkdownVariant = "primary"): Promise<PreviewResponse> {
+    const query = variant === "primary" ? "" : `?variant=${variant}`;
+    return request(`/api/preview/${jobId}${query}`);
   },
 
-  documentUrl(path: "source" | "output" | "download", jobId: string): string {
-    return `${BASE_URL}/api/${path}/${jobId}`;
+  documentUrl(
+    path: "source" | "output" | "download",
+    jobId: string,
+    variant?: MarkdownVariant
+  ): string {
+    const query = path === "output" && variant ? `?variant=${variant}` : "";
+    return `${BASE_URL}/api/${path}/${jobId}${query}`;
   },
 
   async downloadResult(jobId: string): Promise<void> {

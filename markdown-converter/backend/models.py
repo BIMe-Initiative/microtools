@@ -41,6 +41,11 @@ class JobLogItem(BaseModel):
     result_available: bool = False
     source_available: bool = False
     markdown_available: bool = False
+    source_markdown_available: bool = False
+    translated: bool = False
+    translation_available: bool = False
+    translation_status: Optional[str] = None
+    translation_error: Optional[str] = None
     archive_available: bool = False
     error: Optional[str] = None
 
@@ -56,6 +61,10 @@ class JobDeleteResponse(BaseModel):
 class PreviewResponse(BaseModel):
     job_id: str
     markdown: str
+    variant: str = "primary"
+    translated: bool = False
+    source_language: Optional[str] = None
+    target_language: Optional[str] = None
 
 
 class AnalyzeRequest(BaseModel):
@@ -99,10 +108,21 @@ class JobRecord(BaseModel):
     gcs_pdf_path: Optional[str] = None
     md_gcs_path: Optional[str] = None
     markdown_content: Optional[str] = None
+    source_md_gcs_path: Optional[str] = None
+    source_markdown_content: Optional[str] = None
+    translated_md_gcs_path: Optional[str] = None
+    translated_markdown_content: Optional[str] = None
     zip_gcs_path: Optional[str] = None
     total_pages: Optional[int] = None
     processed_pages: int = 0
     image_annotations: bool = False
+    translate_to_english: bool = False
+    translation_source_language: Optional[str] = None
+    translation_target_language: str = "en"
+    translation_detected_language: Optional[str] = None
+    translation_provider: Optional[str] = None
+    translation_status: Optional[str] = None
+    translation_error: Optional[str] = None
     error: Optional[str] = None
     created_at: datetime
     completed_at: Optional[datetime] = None

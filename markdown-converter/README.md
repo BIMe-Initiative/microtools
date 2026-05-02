@@ -5,6 +5,7 @@ A premium web application for converting PDF documents into rich, Obsidian-compa
 ## 🚀 Features
 
 - **Mistral OCR**: Powered by `mistral-ocr-2505` on Google Cloud Vertex AI for high-fidelity text and image extraction.
+- **LOTE Translation**: Optional Google Cloud Translation v3 pass that keeps source-language Markdown and produces an English Markdown primary output.
 - **Obsidian Ready**: Exports as a `.zip` archive containing Markdown files and extracted attachments with automatic Wikilink conversion (`![[image.png]]`).
 - **KOS Compliance**: Every generated file includes compliant YAML frontmatter with stable, unique IDs and structural granularity tracking.
 - **Vertex AI Analysis**: Built-in integration with Gemini 2.0 Flash for analyzing converted documents directly in the browser with full Markdown support.
@@ -28,6 +29,16 @@ The converter supports a specialized **Vault Mode** for advanced metadata manage
 - `access_level`: Override access level (Default: `open`)
 - `export_targets`: List of external systems for export.
 - `image_annotations=true`: Include compact OCR image descriptions below extracted figure embeds.
+- `translate_to_english=true`: Translate extracted LOTE Markdown into English while retaining the source Markdown.
+- `source_language`: Optional source language code for translation. Omit or use `auto` for detection.
+
+Translation uses Google Cloud Translation v3 with Application Default Credentials. It defaults to `GCP_PROJECT_ID` and `global`, or can be overridden with:
+
+```env
+GOOGLE_TRANSLATE_PROJECT=
+GOOGLE_TRANSLATE_LOCATION=global
+GOOGLE_TRANSLATE_QUOTA_PROJECT=
+```
 
 ## Backend Service Auth
 
@@ -91,12 +102,16 @@ jobs returned by `/api/upload`, MAD should see `processing`, `completed`, or
 
 `GET /api/preview/{job_id}` returns JSON with non-empty `markdown` after the
 job is completed. This is the normalized Markdown source MAD should consume.
+For translated jobs, this default preview is English. Use
+`?variant=source` to retrieve the source-language OCR Markdown or
+`?variant=english` to retrieve the English Markdown explicitly.
 
 `GET /api/download/{job_id}` returns the derivative archive as:
 
 - `Content-Type: application/zip`
 - `Content-Disposition: attachment; filename="<original_stem>_obsidian.zip"`
 - Payload: ZIP containing the Markdown file and any extracted attachments.
+  Translated jobs also include `<original_stem>_source.md`.
 
 Production Cloud Run is configured with `API_KEY` from Secret Manager,
 `SERVICE_ACCOUNT_EMAIL=service:mad-evidence`, and a 300 second request timeout.

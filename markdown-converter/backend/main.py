@@ -48,6 +48,7 @@ from .models import (
 )
 from .ocr_service import MistralOCRService
 from .storage import GCSStorage
+from .translation_service import MarkdownTranslationService
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -80,6 +81,7 @@ formatter = ObsidianMarkdownFormatter()
 upload_storage: GCSStorage | None = None
 results_storage: GCSStorage | None = None
 ocr_service: MistralOCRService | None = None
+translation_service: MarkdownTranslationService | None = None
 
 # In-memory job store
 MAX_JOBS_IN_MEMORY = 1000
@@ -142,6 +144,13 @@ def _get_ocr_service() -> MistralOCRService:
     if ocr_service is None:
         ocr_service = MistralOCRService()
     return ocr_service
+
+
+def _get_translation_service() -> MarkdownTranslationService:
+    global translation_service
+    if translation_service is None:
+        translation_service = MarkdownTranslationService()
+    return translation_service
 
 
 def _require_api_key(x_api_key: str | None = Header(None)):
@@ -265,9 +274,79 @@ def _job_to_log_item(job: JobRecord) -> JobLogItem:
         result_available=job.status == JobStatus.COMPLETED,
         source_available=bool(job.source_gcs_path or job.gcs_pdf_path),
         markdown_available=job.status == JobStatus.COMPLETED and bool(job.md_gcs_path),
+        source_markdown_available=job.status == JobStatus.COMPLETED
+        and bool(job.source_md_gcs_path or job.source_markdown_content),
+        translated=bool(job.translate_to_english),
+        translation_available=job.status == JobStatus.COMPLETED
+        and bool(job.translated_md_gcs_path or job.translated_markdown_content),
+        translation_status=job.translation_status,
+        translation_error=job.translation_error,
         archive_available=job.status == JobStatus.COMPLETED and bool(job.zip_gcs_path),
         error=job.error,
     )
+
+
+def _normalize_markdown_variant(variant: str | None) -> str:
+    value = (variant or "primary").strip().lower()
+    if value in {"source", "original", "lote"}:
+        return "source"
+    if value in {"english", "translated", "translation", "en"}:
+        return "english"
+    return "primary"
+
+
+def _download_job_markdown(job: JobRecord, content_attr: str, path_attr: str) -> str | None:
+    content = getattr(job, content_attr, None)
+    if content:
+        return content
+    gcs_path = getattr(job, path_attr, None)
+    if not gcs_path:
+        return None
+    rel_path = _gcs_relative_path(gcs_path, results_bucket)
+    content = _get_results_storage().download_as_bytes(rel_path).decode("utf-8")
+    setattr(job, content_attr, content)
+    _persist_job(job)
+    return content
+
+
+def _get_markdown_for_variant(job: JobRecord, variant: str) -> tuple[str, str]:
+    normalized = _normalize_markdown_variant(variant)
+    if normalized == "source":
+        content = _download_job_markdown(
+            job, "source_markdown_content", "source_md_gcs_path"
+        )
+        if content is None and not job.translate_to_english:
+            content = _download_job_markdown(job, "markdown_content", "md_gcs_path")
+        if content is not None:
+            return content, "source"
+        raise HTTPException(status_code=500, detail="Source Markdown unavailable")
+
+    if normalized == "english":
+        content = _download_job_markdown(
+            job, "translated_markdown_content", "translated_md_gcs_path"
+        )
+        if content is None and job.translate_to_english:
+            content = _download_job_markdown(job, "markdown_content", "md_gcs_path")
+        if content is None and not job.translate_to_english:
+            content = _download_job_markdown(job, "markdown_content", "md_gcs_path")
+        if content is not None:
+            return content, "english" if job.translate_to_english else "source"
+        raise HTTPException(status_code=500, detail="English Markdown unavailable")
+
+    content = _download_job_markdown(job, "markdown_content", "md_gcs_path")
+    if content is None:
+        raise HTTPException(status_code=500, detail="Markdown content unavailable")
+    return content, "english" if job.translate_to_english else "source"
+
+
+def _markdown_filename(job: JobRecord, actual_variant: str, requested_variant: str) -> str:
+    stem = Path(job.original_filename).stem or job.job_id
+    normalized = _normalize_markdown_variant(requested_variant)
+    if normalized == "source" and job.translate_to_english:
+        return f"{stem}_source.md"
+    if normalized == "english" and job.translate_to_english:
+        return f"{stem}_english.md"
+    return f"{stem}.md"
 
 
 def _persist_job(job: JobRecord):
@@ -372,6 +451,8 @@ def _delete_job_artifacts(job: JobRecord) -> list[str]:
 
     result_paths: set[str] = set()
     delete_result_uri(job.md_gcs_path, result_paths)
+    delete_result_uri(job.source_md_gcs_path, result_paths)
+    delete_result_uri(job.translated_md_gcs_path, result_paths)
     delete_result_uri(job.zip_gcs_path, result_paths)
 
     metadata_path = _job_metadata_path(job.job_id)
@@ -476,6 +557,8 @@ async def upload_pdf(
     request: Request,
     file: UploadFile = File(...),
     image_annotations: bool = Query(False),
+    translate_to_english: bool = Query(False),
+    source_language: Optional[str] = Query(None),
     vault_mode: bool = Query(False),
     type: Optional[str] = Query(None),
     subtype: Optional[str] = Query(None),
@@ -533,6 +616,9 @@ async def upload_pdf(
         owner_email=actor.email,
         created_at=datetime.now(),
         image_annotations=image_annotations,
+        translate_to_english=translate_to_english,
+        translation_source_language=(source_language or "auto") if translate_to_english else None,
+        translation_target_language="en",
         vault_mode=vault_mode,
         kos_type=type,
         kos_subtype=subtype,
@@ -605,21 +691,65 @@ async def _process_pdf(job_id: str):
         )
 
         # Format to Obsidian markdown
-        md_content, attachments = formatter.format_document(
+        source_md_content, attachments = formatter.format_document(
             ocr_result, job
         )
-        job.markdown_content = md_content
 
         stem = Path(job.original_filename).stem
+        md_content = source_md_content
+        extra_markdown_files: dict[str, str] = {}
+
+        if job.translate_to_english:
+            source_filename = f"{stem}_source.md"
+            job.source_markdown_content = source_md_content
+            job.source_md_gcs_path = _get_results_storage().upload_bytes(
+                source_md_content.encode("utf-8"),
+                f"results/{job_id}/{source_filename}",
+                "text/markdown; charset=utf-8",
+            )
+            job.translation_status = "processing"
+            _persist_job(job)
+
+            try:
+                translation = await _get_translation_service().translate_markdown(
+                    source_md_content,
+                    source_language=job.translation_source_language or "auto",
+                    target_language=job.translation_target_language or "en",
+                )
+            except Exception as exc:
+                job.translation_status = "failed"
+                job.translation_error = str(exc)
+                _persist_job(job)
+                raise
+
+            md_content = formatter.add_translation_metadata(
+                translation.markdown,
+                source_language=job.translation_source_language,
+                target_language=job.translation_target_language or "en",
+                provider=translation.provider,
+                source_markdown_ref=source_filename,
+                detected_source_language=translation.detected_source_language,
+            )
+            job.translated_markdown_content = md_content
+            job.translation_detected_language = translation.detected_source_language
+            job.translation_provider = translation.provider
+            job.translation_status = "completed"
+            extra_markdown_files[source_filename] = source_md_content
+
+        job.markdown_content = md_content
         md_gcs_path = f"results/{job_id}/{stem}.md"
         job.md_gcs_path = _get_results_storage().upload_bytes(
             md_content.encode("utf-8"),
             md_gcs_path,
             "text/markdown; charset=utf-8",
         )
+        if job.translate_to_english:
+            job.translated_md_gcs_path = job.md_gcs_path
 
         # Build zip and store in GCS
-        zip_bytes = formatter.create_zip_archive(md_content, attachments, stem)
+        zip_bytes = formatter.create_zip_archive(
+            md_content, attachments, stem, extra_markdown_files=extra_markdown_files
+        )
         zip_gcs_path = f"results/{job_id}/{stem}.zip"
         job.zip_gcs_path = _get_results_storage().upload_bytes(
             zip_bytes, zip_gcs_path, "application/zip"
@@ -657,7 +787,9 @@ async def get_status(
         progress = int((job.processed_pages / job.total_pages) * 100)
 
     msg = None
-    if job.total_pages:
+    if job.translate_to_english and job.translation_status == "processing":
+        msg = "Translating Markdown to English"
+    elif job.total_pages:
         msg = f"Processed {job.processed_pages}/{job.total_pages} pages"
 
     return JobStatusResponse(
@@ -717,6 +849,7 @@ async def delete_job(
 async def get_preview(
     job_id: str,
     request: Request,
+    variant: str = Query("primary"),
     x_api_key: str | None = Header(None),
 ):
     """Return the converted markdown for in-browser preview."""
@@ -728,20 +861,22 @@ async def get_preview(
     _verify_job_access(job, actor, service_authenticated)
     if job.status != JobStatus.COMPLETED:
         raise HTTPException(status_code=400, detail="Job not completed yet")
-    if not job.markdown_content and job.md_gcs_path:
-        try:
-            rel_path = job.md_gcs_path.replace(f"gs://{results_bucket}/", "")
-            job.markdown_content = _get_results_storage().download_as_bytes(rel_path).decode(
-                "utf-8"
-            )
-            _persist_job(job)
-        except Exception as exc:
-            logger.error(f"Markdown download failed for job {job_id}: {exc}")
-            raise HTTPException(status_code=500, detail="Markdown content unavailable")
-    elif not job.markdown_content:
+    try:
+        markdown, actual_variant = _get_markdown_for_variant(job, variant)
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.error(f"Markdown download failed for job {job_id}: {exc}")
         raise HTTPException(status_code=500, detail="Markdown content unavailable")
 
-    return PreviewResponse(job_id=job.job_id, markdown=job.markdown_content)
+    return PreviewResponse(
+        job_id=job.job_id,
+        markdown=markdown,
+        variant=actual_variant,
+        translated=job.translate_to_english and actual_variant == "english",
+        source_language=job.translation_detected_language or job.translation_source_language,
+        target_language=job.translation_target_language if job.translate_to_english else None,
+    )
 
 
 @app.get("/api/source/{job_id}")
@@ -780,6 +915,7 @@ async def download_source(
 async def download_markdown(
     job_id: str,
     request: Request,
+    variant: str = Query("primary"),
     x_api_key: str | None = Header(None),
 ):
     """Download the converted markdown file."""
@@ -795,12 +931,9 @@ async def download_markdown(
         raise HTTPException(status_code=500, detail="Markdown file not found")
 
     try:
-        if job.markdown_content:
-            markdown_bytes = job.markdown_content.encode("utf-8")
-        else:
-            rel_path = _gcs_relative_path(job.md_gcs_path, results_bucket)
-            markdown_bytes = _get_results_storage().download_as_bytes(rel_path)
-        filename = f"{Path(job.original_filename).stem or job.job_id}.md"
+        markdown, actual_variant = _get_markdown_for_variant(job, variant)
+        markdown_bytes = markdown.encode("utf-8")
+        filename = _markdown_filename(job, actual_variant, variant)
         return StreamingResponse(
             io.BytesIO(markdown_bytes),
             media_type="text/markdown; charset=utf-8",

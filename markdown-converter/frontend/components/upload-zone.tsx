@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Upload, FileText, AlertCircle, ImageIcon } from "lucide-react";
+import { Upload, FileText, AlertCircle, ImageIcon, Languages } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
@@ -10,6 +10,8 @@ interface UploadZoneProps {
   disabled?: boolean;
   imageAnnotations: boolean;
   onImageAnnotationsChange: (enabled: boolean) => void;
+  translateToEnglish: boolean;
+  onTranslateToEnglishChange: (enabled: boolean) => void;
 }
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100 MB
@@ -19,6 +21,8 @@ export function UploadZone({
   disabled,
   imageAnnotations,
   onImageAnnotationsChange,
+  translateToEnglish,
+  onTranslateToEnglishChange,
 }: UploadZoneProps) {
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -70,7 +74,7 @@ export function UploadZone({
   );
 
   return (
-    <Card className="overflow-hidden p-5 sm:p-6">
+    <Card className="flex h-full flex-col overflow-hidden p-5 sm:p-6">
       <div className="mb-4 flex items-center justify-between gap-3">
         <div>
           <div className="text-[11px] font-semibold uppercase tracking-[0.18em] text-sky-700">
@@ -89,7 +93,7 @@ export function UploadZone({
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
-        className={`relative rounded-lg border-2 border-dashed p-8 transition-all sm:p-12 ${dragActive
+        className={`relative flex min-h-[360px] flex-1 rounded-lg border-2 border-dashed p-8 transition-all sm:p-12 ${dragActive
             ? "border-brand-coral bg-brand-coral-tint"
             : "border-surface-line bg-surface-muted"
           } ${disabled ? "pointer-events-none opacity-50" : "cursor-pointer hover:border-brand-coral hover:bg-brand-coral-tint/50"}`}
@@ -104,7 +108,7 @@ export function UploadZone({
         />
         <label
           htmlFor="pdf-upload"
-          className="flex flex-col items-center justify-center cursor-pointer"
+          className="flex h-full flex-1 cursor-pointer flex-col items-center justify-center"
         >
           {dragActive ? (
             <Upload className="mb-4 h-16 w-16 text-brand-coral-press" />
@@ -147,6 +151,34 @@ export function UploadZone({
         <span
           aria-hidden="true"
           className="relative h-6 w-11 shrink-0 rounded-full bg-slate-300 transition-colors peer-checked:bg-indigo-600 peer-disabled:opacity-50 after:absolute after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5"
+        />
+      </label>
+
+      <label className="mt-3 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-surface-line bg-white px-4 py-3">
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-50 text-emerald-700">
+            <Languages className="h-4 w-4" />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-ink">
+              Translate LOTE to English
+            </span>
+            <span className="block text-xs leading-relaxed text-ink-muted">
+              Keep source Markdown and generate an English version
+            </span>
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          className="peer sr-only"
+          checked={translateToEnglish}
+          disabled={disabled}
+          onChange={(event) => onTranslateToEnglishChange(event.target.checked)}
+          aria-label="Translate LOTE to English"
+        />
+        <span
+          aria-hidden="true"
+          className="relative h-6 w-11 shrink-0 rounded-full bg-slate-300 transition-colors peer-checked:bg-emerald-600 peer-disabled:opacity-50 after:absolute after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5"
         />
       </label>
 

@@ -78,6 +78,7 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         self.previous_upload_storage = main.upload_storage
         self.previous_results_storage = main.results_storage
         self.previous_ocr_service = main.ocr_service
+        self.previous_translation_service = main.translation_service
         self.previous_jobs = dict(main.jobs)
 
         main.settings.api_key = "test-api-key"
@@ -87,6 +88,7 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         main.upload_storage = storage
         main.results_storage = storage
         main.ocr_service = FakeOCRService()
+        main.translation_service = FakeTranslationService()
         main.jobs.clear()
         self.client = TestClient(main.app)
 
@@ -96,6 +98,7 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         main.upload_storage = self.previous_upload_storage
         main.results_storage = self.previous_results_storage
         main.ocr_service = self.previous_ocr_service
+        main.translation_service = self.previous_translation_service
         main.jobs.clear()
         main.jobs.update(self.previous_jobs)
 
@@ -213,6 +216,72 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         self.assertEqual(enabled.status_code, 200)
         enabled_job = main.jobs[enabled.json()["job_id"]]
         self.assertTrue(enabled_job.image_annotations)
+
+    def test_lote_translation_returns_english_primary_and_source_variant(self) -> None:
+        upload = self.client.post(
+            "/api/upload?translate_to_english=true",
+            headers={"x-api-key": "test-api-key"},
+            files={"file": ("evidence.pdf", b"%PDF-1.4\n%%EOF\n", "application/pdf")},
+        )
+        self.assertEqual(upload.status_code, 200)
+        job_id = upload.json()["job_id"]
+
+        preview = self.client.get(
+            f"/api/preview/{job_id}",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(preview.status_code, 200)
+        preview_body = preview.json()
+        self.assertTrue(preview_body["translated"])
+        self.assertEqual(preview_body["variant"], "english")
+        self.assertIn("Converted Evidence in English", preview_body["markdown"])
+        self.assertIn("translated: true", preview_body["markdown"])
+
+        source_preview = self.client.get(
+            f"/api/preview/{job_id}?variant=source",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(source_preview.status_code, 200)
+        source_body = source_preview.json()
+        self.assertFalse(source_body["translated"])
+        self.assertEqual(source_body["variant"], "source")
+        self.assertIn("Converted Evidence", source_body["markdown"])
+        self.assertNotIn("Converted Evidence in English", source_body["markdown"])
+
+        source_download = self.client.get(
+            f"/api/output/{job_id}?variant=source",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(source_download.status_code, 200)
+        self.assertIn("evidence_source.md", source_download.headers["content-disposition"])
+        self.assertIn("Converted Evidence", source_download.text)
+
+        history = self.client.get(
+            "/api/jobs",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(history.status_code, 200)
+        job = history.json()["jobs"][0]
+        self.assertTrue(job["translated"])
+        self.assertTrue(job["translation_available"])
+        self.assertTrue(job["source_markdown_available"])
+
+
+class FakeTranslationService:
+    async def translate_markdown(
+        self,
+        markdown,
+        source_language="auto",
+        target_language="en",
+    ):
+        from backend.translation_service import TranslationResult
+
+        return TranslationResult(
+            markdown=markdown.replace("Converted Evidence", "Converted Evidence in English"),
+            detected_source_language="pt",
+            provider="google-cloud-translation-v3",
+            translated_segments=1,
+        )
 
 
 if __name__ == "__main__":
