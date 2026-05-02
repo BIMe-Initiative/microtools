@@ -6,11 +6,13 @@ import { ProcessingStatus } from "@/components/processing-status";
 import { MarkdownPreview } from "@/components/markdown-preview";
 import { ActionButtons } from "@/components/action-buttons";
 import { ConversionLog } from "@/components/conversion-log";
+import { UserAvatar } from "@/components/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   AlertCircle,
   ArrowRight,
+  ChartNoAxesCombined,
   FileText,
   RotateCcw,
   ShieldCheck,
@@ -231,11 +233,26 @@ export default function Home() {
               </p>
             </div>
             <div className="shrink-0 rounded-lg border border-surface-line bg-white/80 px-4 py-3 text-sm text-ink-muted shadow-[0_4px_16px_rgba(15,23,42,0.04)]">
-              <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted/70">
-                Signed in
-              </div>
-              <div className="mt-1 max-w-[260px] truncate font-semibold text-ink">
-                {user.email}
+              <div className="flex items-center gap-3">
+                <UserAvatar
+                  email={user.email}
+                  name={user.name}
+                  picture={user.picture}
+                  size={40}
+                />
+                <div className="min-w-0">
+                  <div className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-muted/70">
+                    Signed in
+                  </div>
+                  <div className="mt-1 max-w-[260px] truncate font-semibold text-ink">
+                    {user.name || user.email}
+                  </div>
+                  {user.name && (
+                    <div className="mt-0.5 max-w-[260px] truncate text-xs text-ink-muted">
+                      {user.email}
+                    </div>
+                  )}
+                </div>
               </div>
               <Button
                 variant="link"
@@ -311,6 +328,12 @@ export default function Home() {
                 title="Mistral OCR"
                 body="Text, headings, tables, and images are normalized."
                 tone="text-brand-coral-press"
+              />
+              <WorkflowItem
+                icon={<ChartNoAxesCombined className="h-4 w-4" />}
+                title="Figure annotation"
+                body="Optionally describe extracted figures and charts in the Markdown."
+                tone="text-violet-700"
               />
               <WorkflowItem
                 icon={<ArrowRight className="h-4 w-4" />}

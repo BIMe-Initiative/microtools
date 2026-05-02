@@ -37,6 +37,7 @@ from .models import (
     AuthResponse,
     AuthUser,
     GoogleAuthRequest,
+    JobDeleteResponse,
     JobLogItem,
     JobLogResponse,
     JobRecord,
@@ -325,6 +326,70 @@ def _load_persisted_jobs() -> list[JobRecord]:
     return records
 
 
+def _delete_job_artifacts(job: JobRecord) -> list[str]:
+    """Delete all persisted files for a job. Returns non-fatal error messages."""
+    errors: list[str] = []
+
+    def delete_upload_uri(gcs_uri: str | None, seen_paths: set[str]) -> None:
+        if not gcs_uri:
+            return
+        path = _gcs_relative_path(gcs_uri, upload_bucket)
+        if path in seen_paths:
+            return
+        seen_paths.add(path)
+        try:
+            _get_upload_storage().delete_file(path)
+        except Exception as exc:
+            logger.error(
+                "Failed to delete upload artifact %s for job %s: %s",
+                path,
+                job.job_id,
+                exc,
+            )
+            errors.append(path)
+
+    def delete_result_uri(gcs_uri: str | None, seen_paths: set[str]) -> None:
+        if not gcs_uri:
+            return
+        path = _gcs_relative_path(gcs_uri, results_bucket)
+        if path in seen_paths:
+            return
+        seen_paths.add(path)
+        try:
+            _get_results_storage().delete_file(path)
+        except Exception as exc:
+            logger.error(
+                "Failed to delete result artifact %s for job %s: %s",
+                path,
+                job.job_id,
+                exc,
+            )
+            errors.append(path)
+
+    upload_paths: set[str] = set()
+    delete_upload_uri(job.gcs_pdf_path, upload_paths)
+    delete_upload_uri(job.source_gcs_path, upload_paths)
+
+    result_paths: set[str] = set()
+    delete_result_uri(job.md_gcs_path, result_paths)
+    delete_result_uri(job.zip_gcs_path, result_paths)
+
+    metadata_path = _job_metadata_path(job.job_id)
+    if metadata_path not in result_paths:
+        try:
+            _get_results_storage().delete_file(metadata_path)
+        except Exception as exc:
+            logger.error(
+                "Failed to delete metadata %s for job %s: %s",
+                metadata_path,
+                job.job_id,
+                exc,
+            )
+            errors.append(metadata_path)
+
+    return errors
+
+
 # ---------------------------------------------------------------------------
 # Background cleanup
 # ---------------------------------------------------------------------------
@@ -338,23 +403,7 @@ async def _cleanup_old_jobs():
             job = jobs.pop(jid, None)
             if job is None:
                 continue
-            if job.gcs_pdf_path:
-                _get_upload_storage().delete_file(
-                    job.gcs_pdf_path.replace(f"gs://{upload_bucket}/", "")
-                )
-            if job.source_gcs_path and job.source_gcs_path != job.gcs_pdf_path:
-                _get_upload_storage().delete_file(
-                    job.source_gcs_path.replace(f"gs://{upload_bucket}/", "")
-                )
-            if job.md_gcs_path:
-                _get_results_storage().delete_file(
-                    job.md_gcs_path.replace(f"gs://{results_bucket}/", "")
-                )
-            if job.zip_gcs_path:
-                _get_results_storage().delete_file(
-                    job.zip_gcs_path.replace(f"gs://{results_bucket}/", "")
-                )
-            _get_results_storage().delete_file(_job_metadata_path(jid))
+            _delete_job_artifacts(job)
             logger.info(f"Cleaned up expired job {jid}")
 
 
@@ -637,6 +686,31 @@ async def list_jobs(
         records = [job for job in records if job.owner_email == actor.email]
     records.sort(key=lambda job: job.created_at, reverse=True)
     return JobLogResponse(jobs=[_job_to_log_item(job) for job in records[:limit]])
+
+
+@app.delete("/api/jobs/{job_id}", response_model=JobDeleteResponse)
+async def delete_job(
+    job_id: str,
+    request: Request,
+    x_api_key: str | None = Header(None),
+):
+    """Delete a conversion job and its stored artifacts."""
+    service_authenticated = _is_valid_api_key(x_api_key)
+    actor = _load_request_actor(request, x_api_key)
+    job = _load_job(job_id)
+    if job is None:
+        raise HTTPException(status_code=404, detail="Job not found")
+    _verify_job_access(job, actor, service_authenticated)
+
+    if job.status in {JobStatus.UPLOADING, JobStatus.PROCESSING}:
+        raise HTTPException(status_code=409, detail="Job is still processing")
+
+    errors = _delete_job_artifacts(job)
+    if errors:
+        raise HTTPException(status_code=500, detail="Failed to delete all job artifacts")
+
+    jobs.pop(job_id, None)
+    return JobDeleteResponse(ok=True)
 
 
 @app.get("/api/preview/{job_id}", response_model=PreviewResponse)

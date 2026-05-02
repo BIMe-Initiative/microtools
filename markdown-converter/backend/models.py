@@ -49,6 +49,10 @@ class JobLogResponse(BaseModel):
     jobs: list[JobLogItem]
 
 
+class JobDeleteResponse(BaseModel):
+    ok: bool
+
+
 class PreviewResponse(BaseModel):
     job_id: str
     markdown: str

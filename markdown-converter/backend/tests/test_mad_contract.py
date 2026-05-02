@@ -40,6 +40,10 @@ class FakeStorage:
     def generate_signed_url(self, source_path: str, expiration_minutes: int = 60) -> str:
         return f"https://signed.example/{source_path}"
 
+    def delete_file(self, path: str) -> bool:
+        self.objects.pop(path, None)
+        return True
+
 
 class FakeOCRService:
     def validate_document_size(self, file_size_bytes: int) -> bool:
@@ -79,6 +83,7 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         main.settings.api_key = "test-api-key"
         main.settings.service_account_email = "service:mad-evidence"
         storage = FakeStorage()
+        self.storage = storage
         main.upload_storage = storage
         main.results_storage = storage
         main.ocr_service = FakeOCRService()
@@ -160,6 +165,21 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         self.assertEqual(markdown.status_code, 200)
         self.assertEqual(markdown.headers["content-type"], "text/markdown; charset=utf-8")
         self.assertIn("Converted Evidence", markdown.text)
+
+        delete = self.client.delete(
+            f"/api/jobs/{job_id}",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(delete.status_code, 200)
+        self.assertEqual(delete.json(), {"ok": True})
+        self.assertNotIn(job_id, main.jobs)
+        self.assertFalse(any(job_id in path for path in self.storage.objects))
+
+        missing_status = self.client.get(
+            f"/api/status/{job_id}",
+            headers={"x-api-key": "test-api-key"},
+        )
+        self.assertEqual(missing_status.status_code, 404)
 
     def test_missing_or_invalid_api_key_is_not_public(self) -> None:
         missing = self.client.post(

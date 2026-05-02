@@ -9,6 +9,7 @@ import {
   Loader2,
   RefreshCw,
   Search,
+  Trash2,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -36,6 +37,8 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<StatusFilter>("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [confirmingJobId, setConfirmingJobId] = useState<string | null>(null);
+  const [deletingJobId, setDeletingJobId] = useState<string | null>(null);
 
   const loadJobs = async () => {
     try {
@@ -53,6 +56,20 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
   useEffect(() => {
     void loadJobs();
   }, [refreshKey]);
+
+  const handleDeleteJob = async (job: JobLogItem) => {
+    try {
+      setDeletingJobId(job.job_id);
+      setError(null);
+      await api.deleteJob(job.job_id);
+      setJobs((current) => current.filter((item) => item.job_id !== job.job_id));
+      setConfirmingJobId(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Could not delete conversion");
+    } finally {
+      setDeletingJobId(null);
+    }
+  };
 
   const typeOptions = useMemo(() => {
     return Array.from(
@@ -157,7 +174,7 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
       )}
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[980px] text-left text-sm">
+        <table className="w-full min-w-[1080px] text-left text-sm">
           <thead className="border-b border-surface-line bg-surface-muted text-[11px] font-semibold uppercase tracking-[0.14em] text-ink-muted">
             <tr>
               <th className="px-5 py-3 sm:pl-8">Document</th>
@@ -165,20 +182,21 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
               <th className="px-4 py-3">Size</th>
               <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 sm:pr-8">Links</th>
+              <th className="px-4 py-3">Links</th>
+              <th className="px-4 py-3 sm:pr-8">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-surface-line">
             {loading && jobs.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-ink-muted">
+                <td colSpan={7} className="px-5 py-8 text-center text-ink-muted">
                   Loading conversion log...
                 </td>
               </tr>
             )}
             {!loading && filteredJobs.length === 0 && (
               <tr>
-                <td colSpan={6} className="px-5 py-8 text-center text-ink-muted">
+                <td colSpan={7} className="px-5 py-8 text-center text-ink-muted">
                   No conversions match the current filters.
                 </td>
               </tr>
@@ -223,7 +241,7 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
                     {job.status}
                   </Badge>
                 </td>
-                <td className="px-4 py-4 sm:pr-8">
+                <td className="px-4 py-4">
                   <div className="flex flex-wrap gap-2">
                     <DocumentLink
                       href={api.documentUrl("source", job.job_id)}
@@ -245,12 +263,92 @@ export function ConversionLog({ refreshKey }: ConversionLogProps) {
                     />
                   </div>
                 </td>
+                <td className="min-w-[150px] px-4 py-4 sm:pr-8">
+                  <DeleteJobControl
+                    job={job}
+                    confirming={confirmingJobId === job.job_id}
+                    deleting={deletingJobId === job.job_id}
+                    disabled={deletingJobId !== null || isActiveJob(job)}
+                    onRequestConfirm={() => setConfirmingJobId(job.job_id)}
+                    onCancel={() => setConfirmingJobId(null)}
+                    onConfirm={() => void handleDeleteJob(job)}
+                  />
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     </section>
+  );
+}
+
+function DeleteJobControl({
+  job,
+  confirming,
+  deleting,
+  disabled,
+  onRequestConfirm,
+  onCancel,
+  onConfirm,
+}: {
+  job: JobLogItem;
+  confirming: boolean;
+  deleting: boolean;
+  disabled: boolean;
+  onRequestConfirm: () => void;
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  if (confirming) {
+    return (
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          type="button"
+          variant="destructive"
+          size="sm"
+          onClick={onConfirm}
+          disabled={deleting}
+          className="h-8 rounded-md px-2.5 text-xs"
+        >
+          {deleting ? (
+            <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+          )}
+          Confirm
+        </Button>
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          onClick={onCancel}
+          disabled={deleting}
+          className="h-8 rounded-md px-2.5 text-xs"
+        >
+          Cancel
+        </Button>
+      </div>
+    );
+  }
+
+  return (
+    <Button
+      type="button"
+      variant="ghost"
+      size="sm"
+      onClick={onRequestConfirm}
+      disabled={disabled}
+      title={
+        isActiveJob(job)
+          ? "Delete is available after processing finishes"
+          : "Delete conversion"
+      }
+      className="h-8 rounded-md px-2.5 text-xs text-red-700 hover:bg-red-50 hover:text-red-800"
+    >
+      <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+      Delete
+    </Button>
   );
 }
 
@@ -287,6 +385,10 @@ function DocumentLink({
 
 function normalizedType(job: JobLogItem): string {
   return job.file_type?.toUpperCase() || "UNKNOWN";
+}
+
+function isActiveJob(job: JobLogItem): boolean {
+  return job.status === "uploading" || job.status === "processing";
 }
 
 function formatBytes(size?: number | null): string {

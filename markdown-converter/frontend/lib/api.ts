@@ -36,6 +36,10 @@ export interface JobLogResponse {
   jobs: JobLogItem[];
 }
 
+export interface JobDeleteResponse {
+  ok: boolean;
+}
+
 export interface PreviewResponse {
   job_id: string;
   markdown: string;
@@ -99,6 +103,10 @@ export const api = {
 
   getJobLog(): Promise<JobLogResponse> {
     return request("/api/jobs");
+  },
+
+  deleteJob(jobId: string): Promise<JobDeleteResponse> {
+    return request(`/api/jobs/${jobId}`, { method: "DELETE" });
   },
 
   getPreview(jobId: string): Promise<PreviewResponse> {
