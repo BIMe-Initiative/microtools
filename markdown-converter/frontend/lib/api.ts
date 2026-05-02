@@ -120,8 +120,9 @@ export const api = {
     return request(`/api/status/${jobId}`);
   },
 
-  getJobLog(): Promise<JobLogResponse> {
-    return request("/api/jobs");
+  getJobLog(limit?: number): Promise<JobLogResponse> {
+    const query = limit ? `?limit=${limit}` : "";
+    return request(`/api/jobs${query}`);
   },
 
   deleteJob(jobId: string): Promise<JobDeleteResponse> {

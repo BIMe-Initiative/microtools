@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface UploadZoneProps {
-  onUpload: (file: File) => void;
+  onUpload: (file: File) => void | Promise<void>;
   disabled?: boolean;
   imageAnnotations: boolean;
   onImageAnnotationsChange: (enabled: boolean) => void;
@@ -69,6 +69,7 @@ export function UploadZone({
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) validate(file);
+      e.target.value = "";
     },
     [validate]
   );
