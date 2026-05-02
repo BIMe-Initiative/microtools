@@ -474,7 +474,6 @@ async def upload_pdf(
         )
 
     job_id = str(uuid.uuid4())
-    effective_image_annotations = settings.enable_image_annotations and image_annotations
     job = JobRecord(
         job_id=job_id,
         status=JobStatus.UPLOADING,
@@ -484,7 +483,7 @@ async def upload_pdf(
         original_file_size=len(original_content),
         owner_email=actor.email,
         created_at=datetime.now(),
-        image_annotations=effective_image_annotations,
+        image_annotations=image_annotations,
         vault_mode=vault_mode,
         kos_type=type,
         kos_subtype=subtype,

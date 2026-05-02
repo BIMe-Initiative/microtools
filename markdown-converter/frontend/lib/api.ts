@@ -57,6 +57,10 @@ export interface AuthResponse {
   user: AuthUser;
 }
 
+export interface UploadOptions {
+  imageAnnotations?: boolean;
+}
+
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY ?? "";
 
@@ -82,10 +86,11 @@ async function request<T>(url: string, init?: RequestInit): Promise<T> {
 }
 
 export const api = {
-  uploadPDF(file: File): Promise<UploadResponse> {
+  uploadPDF(file: File, options: UploadOptions = {}): Promise<UploadResponse> {
     const form = new FormData();
     form.append("file", file);
-    return request("/api/upload", { method: "POST", body: form });
+    const query = options.imageAnnotations ? "?image_annotations=true" : "";
+    return request(`/api/upload${query}`, { method: "POST", body: form });
   },
 
   getJobStatus(jobId: string): Promise<JobStatus> {

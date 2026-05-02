@@ -37,6 +37,7 @@ export default function Home() {
   const [uploadedFileNames, setUploadedFileNames] = useState<string[]>([]);
   const [duplicateWarning, setDuplicateWarning] = useState<string | null>(null);
   const [logRefreshKey, setLogRefreshKey] = useState(0);
+  const [imageAnnotations, setImageAnnotations] = useState(false);
   const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? "";
 
@@ -104,7 +105,7 @@ export default function Home() {
         }
         return [...prev, file.name];
       });
-      const res = await api.uploadPDF(file);
+      const res = await api.uploadPDF(file, { imageAnnotations });
       setJobId(res.job_id);
       setState("processing");
       setLogRefreshKey((value) => value + 1);
@@ -255,6 +256,8 @@ export default function Home() {
                 <UploadZone
                   onUpload={handleUpload}
                   disabled={state === "uploading"}
+                  imageAnnotations={imageAnnotations}
+                  onImageAnnotationsChange={setImageAnnotations}
                 />
                 {error && (
                   <Alert variant="destructive" className="mt-4">

@@ -71,7 +71,6 @@ class MadHttpAdapterContractTests(unittest.TestCase):
     def setUp(self) -> None:
         self.previous_api_key = main.settings.api_key
         self.previous_service_account_email = main.settings.service_account_email
-        self.previous_enable_image_annotations = main.settings.enable_image_annotations
         self.previous_upload_storage = main.upload_storage
         self.previous_results_storage = main.results_storage
         self.previous_ocr_service = main.ocr_service
@@ -79,7 +78,6 @@ class MadHttpAdapterContractTests(unittest.TestCase):
 
         main.settings.api_key = "test-api-key"
         main.settings.service_account_email = "service:mad-evidence"
-        main.settings.enable_image_annotations = False
         storage = FakeStorage()
         main.upload_storage = storage
         main.results_storage = storage
@@ -90,7 +88,6 @@ class MadHttpAdapterContractTests(unittest.TestCase):
     def tearDown(self) -> None:
         main.settings.api_key = self.previous_api_key
         main.settings.service_account_email = self.previous_service_account_email
-        main.settings.enable_image_annotations = self.previous_enable_image_annotations
         main.upload_storage = self.previous_upload_storage
         main.results_storage = self.previous_results_storage
         main.ocr_service = self.previous_ocr_service
@@ -178,17 +175,16 @@ class MadHttpAdapterContractTests(unittest.TestCase):
         )
         self.assertEqual(invalid.status_code, 401)
 
-    def test_image_annotations_require_global_enable_and_query_opt_in(self) -> None:
-        disabled = self.client.post(
-            "/api/upload?image_annotations=true",
+    def test_image_annotations_are_controlled_by_upload_query_param(self) -> None:
+        default_upload = self.client.post(
+            "/api/upload",
             headers={"x-api-key": "test-api-key"},
-            files={"file": ("disabled.pdf", b"%PDF-1.4\n%%EOF\n", "application/pdf")},
+            files={"file": ("default.pdf", b"%PDF-1.4\n%%EOF\n", "application/pdf")},
         )
-        self.assertEqual(disabled.status_code, 200)
-        disabled_job = main.jobs[disabled.json()["job_id"]]
-        self.assertFalse(disabled_job.image_annotations)
+        self.assertEqual(default_upload.status_code, 200)
+        default_job = main.jobs[default_upload.json()["job_id"]]
+        self.assertFalse(default_job.image_annotations)
 
-        main.settings.enable_image_annotations = True
         enabled = self.client.post(
             "/api/upload?image_annotations=true",
             headers={"x-api-key": "test-api-key"},

@@ -27,6 +27,7 @@ The converter supports a specialized **Vault Mode** for advanced metadata manage
 - `use_scope`: Override access scope (Default: `All`)
 - `access_level`: Override access level (Default: `open`)
 - `export_targets`: List of external systems for export.
+- `image_annotations=true`: Include compact OCR image descriptions below extracted figure embeds.
 
 ## Backend Service Auth
 

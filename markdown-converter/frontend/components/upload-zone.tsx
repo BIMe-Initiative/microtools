@@ -1,18 +1,25 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { Upload, FileText, AlertCircle } from "lucide-react";
+import { Upload, FileText, AlertCircle, ImageIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 interface UploadZoneProps {
   onUpload: (file: File) => void;
   disabled?: boolean;
+  imageAnnotations: boolean;
+  onImageAnnotationsChange: (enabled: boolean) => void;
 }
 
 const MAX_SIZE = 100 * 1024 * 1024; // 100 MB
 
-export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
+export function UploadZone({
+  onUpload,
+  disabled,
+  imageAnnotations,
+  onImageAnnotationsChange,
+}: UploadZoneProps) {
   const [dragActive, setDragActive] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -114,6 +121,34 @@ export function UploadZone({ onUpload, disabled }: UploadZoneProps) {
           </p>
         </label>
       </div>
+
+      <label className="mt-4 flex cursor-pointer items-center justify-between gap-4 rounded-lg border border-surface-line bg-white px-4 py-3">
+        <span className="flex min-w-0 items-center gap-3">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-indigo-50 text-indigo-700">
+            <ImageIcon className="h-4 w-4" />
+          </span>
+          <span className="min-w-0">
+            <span className="block text-sm font-semibold text-ink">
+              Image descriptions
+            </span>
+            <span className="block text-xs leading-relaxed text-ink-muted">
+              Annotate extracted figures and charts
+            </span>
+          </span>
+        </span>
+        <input
+          type="checkbox"
+          className="peer sr-only"
+          checked={imageAnnotations}
+          disabled={disabled}
+          onChange={(event) => onImageAnnotationsChange(event.target.checked)}
+          aria-label="Image descriptions"
+        />
+        <span
+          aria-hidden="true"
+          className="relative h-6 w-11 shrink-0 rounded-full bg-slate-300 transition-colors peer-checked:bg-indigo-600 peer-disabled:opacity-50 after:absolute after:left-1 after:top-1 after:h-4 after:w-4 after:rounded-full after:bg-white after:shadow-sm after:transition-transform peer-checked:after:translate-x-5"
+        />
+      </label>
 
       {error && (
         <Alert variant="destructive" className="mt-4">

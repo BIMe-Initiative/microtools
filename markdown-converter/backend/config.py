@@ -18,7 +18,6 @@ class Settings(BaseSettings):
     # Mistral OCR
     mistral_region: str = "us-central1"
     mistral_model: str = "mistral-ocr-2505"
-    enable_image_annotations: bool = False
     image_annotation_min_size: int = 80
     image_annotation_limit: int | None = None
 
