@@ -326,8 +326,12 @@ const App = () => {
 
         {/* FOOTER */}
         <div className="p-3 border-t border-gray-200 bg-gray-50 mt-auto">
+          <p className="text-[11px] text-gray-600 text-center mb-1">
+            To find your organisation&rsquo;s State and a heading with suggested actions, see Assessor.io&rsquo;s Adaptive Maturity Specialised Set:{' '}
+            <a href="https://assessor.bimexcellence.org/#contact" target="_blank" rel="noopener noreferrer" className="font-semibold underline text-slate-700 hover:text-slate-900">ask about SS-ADM</a>.
+          </p>
           <p className="text-[10px] text-gray-500 text-center font-medium">
-            BIMe Initiative | Adaptive Maturity State Transition Mindmap v1.0 (Dec 2025)
+            BIMe Initiative | Adaptive Maturity State Transition Mindmap v1.1 (Oct 2026)
           </p>
         </div>
 

@@ -1,15 +1,17 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
+import { ScatterChart, Scatter, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, ReferenceArea } from 'recharts';
 import { ChevronRight, RotateCcw, HelpCircle, Download, User, X, AlertCircle } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import ReCAPTCHA from "react-google-recaptcha";
 
 // --- CONSTANTS ---
-const VERSION_INFO = "Adaptive Maturity Measurement Microtool v1.0 (1 Dec 2025)";
+const VERSION_INFO = "Adaptive Maturity Measurement Microtool v1.1 (31 Oct 2026)";
 const EPISODE_TITLE_PREFIX = "BIM THINKSPACE EPISODE 28:";
-const EPISODE_TITLE_MAIN = "Measuring and Improving Adaptive Maturity";
-const POST_URL = "https://BIMexcellence.org/measuring-adaptive-maturity";
+const EPISODE_TITLE_MAIN = "Measuring Adaptive Maturity";
+const POST_URL = "https://bimexcellence.org/thinkspace/episode-28-measuring-adaptive-maturity/";
+// The full assessment this microtool is a taster for: Assessor.io's Adaptive Maturity Specialised Set.
+const SS_ADM_URL = "https://assessor.bimexcellence.org/#contact";
 const BRAND_COLOR = "#f37f73"; 
 const RECAPTCHA_SITE_KEY = "6LeAJR0sAAAAAG2bBy6MqmJbzmpa6_KjplWXrfXz";
 
@@ -66,26 +68,28 @@ const INDICATORS = [
   { id: 'ami10', code: 'AMI-10', title: 'Coordination across teams', axis: 'BOTH', desc: 'Effectiveness of collaboration across boundaries during change.' },
 ];
 
+// Episode 28 Table 2, corrected so every label follows Episode 27's clusters (Stagnant a1-c3,
+// Chaotic a3-c5, Dynamic c3-e5, Rigid c1-e3). Keyed `${pmi}-${aci}`, both 1 to 5.
 const STATE_DATA = {
   '1-1': { title: 'Stagnant', desc: 'No maturity or adaptability; organisation operates reactively without consistency' },
   '1-2': { title: 'Stagnant', desc: 'Low maturity and adaptability; performance may occasionally but temporarily improve' },
-  '1-3': { title: 'Stagnant/Chaotic Overlap', desc: 'Some adaptability exists, but lack of structure causes inconsistent results' },
+  '1-3': { title: 'Overlap (Stagnant/Chaotic)', desc: 'Some adaptability exists, but lack of structure causes inconsistent results' },
   '1-4': { title: 'Chaotic', desc: 'Adaptable but completely unstructured; success depends on individual initiative' },
   '1-5': { title: 'Chaotic', desc: 'Highly adaptable yet process-free; vulnerable to inconsistency and rework' },
   '2-1': { title: 'Stagnant', desc: 'Minimal structure and no adaptability; rigid habits despite poor process quality' },
   '2-2': { title: 'Stagnant', desc: 'Low structure and low adaptability; basic operations are inconsistent' },
-  '2-3': { title: 'Stagnant/Chaotic Overlap', desc: 'Adaptability occasionally appears but is undermined by weak processes' },
+  '2-3': { title: 'Overlap (Stagnant/Chaotic)', desc: 'Adaptability occasionally appears but is undermined by weak processes' },
   '2-4': { title: 'Chaotic', desc: 'Strong adaptability in some areas but no consistent frameworks' },
   '2-5': { title: 'Chaotic', desc: 'Very high adaptability, no structure; resilience comes from people not systems' },
-  '3-1': { title: 'Stagnant/Rigid Overlap', desc: 'Processes starting to emerge but adaptability absent; prone to over-reliance on routine' },
-  '3-2': { title: 'Stagnant/Rigid Overlap', desc: 'Some process maturity but low agility; change is resisted or slow' },
-  '3-3': { title: 'Balanced Low', desc: 'Basic structure and adaptability; can handle minor changes, struggles with major ones' },
-  '3-4': { title: 'Stagnant/Chaotic Overlap', desc: 'Moderate agility but process weaknesses cause inconsistent results' },
-  '3-5': { title: 'Chaotic', desc: 'High adaptability, moderate processes; may waste effort due to uncoordinated work' },
+  '3-1': { title: 'Overlap (Stagnant/Rigid)', desc: 'Processes starting to emerge but adaptability absent; prone to over-reliance on routine' },
+  '3-2': { title: 'Overlap (Stagnant/Rigid)', desc: 'Some process maturity but low agility; change is resisted or slow' },
+  '3-3': { title: 'Overlap (all four States)', desc: 'Basic structure and adaptability; can handle minor changes, struggles with major ones' },
+  '3-4': { title: 'Overlap (Chaotic/Dynamic)', desc: 'Strong adaptability with managed processes; change follows a roadmap, but progress is still project-based' },
+  '3-5': { title: 'Overlap (Chaotic/Dynamic)', desc: 'High adaptability, moderate processes; change keeps the organisation ahead, but uncoordinated work may waste effort' },
   '4-1': { title: 'Rigid', desc: 'Stronger processes emerging but little flexibility; risk of stagnation' },
   '4-2': { title: 'Rigid', desc: 'Solid processes but slow or resistant to change; priorities take too long to shift' },
-  '4-3': { title: 'Balanced Mid', desc: 'Structure and adaptability balanced at mid-level; capable of handling routine disruptions' },
-  '4-4': { title: 'Overlap (Rigid/Dynamic)', desc: 'Well-structured and adaptable, but could strengthen speed or consistency' },
+  '4-3': { title: 'Overlap (Rigid/Dynamic)', desc: 'Structure and adaptability balanced at mid-level; capable of handling routine disruptions, but hard approval gates slow larger changes' },
+  '4-4': { title: 'Dynamic', desc: 'Well-structured and adaptable, but could strengthen speed or consistency' },
   '4-5': { title: 'Dynamic', desc: 'Highly adaptable with solid processes; could refine learning and coordination' },
   '5-1': { title: 'Rigid', desc: 'Fully developed processes but no agility; organisation is locked into fixed patterns' },
   '5-2': { title: 'Rigid', desc: 'Very strong processes but limited adaptability; risks irrelevance under change' },
@@ -94,10 +98,137 @@ const STATE_DATA = {
   '5-5': { title: 'Dynamic', desc: 'Optimal structure and adaptability; resilient, fast, and consistent under any change' }
 };
 
+// Process maturity's columns and adaptive capacity's rows (Episode 27, Table 4).
+const PMI_COLUMNS = ['a', 'b', 'c', 'd', 'e'];
+const PMI_NAMES = ['Ad-hoc', 'Defined', 'Managed', 'Integrated', 'Optimised'];
+const ACI_NAMES = ['Resistant', 'Receptive', 'Responsive', 'Reformative', 'Regenerative'];
+
+// Episode 28's composite bands, inclusive. Low is 10 or less.
+const BANDS = [
+  { name: 'Low', max: 10 },
+  { name: 'Medium-Low', max: 20 },
+  { name: 'Medium', max: 45 },
+  { name: 'Medium-High', max: 75 },
+  { name: 'High', max: 100 },
+];
+
+// The five levels of each indicator, as corrected (gap-free ladders; BIMei, 31 Oct 2026).
+// Same words as Assessor.io's SS-ADM. Level 1 is the first entry.
+const LADDERS = {
+  ami1: [
+    { headline: "No documented processes", descriptor: "No documented processes exist" },
+    { headline: "Some documented, rarely followed", descriptor: "Some processes documented but outdated or rarely followed" },
+    { headline: "Most documented, used unevenly", descriptor: "Most key processes documented but used inconsistently" },
+    { headline: "All current, mostly followed", descriptor: "All key processes are documented, current (12 months old or less), and followed by most teams" },
+    { headline: "Embedded and monitored", descriptor: "All key processes are documented, updated at least annually, embedded in daily work, and monitored for at least 90% adherence" },
+  ],
+  ami2: [
+    { headline: "Signals are missed", descriptor: "Signal not detected" },
+    { headline: "Seen, but no timely decision", descriptor: "Signal detected, no decision made to respond within timeframes (e.g. 3 days or less for priority issues)" },
+    { headline: "Some on time", descriptor: "First action taken within target timeframes in some cases, but fewer than 50%" },
+    { headline: "Half or more on time", descriptor: "First action taken within target timeframes in at least 50% of cases" },
+    { headline: "Three in four on time", descriptor: "First action taken within target timeframes in at least 75% of cases" },
+  ],
+  ami3: [
+    { headline: "Improvements are abandoned", descriptor: "No changes sustained with improvements abandoned quickly" },
+    { headline: "Fewer than half last", descriptor: "Some improvements last until the review period, but fewer than 50%" },
+    { headline: "Half or more last", descriptor: "At least 50% of improvements last until the review period" },
+    { headline: "Three in four last", descriptor: "At least 75% of improvements last until the review period" },
+    { headline: "Nine in ten last", descriptor: "At least 90% of improvements last until the review period" },
+  ],
+  ami4: [
+    { headline: "Change meets resistance", descriptor: "Widespread resistance with no visible enthusiasm for change" },
+    { headline: "A few enthusiasts", descriptor: "Occasional enthusiasm from a small minority" },
+    { headline: "About half engage", descriptor: "Mixed enthusiasm with about half of staff engaging actively" },
+    { headline: "Most people take part", descriptor: "Most staff show enthusiasm and voluntary participation in change" },
+    { headline: "People lead change", descriptor: "High, sustained enthusiasm across teams, with at least 50% of staff voluntarily initiating or leading change activities" },
+  ],
+  ami5: [
+    { headline: "Recovery fails or drags", descriptor: "Recovery is not achieved or takes far longer than planned" },
+    { headline: "Fewer than half on plan", descriptor: "Recovery achieved within planned timeframes in some cases, but fewer than 50%" },
+    { headline: "Half or more on plan", descriptor: "Recovery achieved within planned timeframes in at least 50% of cases" },
+    { headline: "Three in four on plan", descriptor: "Recovery achieved within planned timeframes in at least 75% of cases" },
+    { headline: "Nine in ten on plan", descriptor: "Recovery achieved within planned timeframes in at least 90% of cases" },
+  ],
+  ami6: [
+    { headline: "Lessons are lost", descriptor: "No lessons are captured or applied" },
+    { headline: "Captured, rarely applied", descriptor: "Lessons captured informally but rarely applied" },
+    { headline: "Sometimes applied", descriptor: "Lessons captured and sometimes applied to similar work" },
+    { headline: "Routinely applied", descriptor: "Lessons routinely applied to improve processes and tools" },
+    { headline: "Embedded within three months", descriptor: "At least 60% of captured lessons are embedded into standard practice within 3 months" },
+  ],
+  ami7: [
+    { headline: "Ideas are dismissed", descriptor: "New proposals are dismissed or ignored" },
+    { headline: "Accepted, but no trial route", descriptor: "New proposals are vetted and accepted but with no clear trial process" },
+    { headline: "A quarter reach trial", descriptor: "At least 25% of accepted proposals reach trial stage" },
+    { headline: "Half or more reach trial", descriptor: "At least 50% of accepted proposals reach trial stage" },
+    { headline: "Nine in ten reach trial", descriptor: "At least 90% of accepted proposals reach trial stage" },
+  ],
+  ami8: [
+    { headline: "Goals are unknown", descriptor: "Goals and values are unknown to most staff" },
+    { headline: "Known by some", descriptor: "Goals and values are known by some staff but rarely referenced" },
+    { headline: "Known, applied unevenly", descriptor: "Most staff can describe goals and values but inconsistently apply them" },
+    { headline: "Goals guide decisions", descriptor: "Goals and values are well understood and often referenced in decisions" },
+    { headline: "Purpose shapes daily work", descriptor: "At least 90% of staff can clearly articulate goals and values and link them to their daily work" },
+  ],
+  ami9: [
+    { headline: "Risks are ignored", descriptor: "Risks are ignored or avoided, or discussed in fewer than 25% of key decisions" },
+    { headline: "Risks sometimes discussed", descriptor: "Risks are discussed occasionally, in at least 25% of key decisions" },
+    { headline: "Assessed in half or more", descriptor: "Risks are assessed in at least 50% of key decisions" },
+    { headline: "Documented in three in four", descriptor: "Risks are assessed and documented in at least 75% of key decisions" },
+    { headline: "Managed in nine in ten", descriptor: "Risks are consistently assessed, documented, and managed in at least 90% of key decisions" },
+  ],
+  ami10: [
+    { headline: "Teams work in silos", descriptor: "Teams operate in silos, coordinating with internal teams or external partners in fewer than 25% of cases" },
+    { headline: "Occasional coordination", descriptor: "Occasional coordination in at least 25% of cases across internal teams and external partners" },
+    { headline: "Coordinated in half or more", descriptor: "Coordination occurs in at least 50% of cases across internal teams and external partners" },
+    { headline: "Effective in three in four", descriptor: "Effective coordination in at least 75% of cases across internal teams and external partners" },
+    { headline: "Effective in nine in ten", descriptor: "Effective coordination in at least 90% of cases across internal teams and external partners" },
+  ],
+  ami11: [
+    { headline: "Change arrives unplanned", descriptor: "No planning or resources for upcoming change, or planning for fewer than 25% of foreseeable changes" },
+    { headline: "Some planning", descriptor: "Some planning, even if minimal, for at least 25% of foreseeable changes" },
+    { headline: "Plans for half or more", descriptor: "Planning covers at least 50% of foreseeable changes" },
+    { headline: "Ready for three in four", descriptor: "Planning, budgeting, and training in place for at least 75% of foreseeable changes" },
+    { headline: "Ready for nine in ten", descriptor: "Planning, budgeting, and training in place for at least 90% of foreseeable changes" },
+  ],
+  ami12: [
+    { headline: "Resources are locked in", descriptor: "Resources cannot be redeployed without major effort; redeployment is possible in fewer than 25% of cases" },
+    { headline: "Possible, but slow and hard", descriptor: "Redeployment possible in at least 25% of cases, but often slow and with significant effort" },
+    { headline: "Half or more in good time", descriptor: "Redeployment possible within acceptable time in at least 50% of cases" },
+    { headline: "Three in four in good time", descriptor: "Redeployment possible within acceptable time in at least 75% of cases" },
+    { headline: "Nine in ten in good time", descriptor: "Redeployment possible within acceptable time in at least 90% of cases" },
+  ],
+  ami13: [
+    { headline: "Unclear, late or absent", descriptor: "Communication during change is unclear, late, or absent: clear communication in fewer than 25% of change situations" },
+    { headline: "Occasionally clear", descriptor: "Clear communication occurs occasionally, in at least 25% of change situations" },
+    { headline: "Clear in half or more", descriptor: "Clear, timely communication in at least half of change situations" },
+    { headline: "Clear, with feedback", descriptor: "Clear, timely communication in at least 75% of change situations, with some feedback" },
+    { headline: "Clear and consistent", descriptor: "Clear, timely, and consistent communication in at least 85% of change situations" },
+  ],
+};
+
+
 // --- LOGIC ENGINE ---
 const getResult = (pmi, aci) => {
   const key = `${pmi}-${aci}`;
   return STATE_DATA[key] || { title: 'Unknown', desc: '' };
+};
+
+// Each axis is rounded ONCE, from its unrounded average, to the nearest level; a half rounds up.
+// Weights are 1 or 0.5 and scores whole numbers, so a true half is computed exactly.
+const levelOf = (score) => Math.max(1, Math.min(5, Math.floor(score + 0.5)));
+
+// The composite is the cell's value: 4 x row x column, from 4 (a1) to 100 (e5).
+const compositeOf = (pmiLevel, aciLevel) => 4 * pmiLevel * aciLevel;
+const bandOf = (composite) => BANDS.find(band => composite <= band.max).name;
+
+// A score to one decimal, unless one decimal would show a half the score has not reached
+// (3.45 shown as "3.5" but placed at level 3): then two decimals, cut rather than rounded.
+const displayScore = (value) => {
+  const oneDecimal = value.toFixed(1);
+  if (Math.floor(Number(oneDecimal) + 0.5) === Math.floor(value + 0.5)) return oneDecimal;
+  return (Math.floor(value * 100 + 1e-9) / 100).toFixed(2);
 };
 
 // UI Color Helper
@@ -228,14 +359,22 @@ const App = () => {
       }
     });
 
-    const pmiScore = Number((pmiSum / pmiCount).toFixed(2));
-    const aciScore = Number((aciSum / aciCount).toFixed(2));
-    const pmiGrid = Math.max(1, Math.min(5, Math.round(pmiScore)));
-    const aciGrid = Math.max(1, Math.min(5, Math.round(aciScore)));
+    const pmiScore = pmiSum / pmiCount;
+    const aciScore = aciSum / aciCount;
+    const pmiGrid = levelOf(pmiScore);
+    const aciGrid = levelOf(aciScore);
 
     const resultData = getResult(pmiGrid, aciGrid);
+    const cell = `${PMI_COLUMNS[pmiGrid - 1]}${aciGrid}`;
+    const cellName = `${PMI_NAMES[pmiGrid - 1]} ${ACI_NAMES[aciGrid - 1]}`;
+    const composite = compositeOf(pmiGrid, aciGrid);
 
-    return { pmiScore, aciScore, pmiGrid, aciGrid, state: resultData.title, desc: resultData.desc };
+    return {
+      pmiScore, aciScore, pmiGrid, aciGrid,
+      pmiShown: displayScore(pmiScore), aciShown: displayScore(aciScore),
+      cell, cellName, composite, band: bandOf(composite),
+      state: resultData.title, desc: resultData.desc,
+    };
   }, [scores]);
 
   // --- PDF GENERATOR ---
@@ -321,22 +460,26 @@ const App = () => {
       pdf.setFontSize(14);
       pdf.setTextColor(0);
       pdf.setFont("helvetica", "bold");
-      pdf.text(results.state.toUpperCase(), pageWidth / 2, boxY + 7, { align: "center" });
+      pdf.text(`${results.cell} ${results.cellName}`.toUpperCase(), pageWidth / 2, boxY + 7, { align: "center" });
 
-      // Descriptor
+      // State, then Table 2's descriptor
+      pdf.setFontSize(10);
+      pdf.setTextColor(50);
+      pdf.text(results.state, pageWidth / 2, boxY + 13, { align: "center" });
       pdf.setFont("helvetica", "normal");
       pdf.setFontSize(9);
       pdf.setTextColor(80);
-      pdf.text(results.desc, pageWidth / 2, boxY + 13, { align: "center", maxWidth: 140 });
+      pdf.text(results.desc, pageWidth / 2, boxY + 18, { align: "center", maxWidth: 140 });
 
-      const scoreY = 175;
+      const scoreY = 178;
       pdf.setFontSize(9);
       pdf.setTextColor(100);
-      pdf.text(`PMI SCORE: ${results.pmiScore}`, pageWidth / 2 - 30, scoreY, { align: "center" });
-      pdf.text(`ACI SCORE: ${results.aciScore}`, pageWidth / 2 + 30, scoreY, { align: "center" });
+      pdf.text(`PMI SCORE: ${results.pmiShown}`, pageWidth / 2 - 50, scoreY, { align: "center" });
+      pdf.text(`ACI SCORE: ${results.aciShown}`, pageWidth / 2, scoreY, { align: "center" });
+      pdf.text(`COMPOSITE: ${results.composite} (${results.band.toUpperCase()})`, pageWidth / 2 + 50, scoreY, { align: "center" });
 
       // --- DETAILED BREAKDOWN (SORTED) ---
-      const listStartY = 190;
+      const listStartY = 192;
       pdf.setDrawColor(200);
       pdf.line(margin, listStartY - 5, pageWidth - margin, listStartY - 5);
       
@@ -388,6 +531,20 @@ const App = () => {
 
         if (isLeftCol) yLeft += 7; else yRight += 7;
       });
+
+      // --- THE FULL ASSESSMENT ---
+      const fullY = pageHeight - 34;
+      pdf.setFont("helvetica", "normal");
+      pdf.setFontSize(8);
+      pdf.setTextColor(80);
+      const fullText = "The full assessment, Assessor.io's Adaptive Maturity Specialised Set (SS-ADM): ";
+      pdf.text(fullText, margin, fullY);
+      pdf.setTextColor(50);
+      const fullLink = "assessor.bimexcellence.org";
+      const fullX = margin + pdf.getTextWidth(fullText);
+      pdf.text(fullLink, fullX, fullY);
+      pdf.line(fullX, fullY + 0.5, fullX + pdf.getTextWidth(fullLink), fullY + 0.5);
+      pdf.link(fullX, fullY - 2, pdf.getTextWidth(fullLink), 3, { url: SS_ADM_URL });
 
       // --- CREATIVE COMMONS FOOTER (STRICT ALIGNMENT) ---
       const footerHeight = 18; 
@@ -480,26 +637,26 @@ const App = () => {
                 {/* Result Header */}
                 <div className="mb-2 text-center">
                   <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-1">Calculated Microstate</div>
-                  <div className="text-lg md:text-xl font-black text-slate-800 uppercase leading-none" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>{results.state}</div>
-                  <div className="text-xs text-slate-500 mt-2 italic px-4 leading-relaxed">{results.desc}</div>
+                  <div className="text-lg md:text-xl font-black text-slate-800 uppercase leading-none" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>{results.cell} {results.cellName}</div>
+                  <div className="text-sm font-bold text-slate-600 mt-2">{results.state}</div>
+                  <div className="text-xs text-slate-500 mt-1 italic px-4 leading-relaxed">{results.desc}</div>
                 </div>
 
                 {/* THE CHART */}
                 <div ref={chartRef} className="bg-white p-2 border border-slate-200 shadow-sm aspect-square relative mb-4 rounded-sm ml-6"> 
                   <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                      <XAxis type="number" dataKey="x" domain={[0, 6]} hide />
-                      <YAxis type="number" dataKey="y" domain={[0, 6]} hide />
+                      <XAxis type="number" dataKey="x" domain={[0.5, 5.5]} hide />
+                      <YAxis type="number" dataKey="y" domain={[0.5, 5.5]} hide />
                       <Tooltip cursor={{ strokeDasharray: '3 3' }} contentStyle={{borderRadius: 0, borderColor: BRAND_COLOR}} />
                       
-                      {/* Zones */}
-                      <ReferenceArea x1={0} x2={3} y1={3} y2={6} fill="#86efac" fillOpacity={0.2} stroke="none" />
-                      <ReferenceArea x1={3} x2={6} y1={3} y2={6} fill="#67e8f9" fillOpacity={0.2} stroke="none" />
-                      <ReferenceArea x1={0} x2={3} y1={0} y2={3} fill="#fde047" fillOpacity={0.2} stroke="none" />
-                      <ReferenceArea x1={3} x2={6} y1={0} y2={3} fill="#fda4af" fillOpacity={0.2} stroke="none" />
-                      <ReferenceLine x={3} stroke="#64748b" strokeWidth={2} />
-                      <ReferenceLine y={3} stroke="#64748b" strokeWidth={2} />
+                      {/* Zones: Episode 27's four clusters, each three cells wide, overlapping on column c and row 3 */}
+                      <ReferenceArea x1={0.5} x2={3.5} y1={2.5} y2={5.5} fill="#86efac" fillOpacity={0.2} stroke="none" />
+                      <ReferenceArea x1={2.5} x2={5.5} y1={2.5} y2={5.5} fill="#67e8f9" fillOpacity={0.2} stroke="none" />
+                      <ReferenceArea x1={0.5} x2={3.5} y1={0.5} y2={3.5} fill="#fde047" fillOpacity={0.2} stroke="none" />
+                      <ReferenceArea x1={2.5} x2={5.5} y1={0.5} y2={3.5} fill="#fda4af" fillOpacity={0.2} stroke="none" />
+                      {[1.5, 2.5, 3.5, 4.5].map(edge => <ReferenceLine key={`x${edge}`} x={edge} stroke="#cbd5e1" />)}
+                      {[1.5, 2.5, 3.5, 4.5].map(edge => <ReferenceLine key={`y${edge}`} y={edge} stroke="#cbd5e1" />)}
                       
                       {/* CUSTOM MARKER */}
                       <Scatter 
@@ -512,10 +669,10 @@ const App = () => {
                   
                   {/* Quadrant Labels */}
                   <div className="absolute inset-0 pointer-events-none" style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}>
-                      <div className="absolute top-[25%] left-[25%] -translate-x-1/2 -translate-y-1/2 text-sm md:text-base font-black text-green-900/20 uppercase text-center">CHAOTIC</div>
-                      <div className="absolute top-[25%] right-[25%] translate-x-1/2 -translate-y-1/2 text-sm md:text-base font-black text-cyan-900/20 uppercase text-center">DYNAMIC</div>
-                      <div className="absolute bottom-[25%] left-[25%] -translate-x-1/2 translate-y-1/2 text-sm md:text-base font-black text-yellow-900/20 uppercase text-center">STAGNANT</div>
-                      <div className="absolute bottom-[25%] right-[25%] translate-x-1/2 translate-y-1/2 text-sm md:text-base font-black text-red-900/20 uppercase text-center">RIGID</div>
+                      <div className="absolute top-[22%] left-[25%] -translate-x-1/2 -translate-y-1/2 text-sm md:text-base font-black text-green-900/20 uppercase text-center">CHAOTIC</div>
+                      <div className="absolute top-[22%] right-[20%] translate-x-1/2 -translate-y-1/2 text-sm md:text-base font-black text-cyan-900/20 uppercase text-center">DYNAMIC</div>
+                      <div className="absolute bottom-[22%] left-[25%] -translate-x-1/2 translate-y-1/2 text-sm md:text-base font-black text-yellow-900/20 uppercase text-center">STAGNANT</div>
+                      <div className="absolute bottom-[22%] right-[20%] translate-x-1/2 translate-y-1/2 text-sm md:text-base font-black text-red-900/20 uppercase text-center">RIGID</div>
                   </div>
 
                   <div className="absolute bottom-1 w-full text-center text-[8px] font-bold text-slate-400 uppercase tracking-widest">Process Maturity &rarr;</div>
@@ -523,15 +680,31 @@ const App = () => {
                 </div>
 
                 {/* Score Stats */}
-                <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="grid grid-cols-3 gap-3 mb-2">
                   <div className="bg-white p-3 border border-slate-200 text-center rounded-sm">
                      <div className="text-[9px] font-bold text-slate-400 uppercase">PMI Score</div>
-                     <div className="text-xl font-black text-slate-800">{results.pmiScore}</div>
+                     <div className="text-xl font-black text-slate-800">{results.pmiShown}</div>
                   </div>
                   <div className="bg-white p-3 border border-slate-200 text-center rounded-sm">
                      <div className="text-[9px] font-bold text-slate-400 uppercase">ACI Score</div>
-                     <div className="text-xl font-black text-slate-800">{results.aciScore}</div>
+                     <div className="text-xl font-black text-slate-800">{results.aciShown}</div>
                   </div>
+                  <div className="bg-white p-3 border border-slate-200 text-center rounded-sm">
+                     <div className="text-[9px] font-bold text-slate-400 uppercase">Composite</div>
+                     <div className="text-xl font-black text-slate-800">{results.composite}</div>
+                     <div className="text-[9px] font-bold text-slate-400 uppercase">{results.band}</div>
+                  </div>
+                </div>
+                <p className="text-[10px] text-slate-500 leading-relaxed mb-6">
+                  Each average is rounded once to the nearest level, and halves round up: column {results.cell[0]}, row {results.aciGrid}.
+                  The composite is 4 &times; row &times; column, counting column a as 1: 4 &times; {results.aciGrid} &times; {results.pmiGrid} = {results.composite} (Low up to 10, Medium-Low 11 to 20, Medium 21 to 45, Medium-High 46 to 75, High 76 and above).
+                </p>
+
+                {/* --- THE FULL ASSESSMENT --- */}
+                <div className="bg-white p-4 border border-slate-200 mb-4 text-xs text-slate-600 leading-relaxed">
+                  <div className="font-bold text-slate-700 uppercase tracking-wide mb-1">The full assessment</div>
+                  This microtool is a taster. Assessor.io&rsquo;s Adaptive Maturity Specialised Set (SS-ADM) adds the disruptions your organisation has faced, evidence for each indicator, a heading on the map and suggested actions.{' '}
+                  <a href={SS_ADM_URL} target="_blank" rel="noopener noreferrer" className="font-bold text-slate-800 underline hover:text-[#f37f73]">Ask about SS-ADM</a>
                 </div>
 
                 {/* --- CONTROLS --- */}
@@ -580,6 +753,9 @@ const App = () => {
 
           {/* --- INPUTS COLUMN --- */}
           <div className="lg:col-span-7 order-2 lg:order-1 p-4 md:p-5 bg-white">
+            <p className="text-xs text-slate-600 leading-relaxed mb-5">
+              For each indicator, pick the highest level that is fully true for your organisation. If you are between two levels, choose the lower one.
+            </p>
             <div className="space-y-6">
               {['PMI', 'ACI', 'BOTH'].map(axis => (
                 <div key={axis}>
@@ -611,7 +787,11 @@ const App = () => {
                             {scores[ind.id]}
                           </span>
                         </div>
-                        <input type="range" min="1" max="5" step="1" value={scores[ind.id]} onChange={(e) => handleScoreChange(ind.id, e.target.value)} className="w-full h-2 bg-slate-100 appearance-none cursor-pointer accent-[#c4c4c4] rounded-full hover:bg-slate-200 transition-colors" />
+                        <input type="range" min="1" max="5" step="1" value={scores[ind.id]} onChange={(e) => handleScoreChange(ind.id, e.target.value)} aria-label={`${ind.code} ${ind.title}`} aria-valuetext={`Level ${scores[ind.id]}: ${LADDERS[ind.id][scores[ind.id] - 1].headline}`} className="w-full h-2 bg-slate-100 appearance-none cursor-pointer accent-[#c4c4c4] rounded-full hover:bg-slate-200 transition-colors" />
+                        <p className="text-[11px] text-slate-500 mt-1.5 leading-snug">
+                          <span className="font-bold text-slate-700">Level {scores[ind.id]}: {LADDERS[ind.id][scores[ind.id] - 1].headline}.</span>{' '}
+                          {LADDERS[ind.id][scores[ind.id] - 1].descriptor}
+                        </p>
                       </div>
                     ))}
                   </div>

@@ -4,8 +4,8 @@ Interactive web application for measuring organizational adaptive maturity in BI
 
 **Part of**: [BIMei Microtools Collection](../)
 **Stack**: React, Vite, Recharts, reCAPTCHA
-**Related**: [BIM Thinkspace Episode 28](https://BIMexcellence.org/measuring-adaptive-maturity)
-**Status**: Active (v1.0)
+**Related**: [BIM Thinkspace Episode 28](https://bimexcellence.org/thinkspace/episode-28-measuring-adaptive-maturity/)
+**Status**: Active (v1.1)
 
 ---
 
@@ -15,16 +15,15 @@ The Adaptive Maturity Assessment Microtool (AMIS) helps organizations measure an
 - **Process Maturity**: How well-defined and repeatable are your processes?
 - **Adaptive Capacity**: How well can you respond to change and uncertainty?
 
-Users complete a questionnaire and receive an interactive scatter plot showing their position, along with actionable insights for improvement.
+Users rate Episode 28's 13 Adaptive Maturity Indicators (AMIs) and see their microstate, State, axis scores and composite score on the Adaptive Maturity map. It is a taster for Assessor.io's full Adaptive Maturity Specialised Set (SS-ADM), which it links to.
 
 ### Key Features
 
-- **15-Question Assessment**: Balanced questions across both maturity dimensions
-- **Interactive Visualization**: Real-time scatter plot showing results and comparison points
-- **Quadrant Analysis**: Color-coded regions (Chaotic, Rigid, Reactive, Resilient)
-- **PDF Export**: Download results with full chart visualization
-- **Comparison Mode**: Compare your results against industry benchmarks
-- **Email Results**: Optional email submission for follow-up (reCAPTCHA protected)
+- **13 indicators**: each rated 1 to 5 against its five-level ladder (the corrected, gap-free ladders)
+- **Interactive Visualization**: Real-time chart with Episode 27's four overlapping State clusters
+- **Microstate and State**: the cell (a1 to e5) and its State or overlap, from Episode 28 Table 2 as corrected
+- **Composite score**: 4 x row x column (4 to 100) and its band
+- **PDF Export**: Download results with full chart visualization (reCAPTCHA protected)
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Accessibility**: ARIA labels, keyboard navigation, screen reader support
 
@@ -44,26 +43,14 @@ Users complete a questionnaire and receive an interactive scatter plot showing t
 
 ### Maturity Model
 
-The assessment maps responses to a 2D space:
+The assessment places an organisation on the 5 x 5 Adaptive Maturity matrix (BIM ThinkSpace Episodes 27 and 28): process maturity (PMI) as columns a to e, adaptive capacity (ACI) as rows 1 to 5. Episode 27's four States are overlapping clusters of three columns by three rows:
 
-```
-        High Adaptive Capacity
-                 │
-                 │ Reactive    │ Resilient
-                 │             │ (Ideal)
-─────────────────┼─────────────┼──────────
-                 │             │
-    Chaotic      │    Rigid    │
-                 │             │
-                 │
-        Low Adaptive Capacity
-```
+- **Stagnant**: a1 to c3
+- **Chaotic**: a3 to c5
+- **Dynamic**: c3 to e5
+- **Rigid**: c1 to e3
 
-**Quadrants**:
-- **Chaotic** (Low Process, Low Adaptive): Disorganized, unpredictable
-- **Rigid** (High Process, Low Adaptive): Over-structured, inflexible
-- **Reactive** (Low Process, High Adaptive): Agile but inconsistent
-- **Resilient** (High Process, High Adaptive): Optimal balance
+Every cell in column c or row 3 belongs to two States, and c3 belongs to all four.
 
 ---
 
@@ -140,20 +127,14 @@ npm run preview
 4. **Results**: Interactive scatter plot with quadrant position
 5. **Export**: Download PDF or compare with others
 
-### Question Format
-
-Each question uses a 5-point Likert scale:
-- **Never** (1 point)
-- **Rarely** (2 points)
-- **Sometimes** (3 points)
-- **Often** (4 points)
-- **Always** (5 points)
-
 ### Scoring
 
-- **Process Maturity**: Average of process-related questions
-- **Adaptive Capacity**: Average of adaptability-related questions
-- **Result**: Plotted on 1-5 scale for both axes
+Corrected on 31 Oct 2026 to match the corrected Episode 28 and Assessor.io's SS-ADM:
+
+- **Axes**: PMI is the average of AMI-1 and AMI-11; ACI is the average of the other nine indicators. AMI-6 and AMI-10 count half on each axis, in the sum and in the count, so PMI divides by 3 and ACI by 10.
+- **Placement**: each average is rounded once, to the nearest level, and a half rounds up (3.45 is level 3, 3.5 is level 4). Scores are shown to one decimal, or two where one decimal would show a half the score has not reached.
+- **Composite**: the cell's value, 4 x row x column with column a counted as 1, from 4 (a1) to 100 (e5).
+- **Bands**: Low 10 or less, Medium-Low 11 to 20, Medium 21 to 45, Medium-High 46 to 75, High 76 and above.
 
 ---
 
@@ -166,7 +147,7 @@ Edit constants in `App.jsx`:
 ```javascript
 const BRAND_COLOR = "#f37f73";  // BIMei coral
 const EPISODE_TITLE_PREFIX = "BIM THINKSPACE EPISODE 28:";
-const POST_URL = "https://BIMexcellence.org/measuring-adaptive-maturity";
+const POST_URL = "https://bimexcellence.org/thinkspace/episode-28-measuring-adaptive-maturity/";
 ```
 
 ### reCAPTCHA
@@ -413,7 +394,7 @@ src/
 ## Related Resources
 
 ### BIM Thinkspace
-- **Episode 28**: [Measuring and Improving Adaptive Maturity](https://BIMexcellence.org/measuring-adaptive-maturity)
+- **Episode 28**: [Measuring and Improving Adaptive Maturity](https://bimexcellence.org/thinkspace/episode-28-measuring-adaptive-maturity/)
 - **Podcast**: Detailed discussion of the maturity model
 
 ### Related Tools
@@ -424,7 +405,7 @@ src/
 
 ## Credits
 
-**Version**: v1.0 (1 Dec 2025)
+**Version**: v1.1 (31 Oct 2026): scoring, Table 2 labels and ladders corrected; link to the full SS-ADM. v1.0 (1 Dec 2025).
 **Created by**: BIM Excellence Initiative
 **Related Content**: BIM Thinkspace Episode 28
 
