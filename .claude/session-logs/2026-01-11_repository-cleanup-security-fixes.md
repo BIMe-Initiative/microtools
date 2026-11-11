@@ -279,7 +279,7 @@ cypher-shell -a "neo4j+s://4441767a.databases.neo4j.io" -u neo4j \
   "ALTER CURRENT USER SET PASSWORD FROM 'OLD_PASSWORD' TO 'NEW_PASSWORD';"
 ```
 
-**New Password**: `fvXrZEt+sGuJQrmdq2dwSV9/LAMOmH21l7t+1gfMp94=` (generated via `openssl rand -base64 32`)
+**New Password**: `[removed]` (generated via `openssl rand -base64 32`)
 **Result**: ✅ Password successfully rotated - old password now invalid
 **File Updated**: `vertex-graph-builder/.env` (already gitignored, not tracked)
 

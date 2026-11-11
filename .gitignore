@@ -12,6 +12,8 @@ package-lock.json.bak
 .env.*.local
 .env.yaml
 *.env.yaml
+.env.*.yaml
+!.env.example.yaml
 *.key
 *.pem
 *.p12
